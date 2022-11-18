@@ -25,12 +25,15 @@ public class VideoGetResponse {
 
     private Long progressRate;
 
+    private boolean isUploaded;
+
     @Builder
-    public VideoGetResponse(Long id,String title, String description, String thumbnailImagePath) {
+    public VideoGetResponse(Long id,String title, String description, String thumbnailImagePath,  boolean isUploaded) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.thumbnailImagePath = thumbnailImagePath;
+        this.isUploaded = isUploaded;
     }
 
     public void changeIndividualVideoState(String individualVideoId, LocalDateTime lastAccessTime, Long progressRate) {

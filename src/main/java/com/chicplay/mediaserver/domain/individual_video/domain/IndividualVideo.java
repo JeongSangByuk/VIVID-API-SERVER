@@ -56,6 +56,11 @@ public class IndividualVideo extends BaseEntity {
         this.lastAccessTime = LocalDateTime.now();
     }
 
+    // 최종 접근 시간 변경 메소드
+    public void changeProgressRate(Long progressRate) {
+        this.progressRate = progressRate;
+    }
+
     // 연관 관계 편의 메소드
     public void changeVideo(Video video){
 

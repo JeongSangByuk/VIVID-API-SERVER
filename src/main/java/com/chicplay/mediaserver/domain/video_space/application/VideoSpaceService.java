@@ -104,6 +104,7 @@ public class VideoSpaceService {
                     .id(video.getId())
                     .title(video.getTitle())
                     .description(video.getDescription())
+                    .isUploaded(video.isUploaded())
                     .thumbnailImagePath(video.getThumbnailImagePath()).build());
 
         });
@@ -147,6 +148,7 @@ public class VideoSpaceService {
                         .id(video.getId())
                         .title(video.getTitle())
                         .description(video.getDescription())
+                        .isUploaded(video.isUploaded())
                         .thumbnailImagePath(video.getThumbnailImagePath()).build());
             });
 
@@ -225,6 +227,7 @@ public class VideoSpaceService {
                     .title(video.getTitle())
                     .description(video.getDescription())
                     .thumbnailImagePath(video.getThumbnailImagePath())
+                    .isUploaded(video.isUploaded())
                     .build();
 
             videoSpaceGetResponseHashMap.put(video.getId(), videoGetResponse);

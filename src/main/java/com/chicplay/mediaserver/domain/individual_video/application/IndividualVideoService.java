@@ -149,6 +149,19 @@ public class IndividualVideoService {
         individualVideo.changeLastAccessTime();
     }
 
+    // 해당 individual video의 progress rate를 update하는 메소드
+    public void updateProgressRate(String individualVideoId, Long progressRate) {
+
+        // individual video get
+        IndividualVideo individualVideo = findById(individualVideoId);
+
+        // login user 권한 체크
+        userService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
+
+        // progress rate update
+        individualVideo.changeProgressRate(progressRate);
+    }
+
     public void checkValidUserAccessId(String individualVideoId) {
 
         // individual video get

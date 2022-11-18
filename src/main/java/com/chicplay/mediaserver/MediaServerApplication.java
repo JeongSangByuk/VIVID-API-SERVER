@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 
 //@EnableCaching
 //@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 10800)
@@ -20,6 +23,10 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @SpringBootApplication
 public class MediaServerApplication {
 
+	@PostConstruct
+	public void started() {
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+	}
 	public static void main(String[] args) {
 		SpringApplication.run(MediaServerApplication.class, args);
 	}

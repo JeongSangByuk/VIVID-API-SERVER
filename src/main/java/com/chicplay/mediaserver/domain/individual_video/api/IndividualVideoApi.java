@@ -64,6 +64,15 @@ public class IndividualVideoApi {
         individualVideoService.updateLastAccessTime(individualVideoId);
     }
 
+    @Operation(summary = "individual video progress rate api", description = "individual video의 학습률/진행도를 업데이트하는 api입니다.")
+    @PutMapping("/api/individual-videos/{individual-video-id}/progress-rate/{percent}")
+    public void updateProgressRate(@PathVariable("individual-video-id") String individualVideoId,
+                                   @PathVariable("percent") Long progressRate) throws IOException {
+
+        // progress rate 수정
+        individualVideoService.updateProgressRate(individualVideoId, progressRate);
+    }
+
     @Operation(summary = "individual video delete api", description = "individual video를 삭제하는 api입니다.")
     @DeleteMapping("/api/individual-videos/{individual-video-id}")
     public void delete(@PathVariable("individual-video-id") String individualVideoId) throws IOException {

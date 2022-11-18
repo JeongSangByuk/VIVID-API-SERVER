@@ -19,11 +19,14 @@ public class HostedVideoGetResponse {
 
     private String thumbnailImagePath;
 
+    private boolean isUploaded;
+
     @Builder
-    public HostedVideoGetResponse(Long id, String title, String description, String thumbnailImagePath) {
+    public HostedVideoGetResponse(Long id, String title, String description, String thumbnailImagePath, boolean isUploaded) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.thumbnailImagePath = thumbnailImagePath;
+        this.isUploaded = isUploaded;
     }
 }
