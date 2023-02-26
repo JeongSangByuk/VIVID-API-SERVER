@@ -1,4 +1,4 @@
-package com.chicplay.mediaserver.domain.video.domain;
+package com.vivid.apiserver.domain.video.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -22,7 +22,7 @@ public class QOcrText extends EntityPathBase<OcrText> {
 
     public static final QOcrText ocrText = new QOcrText("ocrText");
 
-    public final com.chicplay.mediaserver.global.common.QBaseEntity _super = new com.chicplay.mediaserver.global.common.QBaseEntity(this);
+    public final com.vivid.apiserver.global.common.QBaseEntity _super = new com.vivid.apiserver.global.common.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;

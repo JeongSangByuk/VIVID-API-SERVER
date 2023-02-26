@@ -1,4 +1,4 @@
-package com.chicplay.mediaserver.domain.video.domain;
+package com.vivid.apiserver.domain.video.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -22,7 +22,7 @@ public class QVideo extends EntityPathBase<Video> {
 
     public static final QVideo video = new QVideo("video");
 
-    public final com.chicplay.mediaserver.global.common.QBaseEntity _super = new com.chicplay.mediaserver.global.common.QBaseEntity(this);
+    public final com.vivid.apiserver.global.common.QBaseEntity _super = new com.vivid.apiserver.global.common.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
@@ -34,7 +34,7 @@ public class QVideo extends EntityPathBase<Video> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<com.chicplay.mediaserver.domain.individual_video.domain.IndividualVideo, com.chicplay.mediaserver.domain.individual_video.domain.QIndividualVideo> individualVideos = this.<com.chicplay.mediaserver.domain.individual_video.domain.IndividualVideo, com.chicplay.mediaserver.domain.individual_video.domain.QIndividualVideo>createList("individualVideos", com.chicplay.mediaserver.domain.individual_video.domain.IndividualVideo.class, com.chicplay.mediaserver.domain.individual_video.domain.QIndividualVideo.class, PathInits.DIRECT2);
+    public final ListPath<com.vivid.apiserver.domain.individual_video.domain.IndividualVideo, com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo> individualVideos = this.<com.vivid.apiserver.domain.individual_video.domain.IndividualVideo, com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo>createList("individualVideos", com.vivid.apiserver.domain.individual_video.domain.IndividualVideo.class, com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo.class, PathInits.DIRECT2);
 
     public final BooleanPath isUploaded = createBoolean("isUploaded");
 
@@ -47,7 +47,7 @@ public class QVideo extends EntityPathBase<Video> {
 
     public final StringPath uploaderId = createString("uploaderId");
 
-    public final com.chicplay.mediaserver.domain.video_space.domain.QVideoSpace videoSpace;
+    public final com.vivid.apiserver.domain.video_space.domain.QVideoSpace videoSpace;
 
     public QVideo(String variable) {
         this(Video.class, forVariable(variable), INITS);
@@ -67,7 +67,7 @@ public class QVideo extends EntityPathBase<Video> {
 
     public QVideo(Class<? extends Video> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.videoSpace = inits.isInitialized("videoSpace") ? new com.chicplay.mediaserver.domain.video_space.domain.QVideoSpace(forProperty("videoSpace")) : null;
+        this.videoSpace = inits.isInitialized("videoSpace") ? new com.vivid.apiserver.domain.video_space.domain.QVideoSpace(forProperty("videoSpace")) : null;
     }
 
 }

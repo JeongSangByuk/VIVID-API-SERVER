@@ -1,4 +1,4 @@
-package com.chicplay.mediaserver.domain.user.domain;
+package com.vivid.apiserver.domain.user.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -22,7 +22,7 @@ public class QUser extends EntityPathBase<User> {
 
     public static final QUser user = new QUser("user");
 
-    public final com.chicplay.mediaserver.global.common.QBaseEntity _super = new com.chicplay.mediaserver.global.common.QBaseEntity(this);
+    public final com.vivid.apiserver.global.common.QBaseEntity _super = new com.vivid.apiserver.global.common.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
@@ -47,7 +47,7 @@ public class QUser extends EntityPathBase<User> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDate = _super.updatedDate;
 
-    public final ListPath<com.chicplay.mediaserver.domain.video_space.domain.VideoSpaceParticipant, com.chicplay.mediaserver.domain.video_space.domain.QVideoSpaceParticipant> videoSpaceParticipants = this.<com.chicplay.mediaserver.domain.video_space.domain.VideoSpaceParticipant, com.chicplay.mediaserver.domain.video_space.domain.QVideoSpaceParticipant>createList("videoSpaceParticipants", com.chicplay.mediaserver.domain.video_space.domain.VideoSpaceParticipant.class, com.chicplay.mediaserver.domain.video_space.domain.QVideoSpaceParticipant.class, PathInits.DIRECT2);
+    public final ListPath<com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant, com.vivid.apiserver.domain.video_space.domain.QVideoSpaceParticipant> videoSpaceParticipants = this.<com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant, com.vivid.apiserver.domain.video_space.domain.QVideoSpaceParticipant>createList("videoSpaceParticipants", com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant.class, com.vivid.apiserver.domain.video_space.domain.QVideoSpaceParticipant.class, PathInits.DIRECT2);
 
     public QUser(String variable) {
         this(User.class, forVariable(variable), INITS);

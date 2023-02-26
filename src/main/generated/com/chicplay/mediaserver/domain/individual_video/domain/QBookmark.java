@@ -1,4 +1,4 @@
-package com.chicplay.mediaserver.domain.individual_video.domain;
+package com.vivid.apiserver.domain.individual_video.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -22,7 +22,7 @@ public class QBookmark extends EntityPathBase<Bookmark> {
 
     public static final QBookmark bookmark = new QBookmark("bookmark");
 
-    public final com.chicplay.mediaserver.global.common.QBaseEntity _super = new com.chicplay.mediaserver.global.common.QBaseEntity(this);
+    public final com.vivid.apiserver.global.common.QBaseEntity _super = new com.vivid.apiserver.global.common.QBaseEntity(this);
 
     public final StringPath content = createString("content");
 
