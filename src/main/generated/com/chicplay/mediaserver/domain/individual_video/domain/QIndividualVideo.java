@@ -1,4 +1,4 @@
-package com.chicplay.mediaserver.domain.individual_video.domain;
+package com.vivid.apiserver.domain.individual_video.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -22,7 +22,7 @@ public class QIndividualVideo extends EntityPathBase<IndividualVideo> {
 
     public static final QIndividualVideo individualVideo = new QIndividualVideo("individualVideo");
 
-    public final com.chicplay.mediaserver.global.common.QBaseEntity _super = new com.chicplay.mediaserver.global.common.QBaseEntity(this);
+    public final com.vivid.apiserver.global.common.QBaseEntity _super = new com.vivid.apiserver.global.common.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
@@ -39,9 +39,9 @@ public class QIndividualVideo extends EntityPathBase<IndividualVideo> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDate = _super.updatedDate;
 
-    public final com.chicplay.mediaserver.domain.video.domain.QVideo video;
+    public final com.vivid.apiserver.domain.video.domain.QVideo video;
 
-    public final com.chicplay.mediaserver.domain.video_space.domain.QVideoSpaceParticipant videoSpaceParticipant;
+    public final com.vivid.apiserver.domain.video_space.domain.QVideoSpaceParticipant videoSpaceParticipant;
 
     public QIndividualVideo(String variable) {
         this(IndividualVideo.class, forVariable(variable), INITS);
@@ -61,8 +61,8 @@ public class QIndividualVideo extends EntityPathBase<IndividualVideo> {
 
     public QIndividualVideo(Class<? extends IndividualVideo> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.video = inits.isInitialized("video") ? new com.chicplay.mediaserver.domain.video.domain.QVideo(forProperty("video"), inits.get("video")) : null;
-        this.videoSpaceParticipant = inits.isInitialized("videoSpaceParticipant") ? new com.chicplay.mediaserver.domain.video_space.domain.QVideoSpaceParticipant(forProperty("videoSpaceParticipant"), inits.get("videoSpaceParticipant")) : null;
+        this.video = inits.isInitialized("video") ? new com.vivid.apiserver.domain.video.domain.QVideo(forProperty("video"), inits.get("video")) : null;
+        this.videoSpaceParticipant = inits.isInitialized("videoSpaceParticipant") ? new com.vivid.apiserver.domain.video_space.domain.QVideoSpaceParticipant(forProperty("videoSpaceParticipant"), inits.get("videoSpaceParticipant")) : null;
     }
 
 }

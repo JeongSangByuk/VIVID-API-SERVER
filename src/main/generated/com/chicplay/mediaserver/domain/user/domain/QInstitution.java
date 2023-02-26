@@ -1,4 +1,4 @@
-package com.chicplay.mediaserver.domain.user.domain;
+package com.vivid.apiserver.domain.user.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 

@@ -1,4 +1,4 @@
-package com.chicplay.mediaserver.domain.video_space.domain;
+package com.vivid.apiserver.domain.video_space.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -22,7 +22,7 @@ public class QVideoSpaceParticipant extends EntityPathBase<VideoSpaceParticipant
 
     public static final QVideoSpaceParticipant videoSpaceParticipant = new QVideoSpaceParticipant("videoSpaceParticipant");
 
-    public final com.chicplay.mediaserver.global.common.QBaseEntity _super = new com.chicplay.mediaserver.global.common.QBaseEntity(this);
+    public final com.vivid.apiserver.global.common.QBaseEntity _super = new com.vivid.apiserver.global.common.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
@@ -32,12 +32,12 @@ public class QVideoSpaceParticipant extends EntityPathBase<VideoSpaceParticipant
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<com.chicplay.mediaserver.domain.individual_video.domain.IndividualVideo, com.chicplay.mediaserver.domain.individual_video.domain.QIndividualVideo> individualVideos = this.<com.chicplay.mediaserver.domain.individual_video.domain.IndividualVideo, com.chicplay.mediaserver.domain.individual_video.domain.QIndividualVideo>createList("individualVideos", com.chicplay.mediaserver.domain.individual_video.domain.IndividualVideo.class, com.chicplay.mediaserver.domain.individual_video.domain.QIndividualVideo.class, PathInits.DIRECT2);
+    public final ListPath<com.vivid.apiserver.domain.individual_video.domain.IndividualVideo, com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo> individualVideos = this.<com.vivid.apiserver.domain.individual_video.domain.IndividualVideo, com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo>createList("individualVideos", com.vivid.apiserver.domain.individual_video.domain.IndividualVideo.class, com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedDate = _super.updatedDate;
 
-    public final com.chicplay.mediaserver.domain.user.domain.QUser user;
+    public final com.vivid.apiserver.domain.user.domain.QUser user;
 
     public final QVideoSpace videoSpace;
 
@@ -59,7 +59,7 @@ public class QVideoSpaceParticipant extends EntityPathBase<VideoSpaceParticipant
 
     public QVideoSpaceParticipant(Class<? extends VideoSpaceParticipant> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new com.chicplay.mediaserver.domain.user.domain.QUser(forProperty("user"), inits.get("user")) : null;
+        this.user = inits.isInitialized("user") ? new com.vivid.apiserver.domain.user.domain.QUser(forProperty("user"), inits.get("user")) : null;
         this.videoSpace = inits.isInitialized("videoSpace") ? new QVideoSpace(forProperty("videoSpace")) : null;
     }
 
