@@ -3,11 +3,14 @@ package com.vivid.apiserver.domain.video.api;
 import com.vivid.apiserver.domain.video.application.VideoService;
 import com.vivid.apiserver.domain.video.dto.VideoSaveRequest;
 import com.vivid.apiserver.domain.video.dto.VideoSaveResponse;
+import com.vivid.apiserver.global.success.SuccessCode;
+import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +40,7 @@ public class VideoApi {
     @Operation(summary = "video 직접 업로드 api", description = "video를 직접 업로드하는 api")
     @PostMapping(value = "/api/videos/{video-space-id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public VideoSaveResponse upload(
+    public ResponseEntity<SuccessResponse<VideoSaveResponse>> upload(
             @RequestPart("video")
             @Parameter(description = "multipartFile video file")
             MultipartFile multipartFile,
@@ -49,24 +52,30 @@ public class VideoApi {
             @PathVariable("video-space-id") Long videoSpaceId
     ) {
 
-        VideoSaveResponse videoSaveResponse = videoService.uploadByMultipartFile(multipartFile, videoSpaceId, videoSaveRequest);
+        VideoSaveResponse videoSaveResponse = videoService.uploadByMultipartFile(multipartFile, videoSpaceId,
+                videoSaveRequest);
 
-        return videoSaveResponse;
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS, videoSaveResponse);
     }
 
     @Operation(summary = "video 삭제 api", description = "video를 직접 업로드하는 api")
     @DeleteMapping(value = "/api/videos/{video-id}")
-    public void delete(@PathVariable("video-id") Long videoId) {
+    public ResponseEntity<SuccessResponse<String>> delete(@PathVariable("video-id") Long videoId) {
 
         videoService.delete(videoId);
+
+        return SuccessResponse.OK;
     }
 
     @Operation(summary = "video의 업로드 상태를 변환 api", description = "video의 업로드 상태를 true로 바꾸는 api 입니다. 해당 api는 aws 람다에서 호출됩니다.")
     @PutMapping(value = "/api/videos/{video-id}/uploaded")
-    public void changeUploadStateAfterUploaded(@PathVariable("video-id") Long videoId) throws IOException {
+    public ResponseEntity<SuccessResponse<String>> changeUploadStateAfterUploaded(
+            @PathVariable("video-id") Long videoId) throws IOException {
 
         // upload가 완료된후 uploaded 상태 변경
         videoService.changeUploadState(videoId, true);
+
+        return SuccessResponse.OK;
 
     }
 

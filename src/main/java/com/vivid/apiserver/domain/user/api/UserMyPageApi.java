@@ -2,9 +2,12 @@ package com.vivid.apiserver.domain.user.api;
 
 import com.vivid.apiserver.domain.user.application.UserMyPageService;
 import com.vivid.apiserver.domain.user.dto.UserMyPageDashboardDataGetResponse;
+import com.vivid.apiserver.global.success.SuccessCode;
+import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,20 +23,20 @@ public class UserMyPageApi {
 
     @Operation(summary = "my page user dashboard data get api", description = "my page의 user dashboard data를 get하는 api입니다.")
     @GetMapping("/api/my-page/dashboard")
-    public UserMyPageDashboardDataGetResponse getUserMyPageDashboardData() {
+    public ResponseEntity<SuccessResponse<UserMyPageDashboardDataGetResponse>> getUserMyPageDashboardData() {
 
-        UserMyPageDashboardDataGetResponse myPageDashboardData = userMyPageService.getMyPageDashboardData();
-
-        return myPageDashboardData;
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS, userMyPageService.getMyPageDashboardData());
 
     }
 
     @Operation(summary = "user delete api", description = "user가 회원 탈퇴할 때 사용되는 api입니다.")
     @DeleteMapping("/api/user")
-    public void delete(){
+    public ResponseEntity<SuccessResponse<String>> delete() {
 
         // delete user
         userMyPageService.deleteUser();
+
+        return SuccessResponse.OK;
     }
 
 

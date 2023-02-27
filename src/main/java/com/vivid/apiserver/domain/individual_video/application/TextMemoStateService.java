@@ -7,19 +7,20 @@ import com.vivid.apiserver.domain.individual_video.dto.TextMemoStateRedisSaveReq
 import com.vivid.apiserver.domain.individual_video.dto.TextMemoStateResponse;
 import com.vivid.apiserver.domain.individual_video.exception.TextMemoStateNotExistException;
 import com.vivid.apiserver.domain.user.application.UserService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.*;
 
 @Service
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class TextMemoStateService {
-
+ 
     private final UserService userService;
 
     private final IndividualVideoService individualVideoService;
@@ -40,7 +41,6 @@ public class TextMemoStateService {
         // 권한 체크
         individualVideoService.checkValidUserAccessId(individualVideoId);
 
-
         // redis return 값이 null 일 경우, dynamoDB에서 get
         // null일 경우 dyanamo에서 get
         TextMemoStateLatest textMemoStateLatest = Optional
@@ -53,7 +53,8 @@ public class TextMemoStateService {
         }
 
         // entitiy to dto
-        TextMemoStateResponse textMemoStateResponse = TextMemoStateResponse.builder().textMemoState(textMemoStateLatest).build();
+        TextMemoStateResponse textMemoStateResponse = TextMemoStateResponse.builder().textMemoState(textMemoStateLatest)
+                .build();
 
         return textMemoStateResponse;
     }
@@ -94,7 +95,8 @@ public class TextMemoStateService {
     public void saveLatestToDynamoDb(String individualVideoId) {
 
         // 요청된 individualVideoId의 state latest를 redis에서 가져온다. 없을 경우 예외 throw
-        TextMemoStateLatest textMemoStateLatest = Optional.ofNullable(textMemoStateDao.getLatestFromRedis(individualVideoId))
+        TextMemoStateLatest textMemoStateLatest = Optional.ofNullable(
+                        textMemoStateDao.getLatestFromRedis(individualVideoId))
                 .orElseThrow(TextMemoStateNotExistException::new);
 
         // 해당 state를 저장한다.
@@ -109,11 +111,13 @@ public class TextMemoStateService {
     public void saveHistoryToDynamoDb(String individualVideoId) {
 
         // text_memo_state_history를 redis에서 get
-        List<TextMemoStateHistory> historyListFromRedis = textMemoStateDao.getTextMemoStateHistoryFromRedis(individualVideoId);
+        List<TextMemoStateHistory> historyListFromRedis = textMemoStateDao.getTextMemoStateHistoryFromRedis(
+                individualVideoId);
 
         // 리스트 비었을 경우 exception throw
-        if (historyListFromRedis.isEmpty())
+        if (historyListFromRedis.isEmpty()) {
             throw new TextMemoStateNotExistException();
+        }
 
         // get된 text_memo_state_history 다이나모db에 save
         textMemoStateDao.saveHistoryListToDynamo(historyListFromRedis);
