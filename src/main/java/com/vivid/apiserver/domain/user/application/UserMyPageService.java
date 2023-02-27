@@ -1,19 +1,18 @@
 package com.vivid.apiserver.domain.user.application;
 
-import com.vivid.apiserver.domain.individual_video.dto.DashboardIndividualVideoDto;
+import com.vivid.apiserver.domain.individual_video.dto.dto.DashboardIndividualVideoDto;
 import com.vivid.apiserver.domain.user.dao.UserRepository;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.dto.UserMyPageDashboardDataGetResponse;
-import com.vivid.apiserver.domain.video.dto.VideoGetResponse;
+import com.vivid.apiserver.domain.video.dto.request.VideoGetResponse;
 import com.vivid.apiserver.domain.video_space.application.VideoSpaceService;
-import com.vivid.apiserver.domain.video_space.dto.VideoSpaceGetResponse;
+import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
+import java.util.ArrayList;
+import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -55,8 +54,9 @@ public class UserMyPageService {
                 totalIndividualVideoCount += 1;
 
                 // completed video ++
-                if(video.getProgressRate() == 100L)
+                if (video.getProgressRate() == 100L) {
                     completedIndividualVideoCount += 1;
+                }
 
                 DashboardIndividualVideoDto individualVideo = DashboardIndividualVideoDto.builder()
                         .video(video)
@@ -64,9 +64,11 @@ public class UserMyPageService {
                         .build();
 
                 // lasted studied individual video
-                if(user.getLastAccessIndividualVideoId() != null
-                        && user.getLastAccessIndividualVideoId().toString().equals(individualVideo.getIndividualVideoId()))
+                if (user.getLastAccessIndividualVideoId() != null
+                        && user.getLastAccessIndividualVideoId().toString()
+                        .equals(individualVideo.getIndividualVideoId())) {
                     lastStudiedIndividualVideo = individualVideo;
+                }
 
                 // 각각의 individual video dto로 add
                 dashboardIndividualVideos.add(individualVideo);
@@ -74,7 +76,7 @@ public class UserMyPageService {
         }
 
         // 접근 시간 순으로 정렬
-        dashboardIndividualVideos.sort((o1,o2) -> o2.getLastAccessTime().compareTo(o1.getLastAccessTime()));
+        dashboardIndividualVideos.sort((o1, o2) -> o2.getLastAccessTime().compareTo(o1.getLastAccessTime()));
 
         // response dto 생성
         UserMyPageDashboardDataGetResponse userMyPageDashboardDataGetResponse = UserMyPageDashboardDataGetResponse.builder()

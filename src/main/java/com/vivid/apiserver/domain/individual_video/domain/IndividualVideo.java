@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,8 @@ import org.hibernate.annotations.Where;
 @SQLDelete(sql = "UPDATE individual_video SET deleted = true WHERE individual_video_id = ?")
 @Where(clause = "deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
 public class IndividualVideo extends BaseEntity {
 
     @Id
@@ -50,12 +53,14 @@ public class IndividualVideo extends BaseEntity {
     @Column(name = "last_access_time")
     private LocalDateTime lastAccessTime;
 
-    @Builder
-    public IndividualVideo(Video video, VideoSpaceParticipant videoSpaceParticipant) {
-        changeVideo(video);
-        changeVideoSpaceParticipant(videoSpaceParticipant);
-        this.progressRate = 0L;
-        this.lastAccessTime = LocalDateTime.now();
+    public static IndividualVideo newInstance(Video video, VideoSpaceParticipant videoSpaceParticipant) {
+
+        return IndividualVideo.builder()
+                .video(video)
+                .videoSpaceParticipant(videoSpaceParticipant)
+                .progressRate(0L)
+                .lastAccessTime(LocalDateTime.now())
+                .build();
     }
 
     // 최종 접근 시간 변경 메소드
@@ -68,28 +73,6 @@ public class IndividualVideo extends BaseEntity {
         this.progressRate = progressRate;
     }
 
-    // 연관 관계 편의 메소드
-    public void changeVideo(Video video) {
-
-        // 기존의 비디오 관계가 있다면,
-        if (this.video != null) {
-            this.video.getIndividualVideos().remove(this);
-        }
-
-        this.video = video;
-        this.video.getIndividualVideos().add(this);
-    }
-
-    // 연관 관계 편의 메소드
-    public void changeVideoSpaceParticipant(VideoSpaceParticipant videoSpaceParticipant) {
-
-        if (this.videoSpaceParticipant != null) {
-            this.videoSpaceParticipant.getIndividualVideos().remove(this);
-        }
-
-        this.videoSpaceParticipant = videoSpaceParticipant;
-        this.videoSpaceParticipant.getIndividualVideos().add(this);
-    }
 
     // 전체 연관 관계 삭제 편의 메소드
     public void delete() {

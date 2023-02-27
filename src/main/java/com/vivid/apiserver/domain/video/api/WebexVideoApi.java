@@ -2,8 +2,8 @@ package com.vivid.apiserver.domain.video.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vivid.apiserver.domain.video.application.WebexVideoService;
-import com.vivid.apiserver.domain.video.dto.VideoSaveRequest;
-import com.vivid.apiserver.domain.video.dto.VideoSaveResponse;
+import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
+import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
 import com.vivid.apiserver.global.infra.webex_api.WebexRecordingGetResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;

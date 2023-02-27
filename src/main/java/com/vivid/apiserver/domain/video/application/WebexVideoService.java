@@ -1,20 +1,19 @@
 package com.vivid.apiserver.domain.video.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vivid.apiserver.domain.user.application.UserService;
 import com.vivid.apiserver.domain.user.domain.Institution;
 import com.vivid.apiserver.domain.user.domain.User;
-import com.vivid.apiserver.domain.video.dto.VideoSaveRequest;
-import com.vivid.apiserver.domain.video.dto.VideoSaveResponse;
+import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
+import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
 import com.vivid.apiserver.global.infra.webex_api.WebexApiService;
 import com.vivid.apiserver.global.infra.webex_api.WebexRecordingGetResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -58,7 +57,8 @@ public class WebexVideoService {
     }
 
     // webex recording을 upload합니다.
-    public VideoSaveResponse uploadRecording(String webexRecordingId, Long videoSpaceId, VideoSaveRequest videoSaveRequest) throws IOException {
+    public VideoSaveResponse uploadRecording(String webexRecordingId, Long videoSpaceId,
+            VideoSaveRequest videoSaveRequest) throws IOException {
 
         // access token get
         String webexAccessToken = userService.getWebexAccessToken();
@@ -67,13 +67,13 @@ public class WebexVideoService {
         String recordingDownloadUrl = webexApiService.getRecordingDownloadUrl(webexAccessToken, webexRecordingId);
 
         // s3로 업로드
-        VideoSaveResponse videoSaveResponse = videoService.uploadByDownloadUrl(recordingDownloadUrl, videoSpaceId, videoSaveRequest);
+        VideoSaveResponse videoSaveResponse = videoService.uploadByDownloadUrl(recordingDownloadUrl, videoSpaceId,
+                videoSaveRequest);
 
         return videoSaveResponse;
     }
 
     public void loginWebex(String id) {
-
 
     }
 }

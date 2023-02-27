@@ -1,10 +1,9 @@
-package com.vivid.apiserver.domain.individual_video.dto;
+package com.vivid.apiserver.domain.individual_video.dto.request;
 
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor

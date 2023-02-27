@@ -1,17 +1,14 @@
 package com.vivid.apiserver.domain.video_space.dao;
 
-import com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vivid.apiserver.domain.video.domain.QVideo;
 import com.vivid.apiserver.domain.video_space.domain.QVideoSpace;
 import com.vivid.apiserver.domain.video_space.domain.QVideoSpaceParticipant;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
-import com.vivid.apiserver.domain.video_space.exception.VideoSpaceNotFoundException;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Transactional

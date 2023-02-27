@@ -3,24 +3,24 @@ package com.vivid.apiserver.domain.individual_video.application;
 import com.vivid.apiserver.domain.individual_video.dao.TextMemoStateDao;
 import com.vivid.apiserver.domain.individual_video.domain.TextMemoStateHistory;
 import com.vivid.apiserver.domain.individual_video.domain.TextMemoStateLatest;
-import com.vivid.apiserver.domain.individual_video.dto.TextMemoStateRedisSaveRequest;
-import com.vivid.apiserver.domain.individual_video.dto.TextMemoStateResponse;
+import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoStateRedisSaveRequest;
+import com.vivid.apiserver.domain.individual_video.dto.response.TextMemoStateResponse;
 import com.vivid.apiserver.domain.individual_video.exception.TextMemoStateNotExistException;
 import com.vivid.apiserver.domain.user.application.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class TextMemoStateService {
- 
+
     private final UserService userService;
 
     private final IndividualVideoService individualVideoService;

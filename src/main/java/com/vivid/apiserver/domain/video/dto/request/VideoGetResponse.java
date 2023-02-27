@@ -1,11 +1,10 @@
-package com.vivid.apiserver.domain.video.dto;
+package com.vivid.apiserver.domain.video.dto.request;
 
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -28,7 +27,7 @@ public class VideoGetResponse {
     private boolean isUploaded;
 
     @Builder
-    public VideoGetResponse(Long id,String title, String description, String thumbnailImagePath,  boolean isUploaded) {
+    public VideoGetResponse(Long id, String title, String description, String thumbnailImagePath, boolean isUploaded) {
         this.id = id;
         this.title = title;
         this.description = description;
