@@ -1,10 +1,10 @@
 package com.vivid.apiserver.domain.video_space.api;
 
 import com.vivid.apiserver.domain.video_space.application.VideoSpaceService;
-import com.vivid.apiserver.domain.video_space.dto.HostedVideoSpaceGetResponse;
-import com.vivid.apiserver.domain.video_space.dto.VideoSpaceGetResponse;
-import com.vivid.apiserver.domain.video_space.dto.VideoSpaceSaveRequest;
-import com.vivid.apiserver.domain.video_space.dto.VideoSpaceSaveResponse;
+import com.vivid.apiserver.domain.video_space.dto.request.VideoSpaceSaveRequest;
+import com.vivid.apiserver.domain.video_space.dto.response.HostedVideoSpaceGetResponse;
+import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
+import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceSaveResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;

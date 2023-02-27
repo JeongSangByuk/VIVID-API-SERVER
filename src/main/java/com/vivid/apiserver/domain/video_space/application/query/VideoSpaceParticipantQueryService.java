@@ -1,4 +1,4 @@
-package com.vivid.apiserver.domain.video_space.application;
+package com.vivid.apiserver.domain.video_space.application.query;
 
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.video_space.dao.VideoSpaceParticipantRepository;
@@ -8,31 +8,32 @@ import com.vivid.apiserver.domain.video_space.exception.VideoSpaceParticipantNot
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
-public class VideoSpaceParticipantFindService {
-    
+public class VideoSpaceParticipantQueryService {
+
     private final VideoSpaceParticipantRepository videoSpaceParticipantRepository;
 
     public VideoSpaceParticipant findById(Long videoSpaceParticipantId) {
 
         // find video space by id
-        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantRepository.findById(videoSpaceParticipantId).orElseThrow(VideoSpaceParticipantNotFoundException::new);
+        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantRepository.findById(videoSpaceParticipantId)
+                .orElseThrow(VideoSpaceParticipantNotFoundException::new);
 
         return videoSpaceParticipant;
     }
 
     public VideoSpaceParticipant findByUserAndVideoSpace(User user, VideoSpace videoSpace) {
 
-        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantRepository.findByVideoSpaceAndUser(videoSpace, user)
+        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantRepository.findByVideoSpaceAndUser(
+                        videoSpace, user)
                 .orElseThrow(VideoSpaceParticipantNotFoundException::new);
 
         return videoSpaceParticipant;
     }
-    
+
 }

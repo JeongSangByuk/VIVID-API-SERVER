@@ -3,14 +3,14 @@ package com.vivid.apiserver.domain.individual_video.application;
 import com.vivid.apiserver.domain.individual_video.dao.IndividualVideoDao;
 import com.vivid.apiserver.domain.individual_video.dao.repository.IndividualVideoRepository;
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
-import com.vivid.apiserver.domain.individual_video.dto.IndividualVideoDetailsGetResponse;
-import com.vivid.apiserver.domain.individual_video.dto.IndividualVideoGetResponse;
-import com.vivid.apiserver.domain.individual_video.dto.IndividualVideosGetRequest;
-import com.vivid.apiserver.domain.individual_video.dto.SnapshotImageUploadResponse;
+import com.vivid.apiserver.domain.individual_video.dto.request.IndividualVideosGetRequest;
+import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoDetailsGetResponse;
+import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoGetResponse;
+import com.vivid.apiserver.domain.individual_video.dto.response.SnapshotImageUploadResponse;
 import com.vivid.apiserver.domain.individual_video.exception.IndividualVideoNotFoundException;
 import com.vivid.apiserver.domain.user.application.UserService;
 import com.vivid.apiserver.domain.video.domain.Video;
-import com.vivid.apiserver.domain.video_space.application.VideoSpaceParticipantFindService;
+import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceParticipantQueryService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import com.vivid.apiserver.global.infra.storage.AwsS3Service;
@@ -36,7 +36,7 @@ public class IndividualVideoService {
 
     private final IndividualVideoDao individualVideoDao;
 
-    private final VideoSpaceParticipantFindService videoSpaceParticipantFindService;
+    private final VideoSpaceParticipantQueryService videoSpaceParticipantQueryService;
 
     private final AwsS3Service awsS3Service;
 
@@ -176,7 +176,7 @@ public class IndividualVideoService {
         long videoSpaceParticipantId = individualVideosGetRequest.getVideoSpaceParticipantId();
 
         // 로그인 id와 videoSpaceParticipantId의 user id가 같은지 판단.
-        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantFindService.findById(
+        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantQueryService.findById(
                 videoSpaceParticipantId);
         userService.checkValidUserAccess(videoSpaceParticipant.getUser().getEmail());
 

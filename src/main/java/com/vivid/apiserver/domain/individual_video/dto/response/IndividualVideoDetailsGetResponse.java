@@ -1,13 +1,12 @@
-package com.vivid.apiserver.domain.individual_video.dto;
+package com.vivid.apiserver.domain.individual_video.dto.response;
 
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.video.domain.Video;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -26,7 +25,8 @@ public class IndividualVideoDetailsGetResponse {
 
 
     @Builder
-    public IndividualVideoDetailsGetResponse(IndividualVideo individualVideo, String videoFilePath, List<String> visualIndexImageFilePathList) {
+    public IndividualVideoDetailsGetResponse(IndividualVideo individualVideo, String videoFilePath,
+            List<String> visualIndexImageFilePathList) {
         Video video = individualVideo.getVideo();
         this.title = video.getTitle();
         this.description = video.getDescription();

@@ -1,10 +1,10 @@
 package com.vivid.apiserver.domain.individual_video.api;
 
 import com.vivid.apiserver.domain.individual_video.application.IndividualVideoService;
-import com.vivid.apiserver.domain.individual_video.dto.IndividualVideoDetailsGetResponse;
-import com.vivid.apiserver.domain.individual_video.dto.IndividualVideoGetResponse;
-import com.vivid.apiserver.domain.individual_video.dto.IndividualVideosGetRequest;
-import com.vivid.apiserver.domain.individual_video.dto.SnapshotImageUploadResponse;
+import com.vivid.apiserver.domain.individual_video.dto.request.IndividualVideosGetRequest;
+import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoDetailsGetResponse;
+import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoGetResponse;
+import com.vivid.apiserver.domain.individual_video.dto.response.SnapshotImageUploadResponse;
 import com.vivid.apiserver.global.infra.storage.AwsS3Service;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;

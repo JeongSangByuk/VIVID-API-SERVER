@@ -1,11 +1,10 @@
-package com.vivid.apiserver.domain.video_space.dto;
+package com.vivid.apiserver.domain.video_space.dto.request;
 
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
+import javax.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor

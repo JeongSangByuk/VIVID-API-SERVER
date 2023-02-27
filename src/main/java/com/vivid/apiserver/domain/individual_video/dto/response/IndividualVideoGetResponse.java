@@ -1,12 +1,11 @@
-package com.vivid.apiserver.domain.individual_video.dto;
+package com.vivid.apiserver.domain.individual_video.dto.response;
 
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @NoArgsConstructor

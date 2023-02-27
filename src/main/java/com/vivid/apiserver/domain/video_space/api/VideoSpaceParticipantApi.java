@@ -1,7 +1,7 @@
 package com.vivid.apiserver.domain.video_space.api;
 
 import com.vivid.apiserver.domain.video_space.application.VideoSpaceParticipantService;
-import com.vivid.apiserver.domain.video_space.dto.VideoSpaceParticipantSaveResponse;
+import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceParticipantSaveResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +28,7 @@ public class VideoSpaceParticipantApi {
             @PathVariable("user-email") String userEmail) {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS,
-                videoSpaceParticipantService.save(videoSpaceId, userEmail));
+                videoSpaceParticipantService.addParticipantToVideoSpace(videoSpaceId, userEmail));
     }
 
     // video space에 account를 추가한다. 즉, VideoSpaceParticipant save

@@ -1,12 +1,11 @@
-package com.vivid.apiserver.domain.video.dto;
+package com.vivid.apiserver.domain.video.dto.request;
 
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import io.swagger.v3.oas.annotations.media.Schema;
+import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor

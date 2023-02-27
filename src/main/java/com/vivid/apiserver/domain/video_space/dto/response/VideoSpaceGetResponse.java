@@ -1,14 +1,13 @@
-package com.vivid.apiserver.domain.video_space.dto;
+package com.vivid.apiserver.domain.video_space.dto.response;
 
-import com.vivid.apiserver.domain.video.dto.VideoGetResponse;
+import com.vivid.apiserver.domain.video.dto.request.VideoGetResponse;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

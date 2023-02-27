@@ -4,26 +4,27 @@ import com.vivid.apiserver.domain.user.application.UserService;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.dto.UserGetResponse;
 import com.vivid.apiserver.domain.video.domain.Video;
-import com.vivid.apiserver.domain.video.dto.HostedVideoGetResponse;
-import com.vivid.apiserver.domain.video.dto.VideoGetResponse;
+import com.vivid.apiserver.domain.video.dto.request.VideoGetResponse;
+import com.vivid.apiserver.domain.video.dto.response.HostedVideoGetResponse;
+import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceParticipantQueryService;
+import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceQueryService;
 import com.vivid.apiserver.domain.video_space.dao.VideoSpaceDao;
 import com.vivid.apiserver.domain.video_space.dao.VideoSpaceRepository;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
-import com.vivid.apiserver.domain.video_space.dto.HostedVideoSpaceGetResponse;
-import com.vivid.apiserver.domain.video_space.dto.VideoSpaceGetResponse;
-import com.vivid.apiserver.domain.video_space.dto.VideoSpaceSaveRequest;
-import com.vivid.apiserver.domain.video_space.dto.VideoSpaceSaveResponse;
+import com.vivid.apiserver.domain.video_space.dto.request.VideoSpaceSaveRequest;
+import com.vivid.apiserver.domain.video_space.dto.response.HostedVideoSpaceGetResponse;
+import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
+import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceSaveResponse;
 import com.vivid.apiserver.domain.video_space.exception.VideoSpaceAccessDeniedException;
 import com.vivid.apiserver.domain.video_space.exception.VideoSpaceHostedAccessRequiredException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -33,9 +34,9 @@ public class VideoSpaceService {
 
     private final VideoSpaceRepository videoSpaceRepository;
 
-    private final VideoSpaceFindService videoSpaceFindService;
+    private final VideoSpaceQueryService videoSpaceQueryService;
 
-    private final VideoSpaceParticipantFindService videoSpaceParticipantFindService;
+    private final VideoSpaceParticipantQueryService videoSpaceParticipantQueryService;
 
     private final VideoSpaceDao videoSpaceDao;
 
@@ -47,14 +48,16 @@ public class VideoSpaceService {
         User user = userService.getByAccessToken();
 
         // video space get
-        VideoSpace videoSpace = videoSpaceFindService.findById(videoSpaceId);
+        VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
         // 로그인 user가 video space particiapnt인지 판단
-        if (!videoSpaceFindService.containsUser(videoSpace, user.getEmail()))
+        if (!videoSpaceQueryService.containsUser(videoSpace, user.getEmail())) {
             throw new VideoSpaceAccessDeniedException();
+        }
 
         // find video participant by user and video space
-        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantFindService.findByUserAndVideoSpace(user, videoSpace);
+        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantQueryService.findByUserAndVideoSpace(user,
+                videoSpace);
 
         // videospace get response 생성.
         VideoSpaceGetResponse videoSpaceGetResponse = createVideoSpaceGetResponse(videoSpaceParticipant);
@@ -89,14 +92,16 @@ public class VideoSpaceService {
         String email = userService.getEmailFromAuthentication();
 
         // video space get
-        VideoSpace videoSpace = videoSpaceFindService.findById(videoSpaceId);
+        VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
         // host 권한 체크
-        if (!videoSpace.getHostEmail().equals(email))
+        if (!videoSpace.getHostEmail().equals(email)) {
             throw new VideoSpaceHostedAccessRequiredException();
+        }
 
         // response dto 생성
-        HostedVideoSpaceGetResponse hostedVideoSpaceGetResponse = HostedVideoSpaceGetResponse.builder().videoSpace(videoSpace).build();
+        HostedVideoSpaceGetResponse hostedVideoSpaceGetResponse = HostedVideoSpaceGetResponse.builder()
+                .videoSpace(videoSpace).build();
 
         // create video response dto
         videoSpace.getVideos().forEach(video -> {
@@ -134,13 +139,15 @@ public class VideoSpaceService {
         List<HostedVideoSpaceGetResponse> hostedVideoSpaceGetResponseList = new ArrayList<>();
 
         // size 0일 경우 exception
-        if (videoSpaces.size() == 0 || videoSpaces == null)
+        if (videoSpaces.size() == 0 || videoSpaces == null) {
             return hostedVideoSpaceGetResponseList;
+        }
 
         // video space마다 response dto 생성
         videoSpaces.forEach(videoSpace -> {
 
-            HostedVideoSpaceGetResponse hostedVideoSpaceGetResponse = HostedVideoSpaceGetResponse.builder().videoSpace(videoSpace).build();
+            HostedVideoSpaceGetResponse hostedVideoSpaceGetResponse = HostedVideoSpaceGetResponse.builder()
+                    .videoSpace(videoSpace).build();
 
             // create video response dto
             videoSpace.getVideos().forEach(video -> {
@@ -179,7 +186,8 @@ public class VideoSpaceService {
         VideoSpace savedVideoSpace = videoSpaceRepository.save(videoSpaceSaveRequest.toEntity(user.getEmail()));
 
         // 생성자가 포함된 video space participant create, 연관 관계 매핑에 의해 생성된다.
-        VideoSpaceParticipant videoSpaceParticipant = VideoSpaceParticipant.builder().videoSpace(savedVideoSpace).user(user).build();
+        VideoSpaceParticipant videoSpaceParticipant = VideoSpaceParticipant.builder().videoSpace(savedVideoSpace)
+                .user(user).build();
         savedVideoSpace.getVideoSpaceParticipants().add(videoSpaceParticipant);
 
         return VideoSpaceSaveResponse.builder().videoSpace(savedVideoSpace).build();
@@ -189,11 +197,12 @@ public class VideoSpaceService {
 
         User user = userService.getByAccessToken();
 
-        VideoSpace videoSpace = videoSpaceFindService.findById(videoSpaceId);
+        VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
         // 자신이 host인 경우만 삭제 가능, throw new
-        if (!videoSpace.getHostEmail().equals(user.getEmail()))
+        if (!videoSpace.getHostEmail().equals(user.getEmail())) {
             throw new VideoSpaceHostedAccessRequiredException();
+        }
 
         // 연관 관계 끊기.
         videoSpace.delete();
@@ -237,13 +246,15 @@ public class VideoSpaceService {
         videoSpaceParticipant.getIndividualVideos().forEach(individualVideo -> {
 
             // video key 없으면 return, 잘못된 데이터.
-            if (!videoSpaceGetResponseHashMap.containsKey(individualVideo.getVideo().getId()))
+            if (!videoSpaceGetResponseHashMap.containsKey(individualVideo.getVideo().getId())) {
                 return;
+            }
 
             VideoGetResponse videoGetResponse = videoSpaceGetResponseHashMap.get(individualVideo.getVideo().getId());
 
             // individual video data add
-            videoGetResponse.changeIndividualVideoState(individualVideo.getId().toString(), individualVideo.getLastAccessTime(), individualVideo.getProgressRate());
+            videoGetResponse.changeIndividualVideoState(individualVideo.getId().toString(),
+                    individualVideo.getLastAccessTime(), individualVideo.getProgressRate());
 
             videoSpaceGetResponse.addVideo(videoGetResponse);
         });

@@ -1,15 +1,14 @@
-package com.vivid.apiserver.domain.individual_video.dto;
+package com.vivid.apiserver.domain.individual_video.dto.request;
 
 import com.vivid.apiserver.domain.individual_video.domain.TextMemoState;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+import javax.validation.constraints.NotBlank;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -36,7 +35,7 @@ public class TextMemoStateRedisSaveRequest {
                 .id(UUID.randomUUID().toString())
                 .individualVideoId(UUID.fromString(individualVideoId))
                 .stateJson(stateJson)
-                .videoTime(LocalTime.parse(videoTime,DateTimeFormatter.ofPattern("HH:mm:ss")))
+                .videoTime(LocalTime.parse(videoTime, DateTimeFormatter.ofPattern("HH:mm:ss")))
                 .createdAt(LocalDateTime.now())
                 .build();
 

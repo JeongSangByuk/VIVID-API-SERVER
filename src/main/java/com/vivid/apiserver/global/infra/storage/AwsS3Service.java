@@ -1,17 +1,15 @@
 package com.vivid.apiserver.global.infra.storage;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.util.IOUtils;
-import com.vivid.apiserver.domain.video.dto.VideoSaveResponse;
+import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
 import com.vivid.apiserver.domain.video.exception.ImageUploadFailedException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +17,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -52,10 +55,11 @@ public class AwsS3Service {
         objectMetadata.setContentType(file.getContentType());
 
         // s3 upload
-        try(InputStream inputStream = file.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(rawVideoBucket, videoId.toString() + ".mp4", inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch(IOException e) {
+        try (InputStream inputStream = file.getInputStream()) {
+            amazonS3Client.putObject(
+                    new PutObjectRequest(rawVideoBucket, videoId.toString() + ".mp4", inputStream, objectMetadata)
+                            .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch (IOException e) {
             throw new ImageUploadFailedException();
         }
 
@@ -67,7 +71,7 @@ public class AwsS3Service {
 
         // url connection get
         URL url = new URL(fileUrl);
-        URLConnection connection =  url.openConnection();
+        URLConnection connection = url.openConnection();
 
         // download stream get
         InputStream is = connection.getInputStream();
@@ -77,15 +81,16 @@ public class AwsS3Service {
         metadata.setContentLength(bytes.length);
 
         // s3 upload
-        amazonS3Client.putObject(new PutObjectRequest(rawVideoBucket, videoId.toString() + ".mp4", byteArrayIs, metadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3Client.putObject(
+                new PutObjectRequest(rawVideoBucket, videoId.toString() + ".mp4", byteArrayIs, metadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
 
         return VideoSaveResponse.builder().id(videoId).build();
     }
 
 
     // 스냅샷 이미지를 s3에 업로드하는 메소드
-    public String uploadSnapshotImagesToS3(MultipartFile file, String individualVideoId, Long videoTime){
+    public String uploadSnapshotImagesToS3(MultipartFile file, String individualVideoId, Long videoTime) {
 
         // 디렉토리 이름은 individualVideoId, fileName은 캡처 시간대
         String snapshotImageKey = individualVideoId + '/' + videoTime;
@@ -96,10 +101,11 @@ public class AwsS3Service {
         objectMetadata.setContentType(file.getContentType());
 
         // s3 upload
-        try(InputStream inputStream = file.getInputStream()) {
-             amazonS3Client.putObject(new PutObjectRequest(imageSnapshotBucket, snapshotImageKey, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.Private));
-        } catch(IOException e) {
+        try (InputStream inputStream = file.getInputStream()) {
+            amazonS3Client.putObject(
+                    new PutObjectRequest(imageSnapshotBucket, snapshotImageKey, inputStream, objectMetadata)
+                            .withCannedAcl(CannedAccessControlList.Private));
+        } catch (IOException e) {
             throw new ImageUploadFailedException();
         }
 
@@ -141,9 +147,9 @@ public class AwsS3Service {
             for (S3ObjectSummary item : objectSummaries) {
 
                 // 디렉터리가 아니라면
-                if (!item.getKey().endsWith("/"))
-
+                if (!item.getKey().endsWith("/")) {
                     keys.add(amazonS3Client.getUrl(serviceVideoBucket, item.getKey()).toString());
+                }
             }
 
             objects = amazonS3Client.listNextBatchOfObjects(objects);

@@ -1,8 +1,8 @@
 package com.vivid.apiserver.domain.individual_video.api;
 
 import com.vivid.apiserver.domain.individual_video.application.TextMemoStateService;
-import com.vivid.apiserver.domain.individual_video.dto.TextMemoStateRedisSaveRequest;
-import com.vivid.apiserver.domain.individual_video.dto.TextMemoStateResponse;
+import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoStateRedisSaveRequest;
+import com.vivid.apiserver.domain.individual_video.dto.response.TextMemoStateResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;

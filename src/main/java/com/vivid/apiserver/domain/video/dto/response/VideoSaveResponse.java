@@ -1,4 +1,4 @@
-package com.vivid.apiserver.domain.video.dto;
+package com.vivid.apiserver.domain.video.dto.response;
 
 import lombok.AccessLevel;
 import lombok.Builder;

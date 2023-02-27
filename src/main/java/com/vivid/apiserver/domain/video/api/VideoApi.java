@@ -1,21 +1,26 @@
 package com.vivid.apiserver.domain.video.api;
 
 import com.vivid.apiserver.domain.video.application.VideoService;
-import com.vivid.apiserver.domain.video.dto.VideoSaveRequest;
-import com.vivid.apiserver.domain.video.dto.VideoSaveResponse;
+import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
+import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import java.io.IOException;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
-import java.io.IOException;
 
 
 @Slf4j
