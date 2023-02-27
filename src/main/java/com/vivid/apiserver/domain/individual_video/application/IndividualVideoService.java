@@ -1,28 +1,28 @@
 package com.vivid.apiserver.domain.individual_video.application;
 
-import com.vivid.apiserver.domain.user.application.UserService;
 import com.vivid.apiserver.domain.individual_video.dao.IndividualVideoDao;
 import com.vivid.apiserver.domain.individual_video.dao.repository.IndividualVideoRepository;
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.individual_video.dto.IndividualVideoDetailsGetResponse;
 import com.vivid.apiserver.domain.individual_video.dto.IndividualVideoGetResponse;
+import com.vivid.apiserver.domain.individual_video.dto.IndividualVideosGetRequest;
 import com.vivid.apiserver.domain.individual_video.dto.SnapshotImageUploadResponse;
 import com.vivid.apiserver.domain.individual_video.exception.IndividualVideoNotFoundException;
+import com.vivid.apiserver.domain.user.application.UserService;
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video_space.application.VideoSpaceParticipantFindService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import com.vivid.apiserver.global.infra.storage.AwsS3Service;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -115,7 +115,8 @@ public class IndividualVideoService {
 
 
     // image upload service
-    public SnapshotImageUploadResponse uploadSnapshotImage(MultipartFile file, String individualVideoId, Long videoTime) {
+    public SnapshotImageUploadResponse uploadSnapshotImage(MultipartFile file, String individualVideoId,
+            Long videoTime) {
 
         IndividualVideo individualVideo = findById(individualVideoId);
 
@@ -169,19 +170,25 @@ public class IndividualVideoService {
     }
 
     // 참가해있는 space의 individual video get
-    public List<IndividualVideoGetResponse> findAllByVideoParticipantId(Long videoSpaceParticipantId) {
+    public List<IndividualVideoGetResponse> findAllByVideoParticipantId(
+            IndividualVideosGetRequest individualVideosGetRequest) {
+
+        long videoSpaceParticipantId = individualVideosGetRequest.getVideoSpaceParticipantId();
 
         // 로그인 id와 videoSpaceParticipantId의 user id가 같은지 판단.
-        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantFindService.findById(videoSpaceParticipantId);
+        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantFindService.findById(
+                videoSpaceParticipantId);
         userService.checkValidUserAccess(videoSpaceParticipant.getUser().getEmail());
 
         // find all individual videos
-        List<IndividualVideo> individualVideos = individualVideoRepository.findAllByVideoSpaceParticipantId(videoSpaceParticipantId);
+        List<IndividualVideo> individualVideos = individualVideoRepository.findAllByVideoSpaceParticipantId(
+                videoSpaceParticipantId);
 
         List<IndividualVideoGetResponse> individualVideoGetResponses = new ArrayList<>();
 
-        if (individualVideos == null || individualVideos.isEmpty())
+        if (individualVideos == null || individualVideos.isEmpty()) {
             return individualVideoGetResponses;
+        }
 
         individualVideos.forEach(individualVideo -> {
             individualVideoGetResponses.add(IndividualVideoGetResponse.builder()

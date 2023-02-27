@@ -1,8 +1,19 @@
 package com.vivid.apiserver.domain.individual_video.domain;
 
-import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import com.vivid.apiserver.domain.video.domain.Video;
+import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import com.vivid.apiserver.global.common.BaseEntity;
+import java.time.LocalDateTime;
+import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,10 +21,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "individual_video")
@@ -25,7 +32,7 @@ public class IndividualVideo extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name="uuid2", strategy = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "individual_video_id", columnDefinition = "BINARY(16)")
     private UUID id;
 
@@ -62,10 +69,10 @@ public class IndividualVideo extends BaseEntity {
     }
 
     // 연관 관계 편의 메소드
-    public void changeVideo(Video video){
+    public void changeVideo(Video video) {
 
         // 기존의 비디오 관계가 있다면,
-        if(this.video != null){
+        if (this.video != null) {
             this.video.getIndividualVideos().remove(this);
         }
 
@@ -76,7 +83,7 @@ public class IndividualVideo extends BaseEntity {
     // 연관 관계 편의 메소드
     public void changeVideoSpaceParticipant(VideoSpaceParticipant videoSpaceParticipant) {
 
-        if(this.videoSpaceParticipant != null){
+        if (this.videoSpaceParticipant != null) {
             this.videoSpaceParticipant.getIndividualVideos().remove(this);
         }
 

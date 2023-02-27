@@ -4,7 +4,7 @@ package com.vivid.apiserver.global.error;
 import com.vivid.apiserver.domain.user.exception.RefreshTokenExpiredException;
 import com.vivid.apiserver.domain.user.exception.RefreshTokenNotFoundException;
 import com.vivid.apiserver.global.error.exception.BusinessException;
-import com.vivid.apiserver.global.error.exception.EntityNotFoundException;
+import com.vivid.apiserver.global.error.exception.NotFoundException;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,8 +24,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    protected ResponseEntity<ErrorResponse> handleEntityNotFoundException(final EntityNotFoundException exception) {
+    @ExceptionHandler(NotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handleEntityNotFoundException(final NotFoundException exception) {
         log.error("handleEntityNotFoundException", exception);
         final ErrorCode errorCode = exception.getErrorCode();
         final ErrorResponse response = ErrorResponse.from(exception.getErrorCode());

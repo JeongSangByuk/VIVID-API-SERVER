@@ -1,8 +1,8 @@
 package com.vivid.apiserver.domain.individual_video.exception;
 
-import com.vivid.apiserver.global.error.exception.EntityNotFoundException;
+import com.vivid.apiserver.global.error.exception.NotFoundException;
 
-public class IndividualVideoNotFoundException extends EntityNotFoundException {
+public class IndividualVideoNotFoundException extends NotFoundException {
 
     public IndividualVideoNotFoundException() {
         super("video is not found");

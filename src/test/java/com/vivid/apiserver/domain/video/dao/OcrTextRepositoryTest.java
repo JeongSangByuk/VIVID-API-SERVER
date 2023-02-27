@@ -1,6 +1,5 @@
 package com.vivid.apiserver.domain.video.dao;
 
-import com.vivid.apiserver.domain.video.domain.OcrText;
 import com.vivid.apiserver.domain.video.domain.OcrTextBuilder;
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video.domain.VideoBuilder;

@@ -52,7 +52,7 @@ public enum ErrorCode {
 
     private final String code;
     private final String message;
-    private int status;
+    private final int status;
 
     ErrorCode(String code, String message, int status) {
         this.code = code;
