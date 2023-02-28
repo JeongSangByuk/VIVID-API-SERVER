@@ -1,4 +1,4 @@
-package com.vivid.apiserver.domain.video.dto.request;
+package com.vivid.apiserver.domain.video.dto.response;
 
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.video.domain.Video;
@@ -31,7 +31,7 @@ public class VideoGetResponse {
 
     private boolean isUploaded;
 
-    public static VideoGetResponse from(Video video, IndividualVideo individualVideo) {
+    public static VideoGetResponse of(Video video, IndividualVideo individualVideo) {
         return VideoGetResponse.builder()
                 .id(video.getId())
                 .title(video.getTitle())

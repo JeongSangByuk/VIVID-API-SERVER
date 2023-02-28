@@ -5,6 +5,7 @@ import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import com.vivid.apiserver.global.error.exception.NotFoundException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,10 @@ public class VideoSpaceQueryService {
                 .orElseThrow(() -> {
                     throw new NotFoundException(ErrorCode.VIDEO_SPACE_NOT_FOUND);
                 });
+    }
+
+    public List<VideoSpace> findListByHostedEmail(String email) {
+        return videoSpaceRepository.findAllByHostEmail(email);
     }
 
     public boolean isContainedUser(VideoSpace videoSpace, String email) {

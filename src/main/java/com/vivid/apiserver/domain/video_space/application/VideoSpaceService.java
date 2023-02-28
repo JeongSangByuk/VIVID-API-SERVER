@@ -13,7 +13,6 @@ import com.vivid.apiserver.domain.video_space.dto.response.HostedVideoSpaceGetRe
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceSaveResponse;
 import com.vivid.apiserver.domain.video_space.exception.VideoSpaceHostedAccessRequiredException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -64,90 +63,41 @@ public class VideoSpaceService {
                 .collect(Collectors.toList());
     }
 
-    // 자신이 생성한(host인) video space 하나를 get합니다.
+    /*
+     * 특정 video video space의 host 정보 get 메소드
+     */
     public HostedVideoSpaceGetResponse getHostedOne(Long videoSpaceId) {
 
         User currentUser = currentUserService.getCurrentMember();
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
-        // host 권한 체크
-        if (!videoSpace.getHostEmail().equals(email)) {
-            throw new VideoSpaceHostedAccessRequiredException();
-        }
+        videoSpaceValidationService.checkHostUserAccess(videoSpace, currentUser.getEmail());
 
-        // response dto 생성
-        HostedVideoSpaceGetResponse hostedVideoSpaceGetResponse = HostedVideoSpaceGetResponse.builder()
-                .videoSpace(videoSpace).build();
+        List<HostedVideoGetResponse> hostedVideoGetResponses = videoSpace.getVideos().stream()
+                .map(HostedVideoGetResponse::from)
+                .collect(Collectors.toList());
 
-        // create video response dto
-        videoSpace.getVideos().forEach(video -> {
-            hostedVideoSpaceGetResponse.addVideoGetResponse(HostedVideoGetResponse.builder()
-                    .id(video.getId())
-                    .title(video.getTitle())
-                    .description(video.getDescription())
-                    .isUploaded(video.isUploaded())
-                    .thumbnailImagePath(video.getThumbnailImagePath()).build());
+        List<UserGetResponse> userGetResponses = videoSpace.getVideoSpaceParticipants().stream()
+                .map(videoSpaceParticipant -> UserGetResponse.from(videoSpaceParticipant.getUser()))
+                .collect(Collectors.toList());
 
-        });
-
-        // create user response dto
-        videoSpace.getVideoSpaceParticipants().forEach(videoSpaceParticipant -> {
-            User user = videoSpaceParticipant.getUser();
-            hostedVideoSpaceGetResponse.addUserGetResponse(UserGetResponse.builder()
-                    .email(user.getEmail())
-                    .name(user.getName())
-                    .picture(user.getPicture())
-                    .build());
-        });
-
-        return hostedVideoSpaceGetResponse;
+        return HostedVideoSpaceGetResponse.builder()
+                .videoSpace(videoSpace)
+                .videos(hostedVideoGetResponses)
+                .users(userGetResponses).build();
     }
 
-    // 자신이 생성한(host인) video space list를 get합니다.
+    /**
+     * 자신이 생생한(host인) video space list를 get합니다.
+     */
     public List<HostedVideoSpaceGetResponse> getHostedList() {
 
         User currentUser = currentUserService.getCurrentMember();
+        List<VideoSpace> videoSpaces = videoSpaceQueryService.findListByHostedEmail(currentUser.getEmail());
 
-        // find by host email
-        List<VideoSpace> videoSpaces = videoSpaceRepository.findAllByHostEmail(email);
-
-        List<HostedVideoSpaceGetResponse> hostedVideoSpaceGetResponseList = new ArrayList<>();
-
-        // size 0일 경우 exception
-        if (videoSpaces.size() == 0 || videoSpaces == null) {
-            return hostedVideoSpaceGetResponseList;
-        }
-
-        // video space마다 response dto 생성
-        videoSpaces.forEach(videoSpace -> {
-
-            HostedVideoSpaceGetResponse hostedVideoSpaceGetResponse = HostedVideoSpaceGetResponse.builder()
-                    .videoSpace(videoSpace).build();
-
-            // create video response dto
-            videoSpace.getVideos().forEach(video -> {
-                hostedVideoSpaceGetResponse.addVideoGetResponse(HostedVideoGetResponse.builder()
-                        .id(video.getId())
-                        .title(video.getTitle())
-                        .description(video.getDescription())
-                        .isUploaded(video.isUploaded())
-                        .thumbnailImagePath(video.getThumbnailImagePath()).build());
-            });
-
-            // create user response dto
-            videoSpace.getVideoSpaceParticipants().forEach(videoSpaceParticipant -> {
-                User user = videoSpaceParticipant.getUser();
-                hostedVideoSpaceGetResponse.addUserGetResponse(UserGetResponse.builder()
-                        .email(user.getEmail())
-                        .name(user.getName())
-                        .picture(user.getPicture())
-                        .build());
-            });
-
-            hostedVideoSpaceGetResponseList.add(hostedVideoSpaceGetResponse);
-        });
-
-        return hostedVideoSpaceGetResponseList;
+        return videoSpaces.stream()
+                .map(videoSpace -> getHostedOne(videoSpace.getId()))
+                .collect(Collectors.toList());
     }
 
 
