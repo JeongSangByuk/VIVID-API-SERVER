@@ -53,7 +53,7 @@ public class IndividualVideo extends BaseEntity {
     @Column(name = "last_access_time")
     private LocalDateTime lastAccessTime;
 
-    public static IndividualVideo newInstance(Video video, VideoSpaceParticipant videoSpaceParticipant) {
+    public static IndividualVideo of(Video video, VideoSpaceParticipant videoSpaceParticipant) {
 
         return IndividualVideo.builder()
                 .video(video)

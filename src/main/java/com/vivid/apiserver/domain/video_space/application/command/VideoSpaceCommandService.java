@@ -1,6 +1,5 @@
 package com.vivid.apiserver.domain.video_space.application.command;
 
-import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.video_space.dao.VideoSpaceRepository;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +13,11 @@ public class VideoSpaceCommandService {
 
     private final VideoSpaceRepository videoSpaceRepository;
 
-    public VideoSpace save(User user) {
-
-        return VideoSpace.newInstance(user);
+    public VideoSpace save(VideoSpace videoSpace) {
+        return videoSpaceRepository.save(videoSpace);
     }
 
+    public void delete(VideoSpace videoSpace) {
+        videoSpaceRepository.delete(videoSpace);
+    }
 }

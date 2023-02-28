@@ -17,11 +17,15 @@ public class VideoSpaceParticipantCommandService {
 
     public VideoSpaceParticipant save(VideoSpace videoSpace, User user) {
 
-        VideoSpaceParticipant videoSpaceParticipant = VideoSpaceParticipant.newInstance(videoSpace, user);
+        VideoSpaceParticipant videoSpaceParticipant = VideoSpaceParticipant.of(videoSpace, user);
 
         videoSpaceParticipantRepository.save(videoSpaceParticipant);
 
         return videoSpaceParticipant;
+    }
+
+    public void deleteAllByVideoSpace(VideoSpace videoSpace) {
+        videoSpaceParticipantRepository.deleteAllByVideoSpace(videoSpace);
     }
 
 

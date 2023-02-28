@@ -5,7 +5,6 @@ import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoD
 import com.vivid.apiserver.domain.user.application.UserService;
 import com.vivid.apiserver.domain.user.exception.UserAccessDeniedException;
 import com.vivid.apiserver.domain.video.dao.VideoDao;
-import com.vivid.apiserver.domain.video.dao.VideoRepository;
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
 import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
@@ -28,8 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class VideoService {
 
     private final VideoDao videoDao;
-
-    private final VideoRepository videoRepository;
 
     private final VideoSpaceQueryService videoSpaceQueryService;
 

@@ -22,7 +22,7 @@ public class IndividualVideoCommandService {
     public List<IndividualVideo> saveAll(List<Video> videos, VideoSpaceParticipant videoSpaceParticipant) {
 
         List<IndividualVideo> individualVideos = videos.stream()
-                .map(video -> IndividualVideo.newInstance(video, videoSpaceParticipant))
+                .map(video -> IndividualVideo.of(video, videoSpaceParticipant))
                 .collect(Collectors.toList());
 
         individualVideoRepository.saveAll(individualVideos);
@@ -34,4 +34,8 @@ public class IndividualVideoCommandService {
         individualVideoRepository.deleteAllByVideoSpaceParticipant(videoSpaceParticipant);
     }
 
+    public void deleteAll(List<IndividualVideo> individualVideos) {
+        individualVideoRepository.deleteAll(individualVideos);
+
+    }
 }

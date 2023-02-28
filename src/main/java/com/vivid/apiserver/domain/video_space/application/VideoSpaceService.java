@@ -1,9 +1,14 @@
 package com.vivid.apiserver.domain.video_space.application;
 
+import com.vivid.apiserver.domain.individual_video.application.command.IndividualVideoCommandService;
+import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.user.application.CurrentUserService;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.dto.UserGetResponse;
+import com.vivid.apiserver.domain.video.application.command.VideoCommandService;
 import com.vivid.apiserver.domain.video.dto.response.HostedVideoGetResponse;
+import com.vivid.apiserver.domain.video_space.application.command.VideoSpaceCommandService;
+import com.vivid.apiserver.domain.video_space.application.command.VideoSpaceParticipantCommandService;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceParticipantQueryService;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceQueryService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
@@ -12,16 +17,13 @@ import com.vivid.apiserver.domain.video_space.dto.request.VideoSpaceSaveRequest;
 import com.vivid.apiserver.domain.video_space.dto.response.HostedVideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceSaveResponse;
-import com.vivid.apiserver.domain.video_space.exception.VideoSpaceHostedAccessRequiredException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class VideoSpaceService {
@@ -29,7 +31,13 @@ public class VideoSpaceService {
     private final VideoSpaceQueryService videoSpaceQueryService;
     private final VideoSpaceParticipantQueryService videoSpaceParticipantQueryService;
 
+    private final IndividualVideoCommandService individualVideoCommandService;
+    private final VideoCommandService videoCommandService;
+    private final VideoSpaceCommandService videoSpaceCommandService;
+    private final VideoSpaceParticipantCommandService videoSpaceParticipantCommandService;
+
     private final CurrentUserService currentUserService;
+    private final VideoSpaceCreateService videoSpaceCreateService;
     private final VideoSpaceValidationService videoSpaceValidationService;
 
 
@@ -63,7 +71,7 @@ public class VideoSpaceService {
                 .collect(Collectors.toList());
     }
 
-    /*
+    /**
      * 특정 video video space의 host 정보 get 메소드
      */
     public HostedVideoSpaceGetResponse getHostedOne(Long videoSpaceId) {
@@ -100,38 +108,43 @@ public class VideoSpaceService {
                 .collect(Collectors.toList());
     }
 
-
-    // video space save, 생성시 생성자에 대해서 participant 자동 생성
+    /**
+     * video space 생성 메소드
+     */
     public VideoSpaceSaveResponse save(VideoSpaceSaveRequest videoSpaceSaveRequest) {
 
         User currentUser = currentUserService.getCurrentMember();
+        VideoSpace videoSpace = videoSpaceSaveRequest.toEntity(currentUser.getEmail());
 
-        // video space 생성
-        VideoSpace savedVideoSpace = videoSpaceRepository.save(videoSpaceSaveRequest.toEntity(user.getEmail()));
+        videoSpaceCreateService.createInitialVideoSpace(currentUser, videoSpace);
 
-        // 생성자가 포함된 video space participant create, 연관 관계 매핑에 의해 생성된다.
-        VideoSpaceParticipant videoSpaceParticipant = VideoSpaceParticipant.builder().videoSpace(savedVideoSpace)
-                .user(user).build();
-        savedVideoSpace.getVideoSpaceParticipants().add(videoSpaceParticipant);
-
-        return VideoSpaceSaveResponse.builder().videoSpace(savedVideoSpace).build();
+        return VideoSpaceSaveResponse.from(videoSpace);
     }
 
     public void delete(Long videoSpaceId) {
 
-        User user = userService.getByAccessToken();
-
+        User currentUser = currentUserService.getCurrentMember();
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
-        // 자신이 host인 경우만 삭제 가능, throw new
-        if (!videoSpace.getHostEmail().equals(user.getEmail())) {
-            throw new VideoSpaceHostedAccessRequiredException();
-        }
+        videoSpaceValidationService.checkHostUserAccess(videoSpace, currentUser.getEmail());
 
-        // 연관 관계 끊기.
-        videoSpace.delete();
+        List<IndividualVideo> individualVideos = findAllIndividualVideos(videoSpace);
 
-        // space delete
-        videoSpaceRepository.deleteById(videoSpaceId);
+        deleteAll(videoSpace, individualVideos);
+    }
+
+    private List<IndividualVideo> findAllIndividualVideos(VideoSpace videoSpace) {
+        return videoSpace.getVideoSpaceParticipants().stream()
+                .map(VideoSpaceParticipant::getIndividualVideos)
+                .flatMap(List::stream)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private void deleteAll(VideoSpace videoSpace, List<IndividualVideo> individualVideos) {
+        individualVideoCommandService.deleteAll(individualVideos);
+        videoSpaceParticipantCommandService.deleteAllByVideoSpace(videoSpace);
+        videoCommandService.deleteAllByVideoSpace(videoSpace);
+        videoSpaceCommandService.delete(videoSpace);
     }
 }

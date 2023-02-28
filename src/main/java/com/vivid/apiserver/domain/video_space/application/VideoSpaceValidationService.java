@@ -32,7 +32,7 @@ public class VideoSpaceValidationService {
      * video space의 host가 삭제하려는지 validation
      */
     public void checkVideoSpaceHostDelete(VideoSpace videoSpace, String email) {
-        if (email.equals(videoSpace.getHostEmail())) {
+        if (videoSpace.getHostEmail().equals(email)) {
             throw new AccessDeniedException(ErrorCode.VIDEO_SPACE_HOST_DELETE_NOT_ALLOWED);
         }
     }
