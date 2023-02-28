@@ -1,13 +1,18 @@
 package com.vivid.apiserver.domain.video.dto.request;
 
+import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
+import com.vivid.apiserver.domain.video.domain.Video;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PRIVATE)
 public class VideoGetResponse {
 
     private Long id;
@@ -26,18 +31,16 @@ public class VideoGetResponse {
 
     private boolean isUploaded;
 
-    @Builder
-    public VideoGetResponse(Long id, String title, String description, String thumbnailImagePath, boolean isUploaded) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.thumbnailImagePath = thumbnailImagePath;
-        this.isUploaded = isUploaded;
-    }
-
-    public void changeIndividualVideoState(String individualVideoId, LocalDateTime lastAccessTime, Long progressRate) {
-        this.individualVideoId = individualVideoId;
-        this.lastAccessTime = lastAccessTime;
-        this.progressRate = progressRate;
+    public static VideoGetResponse from(Video video, IndividualVideo individualVideo) {
+        return VideoGetResponse.builder()
+                .id(video.getId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .thumbnailImagePath(video.getThumbnailImagePath())
+                .isUploaded(video.isUploaded())
+                .individualVideoId(individualVideo.getId().toString())
+                .progressRate(individualVideo.getProgressRate())
+                .lastAccessTime(individualVideo.getLastAccessTime())
+                .build();
     }
 }

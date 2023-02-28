@@ -24,7 +24,7 @@ public class VideoSpaceQueryService {
                 });
     }
 
-    public boolean containsUser(VideoSpace videoSpace, String email) {
+    public boolean isContainedUser(VideoSpace videoSpace, String email) {
 
         // 로그인 user가 video space particiapnt인지 판단
         for (VideoSpaceParticipant videoSpaceParticipant : videoSpace.getVideoSpaceParticipants()) {

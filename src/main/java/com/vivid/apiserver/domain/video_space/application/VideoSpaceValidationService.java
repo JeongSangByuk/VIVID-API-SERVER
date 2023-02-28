@@ -1,5 +1,6 @@
 package com.vivid.apiserver.domain.video_space.application;
 
+import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceQueryService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
@@ -18,27 +19,43 @@ public class VideoSpaceValidationService {
 
     private final VideoSpaceQueryService videoSpaceQueryService;
 
+    /**
+     * video space의 host인지 validation
+     */
     public void checkHostUserAccess(VideoSpace videoSpace, String email) {
-
         if (!videoSpace.getHostEmail().equals(email)) {
             throw new AccessDeniedException(ErrorCode.VIDEO_SPACE_HOST_ACCESS_REQUIRED);
         }
     }
 
-    public void checkDuplicatedParticipant(String targetEmail, List<VideoSpaceParticipant> videoSpaceParticipants) {
-
-        videoSpaceParticipants.forEach(videoSpaceParticipant -> {
-            if (videoSpaceParticipant.getEmail().equals(targetEmail)) {
-                throw new InvalidValueException(ErrorCode.VIDEO_SPACE_USER_DUPLICATION);
-            }
-        });
-    }
-
+    /**
+     * video space의 host가 삭제하려는지 validation
+     */
     public void checkVideoSpaceHostDelete(VideoSpace videoSpace, String email) {
         if (email.equals(videoSpace.getHostEmail())) {
             throw new AccessDeniedException(ErrorCode.VIDEO_SPACE_HOST_DELETE_NOT_ALLOWED);
         }
     }
 
+    /**
+     * video space의 user가 participant인지 validation
+     */
+    public void checkVideoSpaceParticipant(VideoSpace videoSpace, User user) {
+        if (!videoSpaceQueryService.isContainedUser(videoSpace, user.getEmail())) {
+            throw new AccessDeniedException(ErrorCode.VIDEO_SPACE_ACCESS_DENIED);
+        }
+    }
+
+    /**
+     * video space의 user가 중복된 participant인지 validation
+     */
+    public void checkDuplicatedParticipant(String email, List<VideoSpaceParticipant> videoSpaceParticipants) {
+
+        videoSpaceParticipants.forEach(videoSpaceParticipant -> {
+            if (videoSpaceParticipant.getEmail().equals(email)) {
+                throw new InvalidValueException(ErrorCode.VIDEO_SPACE_USER_DUPLICATION);
+            }
+        });
+    }
 
 }
