@@ -1,11 +1,15 @@
 package com.vivid.apiserver.domain.video.dto.response;
 
+import com.vivid.apiserver.domain.video.domain.Video;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HostedVideoGetResponse {
 
@@ -19,13 +23,13 @@ public class HostedVideoGetResponse {
 
     private boolean isUploaded;
 
-    @Builder
-    public HostedVideoGetResponse(Long id, String title, String description, String thumbnailImagePath,
-            boolean isUploaded) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.thumbnailImagePath = thumbnailImagePath;
-        this.isUploaded = isUploaded;
+    public static HostedVideoGetResponse from(Video video) {
+        return HostedVideoGetResponse.builder()
+                .id(video.getId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .isUploaded(video.isUploaded())
+                .thumbnailImagePath(video.getThumbnailImagePath())
+                .build();
     }
 }

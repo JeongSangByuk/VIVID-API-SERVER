@@ -3,7 +3,7 @@ package com.vivid.apiserver.domain.user.application;
 import com.vivid.apiserver.domain.individual_video.dto.dto.DashboardIndividualVideoDto;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.dto.UserMyPageDashboardDataGetResponse;
-import com.vivid.apiserver.domain.video.dto.request.VideoGetResponse;
+import com.vivid.apiserver.domain.video.dto.response.VideoGetResponse;
 import com.vivid.apiserver.domain.video_space.application.VideoSpaceService;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
 import java.util.ArrayList;

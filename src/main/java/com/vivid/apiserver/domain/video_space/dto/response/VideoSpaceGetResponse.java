@@ -1,7 +1,7 @@
 package com.vivid.apiserver.domain.video_space.dto.response;
 
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
-import com.vivid.apiserver.domain.video.dto.request.VideoGetResponse;
+import com.vivid.apiserver.domain.video.dto.response.VideoGetResponse;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class VideoSpaceGetResponse {
 
         List<VideoGetResponse> videoGetResponses = videoSpace.getVideos().stream()
                 .filter(video -> individualVideoMap.containsKey(video.getId()))
-                .map(video -> VideoGetResponse.from(video, individualVideoMap.get(video.getId())))
+                .map(video -> VideoGetResponse.of(video, individualVideoMap.get(video.getId())))
                 .collect(Collectors.toList());
 
         return VideoSpaceGetResponse.builder()

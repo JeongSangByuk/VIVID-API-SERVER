@@ -1,11 +1,16 @@
 package com.vivid.apiserver.domain.user.dto;
 
+import com.vivid.apiserver.domain.user.domain.User;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
 public class UserGetResponse {
 
     private String email;
@@ -14,11 +19,11 @@ public class UserGetResponse {
 
     private String picture;
 
-    @Builder
-    public UserGetResponse(String email, String name, String picture) {
-        this.email = email;
-        this.name = name;
-        this.picture = picture;
+    public static UserGetResponse from(User user) {
+        return UserGetResponse.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .picture(user.getPicture())
+                .build();
     }
-
 }

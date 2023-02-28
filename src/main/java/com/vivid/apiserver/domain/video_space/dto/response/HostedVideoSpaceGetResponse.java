@@ -25,19 +25,13 @@ public class HostedVideoSpaceGetResponse {
     private List<UserGetResponse> users = new ArrayList<>();
 
     @Builder
-    public HostedVideoSpaceGetResponse(VideoSpace videoSpace) {
+    public HostedVideoSpaceGetResponse(VideoSpace videoSpace, List<HostedVideoGetResponse> videos,
+            List<UserGetResponse> users) {
 
         this.id = videoSpace.getId();
         this.name = videoSpace.getName();
         this.description = videoSpace.getDescription();
+        this.videos = videos;
+        this.users = users;
     }
-
-    public void addVideoGetResponse(HostedVideoGetResponse hostedVideoGetResponse) {
-        this.videos.add(hostedVideoGetResponse);
-    }
-
-    public void addUserGetResponse(UserGetResponse userGetResponse) {
-        this.users.add(userGetResponse);
-    }
-
 }
