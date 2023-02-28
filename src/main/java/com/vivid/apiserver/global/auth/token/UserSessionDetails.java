@@ -1,15 +1,14 @@
-package com.vivid.apiserver.domain.user.domain;
-
-import lombok.Builder;
+package com.vivid.apiserver.global.auth.token;
 
 import java.io.Serializable;
+import lombok.Builder;
 
 public class UserSessionDetails implements Serializable {
 
     private String email;
 
     @Builder
-    public UserSessionDetails(String email, String name,String picture) {
+    public UserSessionDetails(String email) {
         this.email = email;
     }
 

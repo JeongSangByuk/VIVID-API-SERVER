@@ -1,19 +1,25 @@
 package com.vivid.apiserver.domain.user.dto;
 
 import com.vivid.apiserver.domain.user.domain.User;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PRIVATE)
 public class UserSignUpResponse {
 
     private String email;
     private String name;
 
-
-    @Builder
-    public UserSignUpResponse(User user){
-        this.email = user.getEmail();
-        this.name = user.getName();
+    public static UserSignUpResponse from(User user) {
+        return UserSignUpResponse.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .build();
     }
 }

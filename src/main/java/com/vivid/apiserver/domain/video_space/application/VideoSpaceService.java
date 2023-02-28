@@ -16,7 +16,6 @@ import com.vivid.apiserver.domain.video_space.dto.request.VideoSpaceSaveRequest;
 import com.vivid.apiserver.domain.video_space.dto.response.HostedVideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceSaveResponse;
-import com.vivid.apiserver.domain.video_space.exception.VideoSpaceAccessDeniedException;
 import com.vivid.apiserver.domain.video_space.exception.VideoSpaceHostedAccessRequiredException;
 import java.util.ArrayList;
 import java.util.HashMap;

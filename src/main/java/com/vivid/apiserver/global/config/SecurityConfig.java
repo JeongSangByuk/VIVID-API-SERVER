@@ -3,9 +3,10 @@ package com.vivid.apiserver.global.config;
 import com.vivid.apiserver.domain.user.domain.Role;
 import com.vivid.apiserver.global.auth.JwtAuthExceptionFilter;
 import com.vivid.apiserver.global.auth.JwtAuthFilter;
-import com.vivid.apiserver.global.auth.application.JwtProviderService;
-import com.vivid.apiserver.global.auth.application.OAuthSuccessHandler;
 import com.vivid.apiserver.global.auth.RestAuthenticationEntryPoint;
+import com.vivid.apiserver.global.auth.application.OAuthSuccessHandler;
+import com.vivid.apiserver.global.auth.application.TokenProvider;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +23,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -33,7 +32,7 @@ public class SecurityConfig {
 
     private final OAuthSuccessHandler oAuthSuccessHandler;
 
-    private final JwtProviderService jwtProviderService;
+    private final TokenProvider tokenProvider;
 
 
     @Bean
@@ -41,8 +40,8 @@ public class SecurityConfig {
 
         // filter 안타게끔
         return (web) -> web.ignoring().mvcMatchers(
-                "/api/auth/token/**", "/swagger-ui/**","/api/test/**"
-                , "/v3/api-docs/**","/login/oauth2/code", "/api/login/webex",
+                "/api/auth/token/**", "/swagger-ui/**", "/api/test/**"
+                , "/v3/api-docs/**", "/login/oauth2/code", "/api/login/webex",
                 "/api/videos/{video_id}/uploaded"
         );
     }
@@ -50,7 +49,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration cors = new CorsConfiguration();
-        cors.setAllowedOrigins(List.of("https://edu-vivid.com","https://dev.edu-vivid.com","http://localhost:8081"));
+        cors.setAllowedOrigins(List.of("https://edu-vivid.com", "https://dev.edu-vivid.com", "http://localhost:8081"));
         cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         cors.setAllowedHeaders(List.of("*"));
         cors.setAllowCredentials(true);
@@ -94,7 +93,7 @@ public class SecurityConfig {
                 .authorizationEndpoint().baseUri("/login"); // 소셜 로그인 url
 
         http
-                .addFilterBefore(new JwtAuthFilter(jwtProviderService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtAuthExceptionFilter(), JwtAuthFilter.class);
 
         return http.build();

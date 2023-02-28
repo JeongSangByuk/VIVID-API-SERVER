@@ -1,11 +1,19 @@
 package com.vivid.apiserver.global.auth.application;
 
-import com.vivid.apiserver.domain.user.application.UserAccessTokenCookieService;
-import com.vivid.apiserver.domain.user.application.UserLoginService;
-import com.vivid.apiserver.domain.user.application.UserService;
+import com.vivid.apiserver.domain.auth.application.command.RefreshTokenCommandService;
+import com.vivid.apiserver.domain.user.application.UserSignUpService;
+import com.vivid.apiserver.domain.user.application.query.UserQueryService;
 import com.vivid.apiserver.domain.user.domain.Role;
-import com.vivid.apiserver.domain.user.domain.UserAuthToken;
 import com.vivid.apiserver.domain.user.dto.UserLoginRequest;
+import com.vivid.apiserver.global.auth.token.AuthToken;
+import com.vivid.apiserver.global.auth.util.CookieUtil;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,79 +23,54 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.Map;
-
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final JwtProviderService jwtProviderService;
+    private final TokenProvider tokenProvider;
+    private final RefreshTokenCommandService refreshTokenCommandService;
 
-    private final UserService userService;
-
-    private final UserLoginService userLoginService;
-
-    private final UserAccessTokenCookieService userAccessTokenCookieService;
+    private final UserQueryService userQueryService;
+    private final UserSignUpService userSignUpService;
 
     @Value("${root-url}")
     private String rootUrl;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+            Authentication authentication) throws IOException, ServletException {
 
-        OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        UserLoginRequest userLoginRequest = UserLoginRequest.of(oAuth2User.getAttributes());
+        String email = userLoginRequest.getEmail();
 
-        Map<String, Object> attributes = oAuth2User.getAttributes();
+        signUpIfNotUser(userLoginRequest);
 
-        UserLoginRequest userLoginRequest = UserLoginRequest.builder()
-                .email((String) attributes.get("email"))
-                .name((String) attributes.get("name"))
-                .picture((String) attributes.get("picture"))
-                .build();
+        AuthToken accessToken = tokenProvider.generateToken(email, Role.USER.name(), true);
+        AuthToken refreshToken = tokenProvider.generateToken(email, Role.USER.name(), false);
+        CookieUtil.addAccessTokenCookie(response, accessToken.getToken());
+        refreshTokenCommandService.save(email, refreshToken.getToken());
 
-        // 최초 로그인이라면 회원가입 처리.
-        if (!userService.existsByEmail(userLoginRequest.getEmail())) {
-            userService.signUp(userLoginRequest);
-        }
-
-        UserAuthToken userAuthToken = jwtProviderService.generateToken(userLoginRequest.getEmail(), Role.USER.name());
-
-        // then, token 발급 후 -> access token, refresh token
-        //writeTokenResponse(response, userAuthToken);'
-
-        String targetUrl = UriComponentsBuilder.fromUriString(rootUrl)
-                .queryParam("token", userAuthToken.getAccessToken())
-                .queryParam("name", URLEncoder.encode(userLoginRequest.getName(),"UTF-8"))
-                .queryParam("picture", userLoginRequest.getPicture())
-                .build().toUriString();
-
-        // redis - refresh token save
-        userLoginService.saveRefreshToken(userLoginRequest.getEmail(), userAuthToken.getRefreshToken());
-
-        // access token save in cookie
-        userAccessTokenCookieService.saveAccessTokenCookie(userAuthToken.getAccessToken());
-
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        getRedirectStrategy().sendRedirect(request, response, createTargetUrl(userLoginRequest, accessToken));
     }
 
-//    private void writeTokenResponse(HttpServletResponse response, UserAuthToken userAuthToken) throws IOException {
-//
-//        response.setContentType("text/html;charset=UTF-8");
-//
-//        response.addHeader("Auth", userAuthToken.getToken());
-//        //response.addHeader("Refresh", userAuthToken.getRefreshToken());
-//        response.setContentType("application/json;charset=UTF-8");
-//
-//        PrintWriter writer = response.getWriter();
-//        writer.println(objectMapper.writeValueAsString(userAuthToken));
-//        writer.flush();
-//    }
+    private String createTargetUrl(UserLoginRequest userLoginRequest, AuthToken authToken)
+            throws UnsupportedEncodingException {
+        return UriComponentsBuilder.fromUriString(rootUrl)
+                .queryParam("token", authToken.getToken())
+                .queryParam("name", URLEncoder.encode(userLoginRequest.getName(), "UTF-8"))
+                .queryParam("picture", userLoginRequest.getPicture())
+                .build().toUriString();
+    }
+
+    /**
+     * 최초 로그인이라면 회원가입 처리.
+     */
+    private void signUpIfNotUser(UserLoginRequest userLoginRequest) {
+        if (!userQueryService.isDuplicatedUserByEmail(userLoginRequest.getEmail())) {
+            userSignUpService.signUp(userLoginRequest);
+        }
+    }
 }

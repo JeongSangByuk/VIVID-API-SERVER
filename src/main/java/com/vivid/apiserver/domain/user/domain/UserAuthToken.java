@@ -12,7 +12,9 @@ public class UserAuthToken {
 
     @Id
     private String email;
+
     private String accessToken;
+
     private String refreshToken;
 
     @Builder

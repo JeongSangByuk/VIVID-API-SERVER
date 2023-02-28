@@ -1,7 +1,6 @@
 package com.vivid.apiserver.domain.user.application;
 
 import com.vivid.apiserver.domain.individual_video.dto.dto.DashboardIndividualVideoDto;
-import com.vivid.apiserver.domain.user.dao.UserRepository;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.dto.UserMyPageDashboardDataGetResponse;
 import com.vivid.apiserver.domain.video.dto.request.VideoGetResponse;
@@ -20,17 +19,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserMyPageService {
 
-    private final UserService userService;
 
     private final VideoSpaceService videoSpaceService;
 
-    private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
 
     // dashboard의 user data를 get합니다.
     public UserMyPageDashboardDataGetResponse getMyPageDashboardData() {
 
-        // account get by access token
-        User user = userService.getByAccessToken();
+        User user = currentUserService.getCurrentMember();
 
         // user video space get, inner video data get
         List<VideoSpaceGetResponse> videoSpaces = videoSpaceService.getList();
@@ -89,18 +86,5 @@ public class UserMyPageService {
                 .build();
 
         return userMyPageDashboardDataGetResponse;
-    }
-
-    // user 삭제.
-    public void deleteUser() {
-
-        // user get
-        User user = userService.getByAccessToken();
-
-        // 연관 관계 제거
-        user.delete();
-
-        // delete user
-        userRepository.delete(user);
     }
 }
