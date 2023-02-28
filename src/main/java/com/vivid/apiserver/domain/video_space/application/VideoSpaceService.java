@@ -15,6 +15,7 @@ import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceSaveRespons
 import com.vivid.apiserver.domain.video_space.exception.VideoSpaceHostedAccessRequiredException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class VideoSpaceService {
 
 
     /**
-     * video space 정보 get 메소드
+     * 특정 video space 정보 get 메소드
      */
     public VideoSpaceGetResponse getOne(Long videoSpaceId) {
 
@@ -49,30 +50,24 @@ public class VideoSpaceService {
         return VideoSpaceGetResponse.of(videoSpace, videoSpaceParticipant.getIndividualVideos());
     }
 
-    // 로그인한 account의 video space, video get list get 메소드
+    /**
+     * 유저가 속한 video space 전부 get 메소드
+     */
     public List<VideoSpaceGetResponse> getList() {
 
+        // TODO fetch join
         User currentUser = currentUserService.getCurrentMember();
+        List<VideoSpaceParticipant> videoSpaceParticipants = currentUser.getVideoSpaceParticipants();
 
-        List<VideoSpaceGetResponse> videoSpaceGetResponseList = new ArrayList<>();
-
-        // user가 참여해 있는 video space get
-        user.getVideoSpaceParticipants().forEach(videoSpaceParticipant -> {
-
-            VideoSpaceGetResponse videoSpaceGetResponse = createVideoSpaceGetResponse(videoSpaceParticipant);
-
-            videoSpaceGetResponseList.add(videoSpaceGetResponse);
-        });
-
-        return videoSpaceGetResponseList;
+        return videoSpaceParticipants.stream()
+                .map(videoSpaceParticipant -> getOne(videoSpaceParticipant.getVideoSpace().getId()))
+                .collect(Collectors.toList());
     }
 
     // 자신이 생성한(host인) video space 하나를 get합니다.
     public HostedVideoSpaceGetResponse getHostedOne(Long videoSpaceId) {
 
         User currentUser = currentUserService.getCurrentMember();
-
-        // video space get
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
         // host 권한 체크
