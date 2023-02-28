@@ -13,17 +13,21 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR("C04", "Server Error.", HttpStatus.INTERNAL_SERVER_ERROR.value()),
     INVALID_TYPE_VALUE("C05", " Invalid Type Value.", HttpStatus.BAD_REQUEST.value()),
 
+    //Auth
+    LOGIN_INFO_NOT_FOUND("A01", "Login Info Not Found", HttpStatus.BAD_REQUEST.value()),
+
     // User
-    USER_ACCESS_DENIED("A01", "User Access is Denied.", HttpStatus.UNAUTHORIZED.value()),
-    USER_NOT_FOUND("A03", "User is not Found.", HttpStatus.BAD_REQUEST.value()),
-    PASSWORD_FAILED_EXCEEDED("A04", "Password attempts exceeded.", HttpStatus.BAD_REQUEST.value()),
-    EMAIL_DUPLICATION("A05", "Email is Duplication", HttpStatus.BAD_REQUEST.value()),
+    USER_ACCESS_DENIED("U01", "User Access is Denied.", HttpStatus.UNAUTHORIZED.value()),
+    USER_NOT_FOUND("U02", "User is not Found.", HttpStatus.BAD_REQUEST.value()),
+    PASSWORD_FAILED_EXCEEDED("U03", "Password attempts exceeded.", HttpStatus.BAD_REQUEST.value()),
+    EMAIL_DUPLICATION("U04", "Email is Duplication", HttpStatus.BAD_REQUEST.value()),
 
     // User - Token
     ACCESS_TOKEN_EXPIRED("AT01", "Access Token is Expired", HttpStatus.UNAUTHORIZED.value()),
     ACCESS_TOKEN_INVALID("AT02", "Access Token is Invalid.", HttpStatus.UNAUTHORIZED.value()),
     ACCESS_TOKEN_NOT_FOUND_IN_HEADER("AT03", "Access Token is not Found in Header.", HttpStatus.UNAUTHORIZED.value()),
-    WEBEX_ACCESS_TOKEN_NOT_FOUND_IN_HEADER("AT03-1", "Webex Access Token is not Found in Header.", HttpStatus.UNAUTHORIZED.value()),
+    WEBEX_ACCESS_TOKEN_NOT_FOUND_IN_HEADER("AT03-1", "Webex Access Token is not Found in Header.",
+            HttpStatus.UNAUTHORIZED.value()),
     ACCESS_TOKEN_NOT_FOUND_IN_COOKIE("AT04", "Access Token is not Found in Cookie.", HttpStatus.UNAUTHORIZED.value()),
     REFRESH_TOKEN_NOT_FOUND("AT05", "Refreshed Token is not Found.", HttpStatus.UNAUTHORIZED.value()),
     REFRESH_TOKEN_EXPIRED("AT06", "Refreshed Token is Expired.", HttpStatus.UNAUTHORIZED.value()),

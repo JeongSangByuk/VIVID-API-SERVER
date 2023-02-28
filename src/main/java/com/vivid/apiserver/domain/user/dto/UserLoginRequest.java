@@ -2,14 +2,20 @@ package com.vivid.apiserver.domain.user.dto;
 
 import com.vivid.apiserver.domain.user.domain.Role;
 import com.vivid.apiserver.domain.user.domain.User;
-import lombok.*;
-
+import java.util.Map;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UserLoginRequest{
+@AllArgsConstructor
+@Builder(access = AccessLevel.PRIVATE)
+public class UserLoginRequest {
 
     @NotBlank
     @Email(message = "이메일을 양식을 지켜주세요.")
@@ -20,11 +26,12 @@ public class UserLoginRequest{
 
     private String picture;
 
-    @Builder
-    public UserLoginRequest(String email, String name,String picture) {
-        this.email = email;
-        this.name = name;
-        this.picture = picture;
+    public static UserLoginRequest of(Map<String, Object> attributes) {
+        return UserLoginRequest.builder()
+                .email((String) attributes.get("email"))
+                .name((String) attributes.get("name"))
+                .picture((String) attributes.get("picture"))
+                .build();
     }
 
     public User toEntity() {

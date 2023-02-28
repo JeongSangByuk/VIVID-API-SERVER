@@ -8,7 +8,10 @@ import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoD
 import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoGetResponse;
 import com.vivid.apiserver.domain.individual_video.dto.response.SnapshotImageUploadResponse;
 import com.vivid.apiserver.domain.individual_video.exception.IndividualVideoNotFoundException;
+import com.vivid.apiserver.domain.user.application.CurrentUserService;
 import com.vivid.apiserver.domain.user.application.UserService;
+import com.vivid.apiserver.domain.user.application.command.UserCommandService;
+import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceParticipantQueryService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
@@ -32,6 +35,10 @@ public class IndividualVideoService {
 
     private final UserService userService;
 
+    private final UserCommandService userCommandService;
+
+    private final CurrentUserService currentUserService;
+
     private final IndividualVideoRepository individualVideoRepository;
 
     private final IndividualVideoDao individualVideoDao;
@@ -54,13 +61,13 @@ public class IndividualVideoService {
         IndividualVideo individualVideo = findById(individualVideoId);
 
         // login user 권한 체크
-        userService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
+        currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
 
         // last access time update
         individualVideo.changeLastAccessTime();
 
-        // last access video update
-        userService.changeLastAccessIndividualVideoId(UUID.fromString(individualVideoId));
+        User user = currentUserService.getCurrentMember();
+        userCommandService.changeLastAccessIndividualVideoId(user, UUID.fromString(individualVideoId));
 
         // video file path get
         String videoFilePath = awsS3Service.getVideoFilePath(individualVideo.getVideo().getId());
@@ -103,7 +110,7 @@ public class IndividualVideoService {
         IndividualVideo individualVideo = findById(individualVideoId);
 
         // login user 권한 체크
-        userService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
+        currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
 
         // 연관 관계 끊기
         individualVideo.delete();
@@ -121,7 +128,7 @@ public class IndividualVideoService {
         IndividualVideo individualVideo = findById(individualVideoId);
 
         // login user 권한 체크
-        userService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
+        currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
 
         // image upload, upload된 image file path get
         String snapshotImageFilePath = awsS3Service.uploadSnapshotImagesToS3(file, individualVideoId, videoTime);
@@ -140,8 +147,7 @@ public class IndividualVideoService {
         // individual video get
         IndividualVideo individualVideo = findById(individualVideoId);
 
-        // login user 권한 체크
-        userService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
+        currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
 
         // last access time update
         individualVideo.changeLastAccessTime();
@@ -154,7 +160,7 @@ public class IndividualVideoService {
         IndividualVideo individualVideo = findById(individualVideoId);
 
         // login user 권한 체크
-        userService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
+        currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
 
         // progress rate update
         individualVideo.changeProgressRate(progressRate);
@@ -165,8 +171,7 @@ public class IndividualVideoService {
         // individual video get
         IndividualVideo individualVideo = findById(individualVideoId);
 
-        // user 권한 체크
-        userService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
+        currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getUser().getEmail());
     }
 
     // 참가해있는 space의 individual video get
@@ -178,7 +183,7 @@ public class IndividualVideoService {
         // 로그인 id와 videoSpaceParticipantId의 user id가 같은지 판단.
         VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantQueryService.findById(
                 videoSpaceParticipantId);
-        userService.checkValidUserAccess(videoSpaceParticipant.getUser().getEmail());
+        currentUserService.checkValidUserAccess(videoSpaceParticipant.getUser().getEmail());
 
         // find all individual videos
         List<IndividualVideo> individualVideos = individualVideoRepository.findAllByVideoSpaceParticipantId(

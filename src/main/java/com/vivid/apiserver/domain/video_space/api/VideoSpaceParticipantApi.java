@@ -28,7 +28,7 @@ public class VideoSpaceParticipantApi {
             @PathVariable("user-email") String userEmail) {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS,
-                videoSpaceParticipantService.addParticipantToVideoSpace(videoSpaceId, userEmail));
+                videoSpaceParticipantService.addVideoSpaceParticipantToVideoSpace(videoSpaceId, userEmail));
     }
 
     // video space에 account를 추가한다. 즉, VideoSpaceParticipant save
@@ -38,7 +38,7 @@ public class VideoSpaceParticipantApi {
             @PathVariable("video-space-id") Long videoSpaceId,
             @PathVariable("user-email") String userEmail) {
 
-        videoSpaceParticipantService.deleteVideoSpaceParticipant(videoSpaceId, userEmail);
+        videoSpaceParticipantService.deleteVideoSpaceParticipantFromVideoSpace(videoSpaceId, userEmail);
 
         return SuccessResponse.OK;
     }

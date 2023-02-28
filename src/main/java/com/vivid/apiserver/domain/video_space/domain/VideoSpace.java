@@ -1,19 +1,26 @@
 package com.vivid.apiserver.domain.video_space.domain;
 
+import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.global.common.BaseEntity;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.*;
-
-import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "video_space")
@@ -21,6 +28,8 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE video_space SET deleted = true WHERE video_space_id = ?")
 @Where(clause = "deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder(access = AccessLevel.PRIVATE)
 public class VideoSpace extends BaseEntity {
 
     @Id
@@ -46,12 +55,13 @@ public class VideoSpace extends BaseEntity {
     @Column(name = "is_individual_video_space", columnDefinition = "TINYINT(1)")
     private boolean isIndividualVideoSpace;
 
-    @Builder
-    public VideoSpace(String name, String description, String hostEmail, boolean isIndividualVideoSpace) {
-        this.name = name;
-        this.description = description;
-        this.hostEmail = hostEmail;
-        this.isIndividualVideoSpace = isIndividualVideoSpace;
+    public static VideoSpace newInstance(User user) {
+        return VideoSpace.builder()
+                .name("개인 영상")
+                .description(user.getName() + "님의 개인 영상 그룹 입니다.")
+                .hostEmail(user.getEmail())
+                .isIndividualVideoSpace(true)
+                .build();
     }
 
     // 연관 관계 삭제 편의 메소드

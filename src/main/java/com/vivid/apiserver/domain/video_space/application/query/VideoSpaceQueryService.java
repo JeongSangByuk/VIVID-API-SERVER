@@ -6,12 +6,10 @@ import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import com.vivid.apiserver.global.error.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class VideoSpaceQueryService {
