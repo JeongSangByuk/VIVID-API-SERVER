@@ -1,6 +1,6 @@
 package com.vivid.apiserver.domain.video_space.application;
 
-import com.vivid.apiserver.domain.user.application.UserService;
+import com.vivid.apiserver.domain.user.application.CurrentUserService;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.dto.UserGetResponse;
 import com.vivid.apiserver.domain.video.domain.Video;
@@ -17,6 +17,8 @@ import com.vivid.apiserver.domain.video_space.dto.response.HostedVideoSpaceGetRe
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceSaveResponse;
 import com.vivid.apiserver.domain.video_space.exception.VideoSpaceHostedAccessRequiredException;
+import com.vivid.apiserver.global.error.exception.AccessDeniedException;
+import com.vivid.apiserver.global.error.exception.ErrorCode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,23 +41,23 @@ public class VideoSpaceService {
 
     private final VideoSpaceDao videoSpaceDao;
 
-    private final UserService userService;
+    private final CurrentUserService currentUserService;
 
     public VideoSpaceGetResponse getOne(Long videoSpaceId) {
 
-        // user get
-        User user = userService.getByAccessToken();
+        User currentUser = currentUserService.getCurrentMember();
 
         // video space get
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
         // 로그인 user가 video space particiapnt인지 판단
-        if (!videoSpaceQueryService.containsUser(videoSpace, user.getEmail())) {
-            throw new VideoSpaceAccessDeniedException();
+        if (!videoSpaceQueryService.containsUser(videoSpace, currentUser.getEmail())) {
+            throw new AccessDeniedException(ErrorCode.VIDEO_SPACE_ACCESS_DENIED);
         }
 
         // find video participant by user and video space
-        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantQueryService.findByUserAndVideoSpace(user,
+        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantQueryService.findByUserAndVideoSpace(
+                currentUser,
                 videoSpace);
 
         // videospace get response 생성.
@@ -68,8 +70,7 @@ public class VideoSpaceService {
     // 로그인한 account의 video space, video get list get 메소드
     public List<VideoSpaceGetResponse> getList() {
 
-        // account get by access token
-        User user = userService.getByAccessToken();
+        User currentUser = currentUserService.getCurrentMember();
 
         List<VideoSpaceGetResponse> videoSpaceGetResponseList = new ArrayList<>();
 
@@ -87,8 +88,7 @@ public class VideoSpaceService {
     // 자신이 생성한(host인) video space 하나를 get합니다.
     public HostedVideoSpaceGetResponse getHostedOne(Long videoSpaceId) {
 
-        // email get, = host email
-        String email = userService.getEmailFromAuthentication();
+        User currentUser = currentUserService.getCurrentMember();
 
         // video space get
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
@@ -129,8 +129,7 @@ public class VideoSpaceService {
     // 자신이 생성한(host인) video space list를 get합니다.
     public List<HostedVideoSpaceGetResponse> getHostedList() {
 
-        // email get, = host email
-        String email = userService.getEmailFromAuthentication();
+        User currentUser = currentUserService.getCurrentMember();
 
         // find by host email
         List<VideoSpace> videoSpaces = videoSpaceRepository.findAllByHostEmail(email);
@@ -178,8 +177,7 @@ public class VideoSpaceService {
     // video space save, 생성시 생성자에 대해서 participant 자동 생성
     public VideoSpaceSaveResponse save(VideoSpaceSaveRequest videoSpaceSaveRequest) {
 
-        // account find
-        User user = userService.getByAccessToken();
+        User currentUser = currentUserService.getCurrentMember();
 
         // video space 생성
         VideoSpace savedVideoSpace = videoSpaceRepository.save(videoSpaceSaveRequest.toEntity(user.getEmail()));

@@ -34,5 +34,11 @@ public class VideoSpaceValidationService {
         });
     }
 
+    public void checkVideoSpaceHostDelete(VideoSpace videoSpace, String email) {
+        if (email.equals(videoSpace.getHostEmail())) {
+            throw new AccessDeniedException(ErrorCode.VIDEO_SPACE_HOST_DELETE_NOT_ALLOWED);
+        }
+    }
+
 
 }
