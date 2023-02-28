@@ -20,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VideoSpaceParticipantService {
 
-    private final VideoSpaceParticipantQueryService videoSpaceParticipantQueryService;
     private final UserQueryService userQueryService;
+    private final VideoSpaceParticipantQueryService videoSpaceParticipantQueryService;
     private final VideoSpaceQueryService videoSpaceQueryService;
 
     private final VideoSpaceParticipantCommandService videoSpaceParticipantCommandService;
@@ -29,8 +29,9 @@ public class VideoSpaceParticipantService {
 
     private final VideoSpaceValidationService videoSpaceValidationService;
 
-
-    // video space에 유저 추가
+    /**
+     * video space에 유저 추가
+     */
     public VideoSpaceParticipantSaveResponse addVideoSpaceParticipantToVideoSpace(Long videoSpaceId, String email) {
 
         User user = userQueryService.findByEmail(email);
@@ -38,39 +39,29 @@ public class VideoSpaceParticipantService {
         // todo 이부분 fetch join
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
-        videoSpaceValidationService.checkHostUserAccess(videoSpace.getHostEmail());
+        videoSpaceValidationService.checkHostUserAccess(videoSpace, videoSpace.getHostEmail());
         videoSpaceValidationService.checkDuplicatedParticipant(email, videoSpace.getVideoSpaceParticipants());
 
         VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantCommandService.save(videoSpace, user);
-
         individualVideoCommandService.saveAll(videoSpace.getVideos(), videoSpaceParticipant);
 
         return VideoSpaceParticipantSaveResponse.of(videoSpaceParticipant);
     }
 
-    // video space에서 유저 삭제
-    public void deleteVideoSpaceParticipantFromVideoSpace(Long videoSpaceId, String targetEmail) {
+    /*
+     * video space에서 유저 삭제, 개인 영상 또한 삭제
+     */
+    public void deleteVideoSpaceParticipantFromVideoSpace(Long videoSpaceId, String email) {
 
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
-        User user = userQueryService.findByEmail(targetEmail);
+        User user = userQueryService.findByEmail(email);
 
-        checkHostUserAccess(videoSpace.getHostEmail());
+        videoSpaceValidationService.checkHostUserAccess(videoSpace, videoSpace.getHostEmail());
+        videoSpaceValidationService.checkVideoSpaceHostDelete(videoSpace, email);
 
-        // host 삭제 불가
-        if (targetEmail.equals(videoSpace.getHostEmail())) {
-            throw new VideoSpaceHostDeleteDeniedException();
-        }
+        VideoSpaceParticipant videoSpaceParticipant =
+                videoSpaceParticipantQueryService.findByUserAndVideoSpace(user, videoSpace);
 
-        // find video space participant
-        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantQueryService.findByUserAndVideoSpace(user,
-                videoSpace);
-
-        // 연관 관계 매팡 제거
-        videoSpaceParticipant.delete();
-
-        // delete
-        videoSpaceParticipantRepository.deleteById(videoSpaceParticipant.getId());
-
+        individualVideoCommandService.deleteByVideoSpaceParticipant(videoSpaceParticipant);
     }
-
 }

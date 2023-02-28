@@ -30,5 +30,8 @@ public class IndividualVideoCommandService {
         return individualVideos;
     }
 
+    public void deleteByVideoSpaceParticipant(VideoSpaceParticipant videoSpaceParticipant) {
+        individualVideoRepository.deleteAllByVideoSpaceParticipant(videoSpaceParticipant);
+    }
 
 }
