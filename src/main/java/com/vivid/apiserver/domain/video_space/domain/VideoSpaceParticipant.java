@@ -53,7 +53,7 @@ public class VideoSpaceParticipant extends BaseEntity {
     @OneToMany(mappedBy = "videoSpaceParticipant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IndividualVideo> individualVideos = new ArrayList<>();
 
-    public static VideoSpaceParticipant newInstance(VideoSpace videoSpace, User user) {
+    public static VideoSpaceParticipant of(VideoSpace videoSpace, User user) {
         return VideoSpaceParticipant.builder()
                 .user(user)
                 .videoSpace(videoSpace)

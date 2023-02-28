@@ -5,8 +5,7 @@ import com.vivid.apiserver.domain.user.application.query.UserQueryService;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.dto.UserLoginRequest;
 import com.vivid.apiserver.domain.user.dto.UserSignUpResponse;
-import com.vivid.apiserver.domain.video_space.application.command.VideoSpaceCommandService;
-import com.vivid.apiserver.domain.video_space.application.command.VideoSpaceParticipantCommandService;
+import com.vivid.apiserver.domain.video_space.application.VideoSpaceCreateService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +21,8 @@ public class UserSignUpService {
     private final UserQueryService userQueryService;
 
     private final UserCommandService userCommandService;
-    private final VideoSpaceParticipantCommandService videoSpaceParticipantCommandService;
-    private final VideoSpaceCommandService videoSpaceCommandService;
+
+    private final VideoSpaceCreateService videoSpaceCreateService;
 
     /*
      * user signup 메소드
@@ -32,18 +31,10 @@ public class UserSignUpService {
 
         userQueryService.checkDuplicatedUserByEmail(userLoginRequest.getEmail());
         User user = userLoginRequest.toEntity();
-        
-        createIndividualVideoSpace(user);
+
+        videoSpaceCreateService.createInitialVideoSpace(user, VideoSpace.from(user));
         userCommandService.save(user);
 
         return UserSignUpResponse.from(user);
-    }
-
-    /**
-     * 개인 video space 생성
-     */
-    private void createIndividualVideoSpace(User user) {
-        VideoSpace videoSpace = videoSpaceCommandService.save(user);
-        videoSpaceParticipantCommandService.save(videoSpace, user);
     }
 }

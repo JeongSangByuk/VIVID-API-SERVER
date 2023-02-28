@@ -1,8 +1,8 @@
 package com.vivid.apiserver.domain.auth.application;
 
 import com.vivid.apiserver.domain.auth.application.command.RefreshTokenCommandService;
+import com.vivid.apiserver.domain.auth.dto.response.AccessTokenResponse;
 import com.vivid.apiserver.domain.user.domain.Role;
-import com.vivid.apiserver.domain.user.dto.UserNewTokenResponse;
 import com.vivid.apiserver.global.auth.application.TokenProvider;
 import com.vivid.apiserver.global.auth.token.AuthToken;
 import com.vivid.apiserver.global.auth.util.CookieUtil;
@@ -30,7 +30,7 @@ public class AuthService {
     /**
      * access token 만료된 경우, access token 재발급
      */
-    public UserNewTokenResponse getAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    public AccessTokenResponse getAccessToken(HttpServletRequest request, HttpServletResponse response) {
 
         // 쿠키에 access token을 get, 이 때 쿠키에 없으면 throw exception
         String accessTokenValue = getAccessTokenFromCookie(request);
@@ -44,9 +44,9 @@ public class AuthService {
          */
         try {
             accessToken.validateToken();
-            return new UserNewTokenResponse(accessTokenValue);
+            return new AccessTokenResponse(accessTokenValue);
         } catch (ExpiredJwtException expiredJwtException) {
-            return new UserNewTokenResponse(reIssueAccessTokenFromRefreshToken(response, email));
+            return new AccessTokenResponse(reIssueAccessTokenFromRefreshToken(response, email));
         }
     }
 

@@ -29,7 +29,7 @@ import org.hibernate.annotations.Where;
 @Where(clause = "deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PUBLIC)
 public class VideoSpace extends BaseEntity {
 
     @Id
@@ -55,7 +55,7 @@ public class VideoSpace extends BaseEntity {
     @Column(name = "is_individual_video_space", columnDefinition = "TINYINT(1)")
     private boolean isIndividualVideoSpace;
 
-    public static VideoSpace newInstance(User user) {
+    public static VideoSpace from(User user) {
         return VideoSpace.builder()
                 .name("개인 영상")
                 .description(user.getName() + "님의 개인 영상 그룹 입니다.")
@@ -63,25 +63,4 @@ public class VideoSpace extends BaseEntity {
                 .isIndividualVideoSpace(true)
                 .build();
     }
-
-    // 연관 관계 삭제 편의 메소드
-    public void delete() {
-
-        // ManyToOne, videoSpaecParticipant와 연관 관계 끊기
-        for (VideoSpaceParticipant videoSpaceParticipant : videoSpaceParticipants) {
-            videoSpaceParticipant.deleteMapping();
-        }
-
-        // One to Many 연관 관계 끊기.
-        videoSpaceParticipants.clear();
-
-        // ManyToOne, video와 연관 관계 끊기
-        for (Video video : videos) {
-            video.deleteMapping();
-        }
-
-        // One to Many 연관 관계 끊기.
-        videos.clear();
-    }
-
 }

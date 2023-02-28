@@ -1,7 +1,7 @@
 package com.vivid.apiserver.domain.auth.api;
 
 import com.vivid.apiserver.domain.auth.application.AuthService;
-import com.vivid.apiserver.domain.user.dto.UserNewTokenResponse;
+import com.vivid.apiserver.domain.auth.dto.response.AccessTokenResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +23,7 @@ public class AuthApi {
     // access token 만료시 refresh token을 통해 재발급
     @Operation(summary = "user access token issue api", description = "쿠키의 access token get하거나, redis의 refresh token을 활용하여 access token을 재발급합니다.")
     @PostMapping("/api/auth/token")
-    public ResponseEntity<SuccessResponse<UserNewTokenResponse>> reIssueAccessToken(HttpServletRequest request,
+    public ResponseEntity<SuccessResponse<AccessTokenResponse>> reIssueAccessToken(HttpServletRequest request,
             HttpServletResponse response) {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS, authService.getAccessToken(request, response));
