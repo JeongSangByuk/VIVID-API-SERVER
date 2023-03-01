@@ -1,14 +1,9 @@
 package com.vivid.apiserver.domain.video_space.application;
 
-import com.vivid.apiserver.domain.individual_video.application.command.IndividualVideoCommandService;
-import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.user.application.CurrentUserService;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.dto.UserGetResponse;
-import com.vivid.apiserver.domain.video.application.command.VideoCommandService;
 import com.vivid.apiserver.domain.video.dto.response.HostedVideoGetResponse;
-import com.vivid.apiserver.domain.video_space.application.command.VideoSpaceCommandService;
-import com.vivid.apiserver.domain.video_space.application.command.VideoSpaceParticipantCommandService;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceParticipantQueryService;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceQueryService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
@@ -31,15 +26,9 @@ public class VideoSpaceService {
     private final VideoSpaceQueryService videoSpaceQueryService;
     private final VideoSpaceParticipantQueryService videoSpaceParticipantQueryService;
 
-    private final IndividualVideoCommandService individualVideoCommandService;
-    private final VideoCommandService videoCommandService;
-    private final VideoSpaceCommandService videoSpaceCommandService;
-    private final VideoSpaceParticipantCommandService videoSpaceParticipantCommandService;
-
     private final CurrentUserService currentUserService;
-    private final VideoSpaceCreateService videoSpaceCreateService;
-    private final VideoSpaceValidationService videoSpaceValidationService;
-
+    private final VideoSpaceManageService videoSpaceManageService;
+    private final VideoSpaceValidateService videoSpaceValidateService;
 
     /**
      * 특정 video space 정보 get 메소드
@@ -49,7 +38,7 @@ public class VideoSpaceService {
         User currentUser = currentUserService.getCurrentMember();
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
-        videoSpaceValidationService.checkVideoSpaceParticipant(videoSpace, currentUser);
+        videoSpaceValidateService.checkVideoSpaceParticipant(videoSpace, currentUser);
 
         VideoSpaceParticipant videoSpaceParticipant =
                 videoSpaceParticipantQueryService.findByUserAndVideoSpace(currentUser, videoSpace);
@@ -79,7 +68,7 @@ public class VideoSpaceService {
         User currentUser = currentUserService.getCurrentMember();
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
-        videoSpaceValidationService.checkHostUserAccess(videoSpace, currentUser.getEmail());
+        videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());
 
         List<HostedVideoGetResponse> hostedVideoGetResponses = videoSpace.getVideos().stream()
                 .map(HostedVideoGetResponse::from)
@@ -116,35 +105,21 @@ public class VideoSpaceService {
         User currentUser = currentUserService.getCurrentMember();
         VideoSpace videoSpace = videoSpaceSaveRequest.toEntity(currentUser.getEmail());
 
-        videoSpaceCreateService.createInitialVideoSpace(currentUser, videoSpace);
+        videoSpaceManageService.createInitialVideoSpace(currentUser, videoSpace);
 
         return VideoSpaceSaveResponse.from(videoSpace);
     }
 
+    /**
+     * videos space 삭제 메소드
+     */
     public void delete(Long videoSpaceId) {
 
         User currentUser = currentUserService.getCurrentMember();
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
-        videoSpaceValidationService.checkHostUserAccess(videoSpace, currentUser.getEmail());
+        videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());
 
-        List<IndividualVideo> individualVideos = findAllIndividualVideos(videoSpace);
-
-        deleteAll(videoSpace, individualVideos);
-    }
-
-    private List<IndividualVideo> findAllIndividualVideos(VideoSpace videoSpace) {
-        return videoSpace.getVideoSpaceParticipants().stream()
-                .map(VideoSpaceParticipant::getIndividualVideos)
-                .flatMap(List::stream)
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    private void deleteAll(VideoSpace videoSpace, List<IndividualVideo> individualVideos) {
-        individualVideoCommandService.deleteAll(individualVideos);
-        videoSpaceParticipantCommandService.deleteAllByVideoSpace(videoSpace);
-        videoCommandService.deleteAllByVideoSpace(videoSpace);
-        videoSpaceCommandService.delete(videoSpace);
+        videoSpaceManageService.deleteVideoSpace(videoSpace);
     }
 }

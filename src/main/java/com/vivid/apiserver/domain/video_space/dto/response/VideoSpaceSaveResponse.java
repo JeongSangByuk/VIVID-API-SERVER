@@ -20,6 +20,7 @@ public class VideoSpaceSaveResponse {
     private String description;
 
     public static VideoSpaceSaveResponse from(VideoSpace videoSpace) {
+
         return VideoSpaceSaveResponse.builder()
                 .id(videoSpace.getId())
                 .name(videoSpace.getName())
