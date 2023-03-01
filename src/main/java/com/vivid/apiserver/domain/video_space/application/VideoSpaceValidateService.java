@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class VideoSpaceValidationService {
+public class VideoSpaceValidateService {
 
     private final VideoSpaceQueryService videoSpaceQueryService;
 

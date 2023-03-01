@@ -27,7 +27,7 @@ public class VideoSpaceParticipantService {
     private final VideoSpaceParticipantCommandService videoSpaceParticipantCommandService;
     private final IndividualVideoCommandService individualVideoCommandService;
 
-    private final VideoSpaceValidationService videoSpaceValidationService;
+    private final VideoSpaceValidateService videoSpaceValidateService;
 
     /**
      * video space에 유저 추가
@@ -39,8 +39,8 @@ public class VideoSpaceParticipantService {
         // todo 이부분 fetch join
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
-        videoSpaceValidationService.checkHostUserAccess(videoSpace, videoSpace.getHostEmail());
-        videoSpaceValidationService.checkDuplicatedParticipant(email, videoSpace.getVideoSpaceParticipants());
+        videoSpaceValidateService.checkHostUserAccess(videoSpace, videoSpace.getHostEmail());
+        videoSpaceValidateService.checkDuplicatedParticipant(email, videoSpace.getVideoSpaceParticipants());
 
         VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantCommandService.save(videoSpace, user);
         individualVideoCommandService.saveAll(videoSpace.getVideos(), videoSpaceParticipant);
@@ -48,7 +48,7 @@ public class VideoSpaceParticipantService {
         return VideoSpaceParticipantSaveResponse.of(videoSpaceParticipant);
     }
 
-    /*
+    /**
      * video space에서 유저 삭제, 개인 영상 또한 삭제
      */
     public void deleteVideoSpaceParticipantFromVideoSpace(Long videoSpaceId, String email) {
@@ -56,8 +56,8 @@ public class VideoSpaceParticipantService {
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
         User user = userQueryService.findByEmail(email);
 
-        videoSpaceValidationService.checkHostUserAccess(videoSpace, videoSpace.getHostEmail());
-        videoSpaceValidationService.checkVideoSpaceHostDelete(videoSpace, email);
+        videoSpaceValidateService.checkHostUserAccess(videoSpace, videoSpace.getHostEmail());
+        videoSpaceValidateService.checkVideoSpaceHostDelete(videoSpace, email);
 
         VideoSpaceParticipant videoSpaceParticipant =
                 videoSpaceParticipantQueryService.findByUserAndVideoSpace(user, videoSpace);

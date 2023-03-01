@@ -6,6 +6,7 @@ import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import com.vivid.apiserver.global.error.exception.NotFoundException;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,18 +27,20 @@ public class VideoSpaceQueryService {
     }
 
     public List<VideoSpace> findListByHostedEmail(String email) {
+
         return videoSpaceRepository.findAllByHostEmail(email);
     }
 
+    /**
+     * video space에 포함된 유저인지 판단하는 메소드
+     */
     public boolean isContainedUser(VideoSpace videoSpace, String email) {
 
-        // 로그인 user가 video space particiapnt인지 판단
-        for (VideoSpaceParticipant videoSpaceParticipant : videoSpace.getVideoSpaceParticipants()) {
-            if (videoSpaceParticipant.getUser().getEmail().equals(email)) {
-                return true;
-            }
-        }
+        Optional<String> participant = videoSpace.getVideoSpaceParticipants().stream()
+                .map(VideoSpaceParticipant::getEmail)
+                .filter(email::equals)
+                .findFirst();
 
-        return false;
+        return participant.isPresent();
     }
 }
