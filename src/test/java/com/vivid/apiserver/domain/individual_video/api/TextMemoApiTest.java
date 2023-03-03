@@ -11,10 +11,10 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+import com.vivid.apiserver.domain.individual_video.domain.TextMemoHistory;
+import com.vivid.apiserver.domain.individual_video.domain.TextMemoLatest;
 import com.vivid.apiserver.domain.individual_video.domain.TextMemoStateBuilder;
-import com.vivid.apiserver.domain.individual_video.domain.TextMemoStateHistory;
-import com.vivid.apiserver.domain.individual_video.domain.TextMemoStateLatest;
-import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoStateRedisSaveRequest;
+import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoCacheSaveRequest;
 import com.vivid.apiserver.test.ContainerBaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-class TextMemoStateApiTest extends ContainerBaseTest {
+class TextMemoApiTest extends ContainerBaseTest {
 
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
@@ -37,11 +37,11 @@ class TextMemoStateApiTest extends ContainerBaseTest {
         // test container 기반, dynamoDB table 생성
 
         CreateTableRequest createTextMemoStateLatestTableRequest = dynamoDBMapper.generateCreateTableRequest(
-                        TextMemoStateLatest.class)
+                        TextMemoLatest.class)
                 .withProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
 
         CreateTableRequest createTextMemoStateHistoryTableRequest = dynamoDBMapper.generateCreateTableRequest(
-                        TextMemoStateHistory.class)
+                        TextMemoHistory.class)
                 .withProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
 
         TableUtils.createTableIfNotExists(amazonDynamoDb, createTextMemoStateLatestTableRequest);
@@ -55,13 +55,13 @@ class TextMemoStateApiTest extends ContainerBaseTest {
 
         //given
         String individualVideoId = TextMemoStateBuilder.getRandomIndividualVideoId();
-        TextMemoStateRedisSaveRequest textMemoStateRedisSaveRequest = TextMemoStateBuilder.redisSaveRequestBuilder(
+        TextMemoCacheSaveRequest textMemoCacheSaveRequest = TextMemoStateBuilder.redisSaveRequestBuilder(
                 individualVideoId);
 
         // when
         ResultActions resultActions = mvc.perform(post("/api/videos/cache/" + individualVideoId + "/text-memo-state")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(textMemoStateRedisSaveRequest)));
+                .content(objectMapper.writeValueAsString(textMemoCacheSaveRequest)));
 
         //then
         resultActions.andExpect(status().isOk());

@@ -1,6 +1,6 @@
 package com.vivid.apiserver.domain.individual_video.dto.request;
 
-import com.vivid.apiserver.domain.individual_video.domain.TextMemoState;
+import com.vivid.apiserver.domain.individual_video.domain.TextMemo;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class TextMemoStateRedisSaveRequest {
+public class TextMemoCacheSaveRequest {
 
     private String id;
 
@@ -24,14 +24,14 @@ public class TextMemoStateRedisSaveRequest {
 
 
     @Builder
-    public TextMemoStateRedisSaveRequest(String stateJson, String videoTime) {
+    public TextMemoCacheSaveRequest(String stateJson, String videoTime) {
         this.stateJson = stateJson;
         this.videoTime = videoTime;
     }
 
-    public TextMemoState toEntity(String individualVideoId) {
+    public TextMemo toEntity(String individualVideoId) {
 
-        return TextMemoState.builder()
+        return TextMemo.builder()
                 .id(UUID.randomUUID().toString())
                 .individualVideoId(UUID.fromString(individualVideoId))
                 .stateJson(stateJson)

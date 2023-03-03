@@ -1,7 +1,7 @@
 package com.vivid.apiserver.domain.individual_video.domain;
 
-import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoStateDynamoSaveRequest;
-import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoStateRedisSaveRequest;
+import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoCacheSaveRequest;
+import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoSaveRequest;
 import com.vivid.apiserver.global.util.BaseDateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -15,19 +15,19 @@ public class TextMemoStateBuilder {
     public static String VIDEO_TIME = "01:01:01";
 
 
-    public static TextMemoStateRedisSaveRequest redisSaveRequestBuilder(String individualVideoId) {
+    public static TextMemoCacheSaveRequest redisSaveRequestBuilder(String individualVideoId) {
 
-        TextMemoStateRedisSaveRequest textMemoStateRedisSaveRequest = TextMemoStateRedisSaveRequest.builder()
+        TextMemoCacheSaveRequest textMemoCacheSaveRequest = TextMemoCacheSaveRequest.builder()
                 .stateJson(STATE_JSON)
                 .videoTime(VIDEO_TIME)
                 .build();
 
-        return textMemoStateRedisSaveRequest;
+        return textMemoCacheSaveRequest;
     }
 
-    public static TextMemoStateDynamoSaveRequest dynamoSaveRequestBuilder(String individualVideoId) {
+    public static TextMemoSaveRequest dynamoSaveRequestBuilder(String individualVideoId) {
 
-        TextMemoStateDynamoSaveRequest textMemoStateDynamoSaveRequest = TextMemoStateDynamoSaveRequest.builder()
+        TextMemoSaveRequest textMemoSaveRequest = TextMemoSaveRequest.builder()
                 .id(UUID.randomUUID().toString())
                 .individualVideoId(individualVideoId)
                 .videoTime(VIDEO_TIME)
@@ -35,7 +35,7 @@ public class TextMemoStateBuilder {
                 .createdAt(BaseDateTimeFormatter.getLocalDateTimeFormatter().format(LocalDateTime.now()))
                 .build();
 
-        return textMemoStateDynamoSaveRequest;
+        return textMemoSaveRequest;
     }
 
     public static Map<String, String> individualVideoIdMapBuilder(String individualVideoId) {

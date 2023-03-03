@@ -54,7 +54,6 @@ public class IndividualVideo extends BaseEntity {
     private LocalDateTime lastAccessTime;
 
     public static IndividualVideo of(Video video, VideoSpaceParticipant videoSpaceParticipant) {
-
         return IndividualVideo.builder()
                 .video(video)
                 .videoSpaceParticipant(videoSpaceParticipant)
@@ -63,31 +62,11 @@ public class IndividualVideo extends BaseEntity {
                 .build();
     }
 
-    // 최종 접근 시간 변경 메소드
     public void changeLastAccessTime() {
         this.lastAccessTime = LocalDateTime.now();
     }
 
-    // 최종 접근 시간 변경 메소드
     public void changeProgressRate(Long progressRate) {
         this.progressRate = progressRate;
     }
-
-
-    // 전체 연관 관계 삭제 편의 메소드
-    public void delete() {
-
-        // OneToMany 연관관계(자식) 삭제. -> 영속성에 이미 있기 때문에,
-        videoSpaceParticipant.getIndividualVideos().remove(this);
-
-        // ManyToOne 연관관계(부모) 삭제
-        deleteMapping();
-    }
-
-    // ManyToOne 연관관계(부모) 삭제
-    public void deleteMapping() {
-        video = null;
-        videoSpaceParticipant = null;
-    }
-
 }

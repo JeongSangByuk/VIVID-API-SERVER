@@ -1,7 +1,7 @@
 package com.vivid.apiserver.domain.individual_video.dto.request;
 
-import com.vivid.apiserver.domain.individual_video.domain.TextMemoStateHistory;
-import com.vivid.apiserver.domain.individual_video.domain.TextMemoStateLatest;
+import com.vivid.apiserver.domain.individual_video.domain.TextMemoHistory;
+import com.vivid.apiserver.domain.individual_video.domain.TextMemoLatest;
 import com.vivid.apiserver.global.util.BaseDateTimeFormatter;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class TextMemoStateDynamoSaveRequest {
+public class TextMemoSaveRequest {
 
     @NotBlank
     private String id;
@@ -32,7 +32,7 @@ public class TextMemoStateDynamoSaveRequest {
 
 
     @Builder
-    public TextMemoStateDynamoSaveRequest(String id, String individualVideoId, String stateJson, String videoTime,
+    public TextMemoSaveRequest(String id, String individualVideoId, String stateJson, String videoTime,
             String createdAt) {
         this.id = id;
         this.individualVideoId = individualVideoId;
@@ -41,9 +41,9 @@ public class TextMemoStateDynamoSaveRequest {
         this.createdAt = createdAt;
     }
 
-    public TextMemoStateLatest toLatestEntity() {
+    public TextMemoLatest toLatestEntity() {
 
-        return TextMemoStateLatest.builder()
+        return TextMemoLatest.builder()
                 .id(id)
                 .individualVideoId(UUID.fromString(individualVideoId))
                 .stateJson(stateJson)
@@ -52,9 +52,9 @@ public class TextMemoStateDynamoSaveRequest {
                 .build();
     }
 
-    public TextMemoStateHistory toHistoryEntity() {
+    public TextMemoHistory toHistoryEntity() {
 
-        return TextMemoStateHistory.builder()
+        return TextMemoHistory.builder()
                 .id(id)
                 .individualVideoId(UUID.fromString(individualVideoId))
                 .stateJson(stateJson)

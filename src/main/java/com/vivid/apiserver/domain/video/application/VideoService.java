@@ -1,10 +1,8 @@
 package com.vivid.apiserver.domain.video.application;
 
-import com.vivid.apiserver.domain.individual_video.application.IndividualVideoService;
+import com.vivid.apiserver.domain.individual_video.application.command.IndividualVideoCommandService;
 import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoDetailsGetResponse;
-import com.vivid.apiserver.domain.user.application.UserService;
 import com.vivid.apiserver.domain.user.exception.UserAccessDeniedException;
-import com.vivid.apiserver.domain.video.dao.VideoDao;
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
 import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
@@ -26,13 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class VideoService {
 
-    private final VideoDao videoDao;
 
     private final VideoSpaceQueryService videoSpaceQueryService;
 
-    private final IndividualVideoService individualVideoService;
-
-    private final UserService userService;
+    private final IndividualVideoCommandService individualVideoCommandService;
 
     private final AwsS3Service awsS3Service;
 
@@ -58,8 +53,7 @@ public class VideoService {
         VideoSaveResponse videoSaveResponse = awsS3Service.uploadVideoToS3ByMultipartFile(multipartFile,
                 savedVideo.getId());
 
-        // space 모든 참가자들에 대해 각각의 individual videos 생성
-        individualVideoService.createAfterVideoSaved(savedVideo, videoSpace);
+        individualVideoCommandService.saveAllByParticipants(videoSpace.getVideoSpaceParticipants(), savedVideo);
 
         return videoSaveResponse;
     }
@@ -86,8 +80,7 @@ public class VideoService {
         VideoSaveResponse videoSaveResponse = awsS3Service.uploadVideoToS3ByDownloadUrl(recordingDownloadUrl,
                 savedVideo.getId());
 
-        // space 모든 참가자들에 대해 각각의 individual videos 생성
-        individualVideoService.createAfterVideoSaved(savedVideo, videoSpace);
+        individualVideoCommandService.saveAllByParticipants(videoSpace.getVideoSpaceParticipants(), savedVideo);
 
         return videoSaveResponse;
     }
