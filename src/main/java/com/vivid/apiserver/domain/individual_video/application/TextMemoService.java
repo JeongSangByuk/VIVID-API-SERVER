@@ -63,9 +63,8 @@ public class TextMemoService {
     public void saveToCache(final TextMemoCacheSaveRequest textMemoState, String individualVideoId) {
 
         TextMemo textMemo = textMemoState.toEntity(individualVideoId);
-        textMemoCommandService.saveLatestToCache(textMemo);
+        textMemoCommandService.saveToCache(textMemo);
     }
-
 
     /**
      * cache의 데이터를 전부 db에 저장하는 메소드
@@ -83,7 +82,7 @@ public class TextMemoService {
 
         TextMemoLatest textMemoStateLatest = textMemoQueryService.getLatestFromCache(individualVideoId);
 
-        textMemoCommandService.saveLatestToCache(textMemoStateLatest);
+        textMemoCommandService.saveLatest(textMemoStateLatest);
         textMemoCommandService.deleteLatestToCache(individualVideoId);
     }
 

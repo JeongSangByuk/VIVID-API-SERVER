@@ -8,13 +8,12 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.util.IOUtils;
-import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
-import com.vivid.apiserver.domain.video.exception.ImageUploadFailedException;
+import com.vivid.apiserver.global.error.exception.ErrorCode;
+import com.vivid.apiserver.global.error.exception.InvalidValueException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -46,73 +45,56 @@ public class AwsS3Service {
 
     private final AmazonS3Client amazonS3Client;
 
-    // multipartFile을 통해 video s3에 업로드
-    public VideoSaveResponse uploadVideoToS3ByMultipartFile(MultipartFile file, Long videoId) {
+    /**
+     * multipart file을 통해 video s3에 업로드하는 메소드
+     */
+    public void uploadVideoToS3ByMultipartFile(MultipartFile file, Long videoId) {
 
-        // 메타 데이터 추출
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(file.getSize());
-        objectMetadata.setContentType(file.getContentType());
+        ObjectMetadata objectMetadata = createObjectMetadata(file);
+        InputStream inputStream = getInputStream(file);
 
-        // s3 upload
-        try (InputStream inputStream = file.getInputStream()) {
-            amazonS3Client.putObject(
-                    new PutObjectRequest(rawVideoBucket, videoId.toString() + ".mp4", inputStream, objectMetadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch (IOException e) {
-            throw new ImageUploadFailedException();
-        }
+        PutObjectRequest request = new PutObjectRequest(rawVideoBucket, createVideoFileKey(videoId), inputStream,
+                objectMetadata);
+        request.withCannedAcl(CannedAccessControlList.PublicRead);
 
-        return VideoSaveResponse.builder().id(videoId).build();
+        amazonS3Client.putObject(request);
     }
 
-    // download Url를 통해 video s3에 업로드
-    public VideoSaveResponse uploadVideoToS3ByDownloadUrl(String fileUrl, Long videoId) throws IOException {
+    /**
+     * download Url를 통해 video s3에 업로드하는 메소드
+     */
+    public void uploadVideoToS3ByDownloadUrl(String fileUrl, Long videoId) {
 
-        // url connection get
-        URL url = new URL(fileUrl);
-        URLConnection connection = url.openConnection();
-
-        // download stream get
-        InputStream is = connection.getInputStream();
-        byte[] bytes = IOUtils.toByteArray(is);
         ObjectMetadata metadata = new ObjectMetadata();
-        ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
+        byte[] bytes = getInputStreamByUrl(fileUrl);
+
         metadata.setContentLength(bytes.length);
+        ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
 
-        // s3 upload
-        amazonS3Client.putObject(
-                new PutObjectRequest(rawVideoBucket, videoId.toString() + ".mp4", byteArrayIs, metadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
+        PutObjectRequest request = new PutObjectRequest(rawVideoBucket, createVideoFileKey(videoId), byteArrayIs,
+                metadata);
+        request.withCannedAcl(CannedAccessControlList.PublicRead);
 
-        return VideoSaveResponse.builder().id(videoId).build();
+        amazonS3Client.putObject(request);
     }
 
 
-    // 스냅샷 이미지를 s3에 업로드하는 메소드
+    /**
+     * 스냅샷 이미지를 s3에 업로드하는 메소드
+     */
     public String uploadSnapshotImagesToS3(MultipartFile file, String individualVideoId, Long videoTime) {
 
-        // 디렉토리 이름은 individualVideoId, fileName은 캡처 시간대
-        String snapshotImageKey = individualVideoId + '/' + videoTime;
+        String snapshotImageKey = createShapshotImageKey(individualVideoId, videoTime);
+        ObjectMetadata objectMetadata = createObjectMetadata(file);
+        InputStream inputStream = getInputStream(file);
 
-        // 메타 데이터 추출
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(file.getSize());
-        objectMetadata.setContentType(file.getContentType());
+        PutObjectRequest request = new PutObjectRequest(imageSnapshotBucket, snapshotImageKey, inputStream,
+                objectMetadata);
+        request.withCannedAcl(CannedAccessControlList.Private);
 
-        // s3 upload
-        try (InputStream inputStream = file.getInputStream()) {
-            amazonS3Client.putObject(
-                    new PutObjectRequest(imageSnapshotBucket, snapshotImageKey, inputStream, objectMetadata)
-                            .withCannedAcl(CannedAccessControlList.Private));
-        } catch (IOException e) {
-            throw new ImageUploadFailedException();
-        }
+        amazonS3Client.putObject(request);
 
-        // file path get
-        String snapshotImageFilePath = String.valueOf(amazonS3Client.getUrl(imageSnapshotBucket, snapshotImageKey));
-
-        return snapshotImageFilePath;
+        return String.valueOf(amazonS3Client.getUrl(imageSnapshotBucket, snapshotImageKey));
     }
 
     /**
@@ -133,35 +115,45 @@ public class AwsS3Service {
         ListObjectsRequest listObjectsRequest = createVideoIndexImageGetRequest(videoId);
         ObjectListing objects = amazonS3Client.listObjects(listObjectsRequest);
 
-        while (true) {
-
-            List<S3ObjectSummary> objectSummaries = objects.getObjectSummaries();
-
-            if (objectSummaries.size() < 1) {
-                break;
-            }
-
-            addImagePath(imagePaths, objectSummaries);
-
-            objects = amazonS3Client.listNextBatchOfObjects(objects);
+        while (objects != null) {
+            objects = addImages(objects, imagePaths);
         }
 
         return imagePaths;
     }
 
-    private void addImagePath(List<String> imagePaths, List<S3ObjectSummary> objectSummaries) {
-        for (S3ObjectSummary item : objectSummaries) {
+    private String createShapshotImageKey(String individualVideoId, Long videoTime) {
+        return individualVideoId + '/' + videoTime;
+    }
 
-            if (isDirectory(item)) {
-                continue;
-            }
+    private String createVideoFileKey(Long videoId) {
+        return videoId.toString() + ".mp4";
+    }
 
-            imagePaths.add(amazonS3Client.getUrl(serviceVideoBucket, item.getKey()).toString());
+    private byte[] getInputStreamByUrl(String fileUrl) {
+        try {
+            URL url = new URL(fileUrl);
+            InputStream inputStream = url.openConnection().getInputStream();
+
+            return IOUtils.toByteArray(inputStream);
+        } catch (Exception e) {
+            throw new InvalidValueException(ErrorCode.VIDEO_UPLOAD_FAILED);
         }
     }
 
-    private boolean isDirectory(S3ObjectSummary item) {
-        return item.getKey().endsWith("/");
+    private InputStream getInputStream(MultipartFile file) {
+        try {
+            return file.getInputStream();
+        } catch (IOException e) {
+            throw new InvalidValueException(ErrorCode.VIDEO_UPLOAD_FAILED);
+        }
+    }
+
+    private ObjectMetadata createObjectMetadata(MultipartFile file) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+        return objectMetadata;
     }
 
     private String createVideoKey(Long videoId) {
@@ -175,5 +167,30 @@ public class AwsS3Service {
         listObjectsRequest.setDelimiter("/");
         return listObjectsRequest;
     }
+
+    private ObjectListing addImages(ObjectListing objects, List<String> imagePaths) {
+
+        List<S3ObjectSummary> objectSummaries = objects.getObjectSummaries();
+
+        if (objectSummaries.size() < 1) {
+            return null;
+        }
+
+        for (S3ObjectSummary item : objectSummaries) {
+
+            if (isDirectory(item)) {
+                continue;
+            }
+
+            imagePaths.add(amazonS3Client.getUrl(serviceVideoBucket, item.getKey()).toString());
+        }
+
+        return amazonS3Client.listNextBatchOfObjects(objects);
+    }
+
+    private boolean isDirectory(S3ObjectSummary item) {
+        return item.getKey().endsWith("/");
+    }
+
 
 }

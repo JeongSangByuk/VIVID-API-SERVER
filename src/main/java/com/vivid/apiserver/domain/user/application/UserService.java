@@ -22,7 +22,7 @@ public class UserService {
 
     public String getWebexAccessToken() {
 
-        User user = currentUserService.getCurrentMember();
+        User user = currentUserService.getCurrentUser();
 
         // access token get
         String webexAccessToken = user.getInstitution().getWebexAccessToken();

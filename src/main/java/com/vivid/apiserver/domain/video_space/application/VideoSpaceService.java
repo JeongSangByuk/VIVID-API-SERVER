@@ -35,7 +35,7 @@ public class VideoSpaceService {
      */
     public VideoSpaceGetResponse getOne(Long videoSpaceId) {
 
-        User currentUser = currentUserService.getCurrentMember();
+        User currentUser = currentUserService.getCurrentUser();
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
         videoSpaceValidateService.checkVideoSpaceParticipant(videoSpace, currentUser);
@@ -52,7 +52,7 @@ public class VideoSpaceService {
     public List<VideoSpaceGetResponse> getList() {
 
         // TODO fetch join
-        User currentUser = currentUserService.getCurrentMember();
+        User currentUser = currentUserService.getCurrentUser();
         List<VideoSpaceParticipant> videoSpaceParticipants = currentUser.getVideoSpaceParticipants();
 
         return videoSpaceParticipants.stream()
@@ -65,7 +65,7 @@ public class VideoSpaceService {
      */
     public HostedVideoSpaceGetResponse getHostedOne(Long videoSpaceId) {
 
-        User currentUser = currentUserService.getCurrentMember();
+        User currentUser = currentUserService.getCurrentUser();
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
         videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());
@@ -89,7 +89,7 @@ public class VideoSpaceService {
      */
     public List<HostedVideoSpaceGetResponse> getHostedList() {
 
-        User currentUser = currentUserService.getCurrentMember();
+        User currentUser = currentUserService.getCurrentUser();
         List<VideoSpace> videoSpaces = videoSpaceQueryService.findListByHostedEmail(currentUser.getEmail());
 
         return videoSpaces.stream()
@@ -102,7 +102,7 @@ public class VideoSpaceService {
      */
     public VideoSpaceSaveResponse save(VideoSpaceSaveRequest videoSpaceSaveRequest) {
 
-        User currentUser = currentUserService.getCurrentMember();
+        User currentUser = currentUserService.getCurrentUser();
         VideoSpace videoSpace = videoSpaceSaveRequest.toEntity(currentUser.getEmail());
 
         videoSpaceManageService.createInitialVideoSpace(currentUser, videoSpace);
@@ -115,7 +115,7 @@ public class VideoSpaceService {
      */
     public void delete(Long videoSpaceId) {
 
-        User currentUser = currentUserService.getCurrentMember();
+        User currentUser = currentUserService.getCurrentUser();
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
         videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());

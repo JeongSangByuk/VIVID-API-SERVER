@@ -21,7 +21,7 @@ public class CurrentUserService {
     /**
      * 현재 로그인 돼 있는 유저 엔티티 get 메소드
      */
-    public User getCurrentMember() {
+    public User getCurrentUser() {
 
         UUID memberId = UUID.fromString(TokenUtil.getCurrentUserEmail());
         return userQueryService.findById(memberId);
@@ -32,7 +32,7 @@ public class CurrentUserService {
      */
     public void checkValidUserAccess(String accessedEmail) {
 
-        User user = getCurrentMember();
+        User user = getCurrentUser();
 
         if (!accessedEmail.equals(user.getEmail())) {
             throw new UserAccessDeniedException();
