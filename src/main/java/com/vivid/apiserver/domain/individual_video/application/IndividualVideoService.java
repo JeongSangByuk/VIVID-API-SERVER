@@ -34,7 +34,7 @@ public class IndividualVideoService {
      */
     public IndividualVideoDetailsGetResponse getDetailsById(String individualVideoId) {
 
-        User user = currentUserService.getCurrentMember();
+        User user = currentUserService.getCurrentUser();
         IndividualVideo individualVideo = individualVideoQueryService.findById(individualVideoId);
 
         currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getEmail());

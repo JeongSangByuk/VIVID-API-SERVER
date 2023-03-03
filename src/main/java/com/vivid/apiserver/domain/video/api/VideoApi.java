@@ -57,7 +57,7 @@ public class VideoApi {
             @PathVariable("video-space-id") Long videoSpaceId
     ) {
 
-        VideoSaveResponse videoSaveResponse = videoService.uploadByMultipartFile(multipartFile, videoSpaceId,
+        VideoSaveResponse videoSaveResponse = videoService.uploadByDirectUpload(multipartFile, videoSpaceId,
                 videoSaveRequest);
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS, videoSaveResponse);

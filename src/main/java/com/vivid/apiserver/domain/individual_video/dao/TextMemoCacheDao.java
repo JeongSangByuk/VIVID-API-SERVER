@@ -118,7 +118,7 @@ public class TextMemoCacheDao {
         return list;
     }
 
-    public void deleteHistoryFromRedis(String individualVideoId) {
+    public void deleteHistoryFromCache(String individualVideoId) {
 
         String key = getDefaultStateKey(individualVideoId);
 
@@ -126,10 +126,8 @@ public class TextMemoCacheDao {
 
         redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
 
-            // history set delete
             connection.del(keySerializer.serialize(key));
 
-            // 모든 history 삭제
             members.forEach(state -> {
                 connection.del(keySerializer.serialize(state));
             });

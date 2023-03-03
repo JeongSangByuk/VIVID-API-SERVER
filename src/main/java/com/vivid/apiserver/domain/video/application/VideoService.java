@@ -2,11 +2,14 @@ package com.vivid.apiserver.domain.video.application;
 
 import com.vivid.apiserver.domain.individual_video.application.command.IndividualVideoCommandService;
 import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoDetailsGetResponse;
-import com.vivid.apiserver.domain.user.exception.UserAccessDeniedException;
+import com.vivid.apiserver.domain.user.application.CurrentUserService;
+import com.vivid.apiserver.domain.user.domain.User;
+import com.vivid.apiserver.domain.video.application.command.VideoCommandService;
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
 import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
 import com.vivid.apiserver.domain.video.exception.VideoNotFoundException;
+import com.vivid.apiserver.domain.video_space.application.VideoSpaceValidateService;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceQueryService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.global.infra.storage.AwsS3Service;
@@ -27,51 +30,42 @@ public class VideoService {
 
     private final VideoSpaceQueryService videoSpaceQueryService;
 
+    private final VideoCommandService videoCommandService;
     private final IndividualVideoCommandService individualVideoCommandService;
 
+    private final VideoSpaceValidateService videoSpaceValidateService;
+
+    private final CurrentUserService currentUserService;
     private final AwsS3Service awsS3Service;
 
-    // multipart 파일을 통한 직접 업로드 메소드
-    public VideoSaveResponse uploadByMultipartFile(MultipartFile multipartFile, Long videoSpaceId,
+    // multipart 파일을 통한 비디오 직접 업로드 메소드
+    public VideoSaveResponse uploadByDirectUpload(MultipartFile multipartFile, Long videoSpaceId,
             VideoSaveRequest videoSaveRequest) {
 
-        // get email
-        String email = userService.getEmailFromAuthentication();
-
-        // 해당 video의 video space find
+        User currentUser = currentUserService.getCurrentUser();
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
-        // video space의 host email과 현재 접속 user의 email이 불일치할 경우, throw
-        if (!videoSpace.getHostEmail().equals(email)) {
-            throw new UserAccessDeniedException();
-        }
+        videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());
 
-        // 객체 저장
-        Video savedVideo = videoRepository.save(videoSaveRequest.toEntity(videoSpace, email));
+        Video video = videoSaveRequest.toEntity(videoSpace, currentUser.getEmail());
 
-        // aws upload by multipart file
-        VideoSaveResponse videoSaveResponse = awsS3Service.uploadVideoToS3ByMultipartFile(multipartFile,
-                savedVideo.getId());
+        awsS3Service.uploadVideoToS3ByMultipartFile(multipartFile, video.getId());
+        videoCommandService.save(video);
+        individualVideoCommandService.saveAllByParticipants(videoSpace.getVideoSpaceParticipants(), video);
 
-        individualVideoCommandService.saveAllByParticipants(videoSpace.getVideoSpaceParticipants(), savedVideo);
-
-        return videoSaveResponse;
+        return new VideoSaveResponse(video.getId());
     }
 
-    // download url을 통한 video 업로드
+    // download url을 통한 비디오 업로드 메소드
     public VideoSaveResponse uploadByDownloadUrl(String recordingDownloadUrl, Long videoSpaceId,
-            VideoSaveRequest videoSaveRequest) throws IOException {
+ 드          VideoSaveRequest videoSaveRequest) throws IOException {
 
-        // get email
-        String email = userService.getEmailFromAuthentication();
+        User currentUser = currentUserService.getCurrentUser();
 
         // 해당 video의 video space find
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
-        // video space의 host email과 현재 접속 user의 email이 불일치할 경우, throw
-        if (!videoSpace.getHostEmail().equals(email)) {
-            throw new UserAccessDeniedException();
-        }
+        videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());
 
         // 객체 저장
         Video savedVideo = videoRepository.save(videoSaveRequest.toEntity(videoSpace, email));

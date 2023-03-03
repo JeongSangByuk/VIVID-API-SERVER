@@ -27,7 +27,7 @@ public class UserMyPageService {
     // dashboard의 user data를 get합니다.
     public UserMyPageDashboardDataGetResponse getMyPageDashboardData() {
 
-        User user = currentUserService.getCurrentMember();
+        User user = currentUserService.getCurrentUser();
 
         // user video space get, inner video data get
         List<VideoSpaceGetResponse> videoSpaces = videoSpaceService.getList();
