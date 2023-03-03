@@ -78,7 +78,7 @@ public class VideoApi {
             @PathVariable("video-id") Long videoId) throws IOException {
 
         // upload가 완료된후 uploaded 상태 변경
-        videoService.changeUploadState(videoId, true);
+        videoService.changeUploadState(videoId);
 
         return SuccessResponse.OK;
 

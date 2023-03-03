@@ -20,8 +20,7 @@ public class IndividualVideoQueryService {
 
         UUID uuid = UUID.fromString(individualVideoId);
 
-        return individualVideoRepository.findById(uuid).orElseThrow(() -> {
-            throw new NotFoundException(ErrorCode.INDIVIDUAL_VIDEO_NOT_FOUND);
-        });
+        return individualVideoRepository.findById(uuid)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.INDIVIDUAL_VIDEO_NOT_FOUND));
     }
 }

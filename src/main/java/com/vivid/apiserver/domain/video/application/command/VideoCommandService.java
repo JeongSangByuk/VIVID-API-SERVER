@@ -18,6 +18,15 @@ public class VideoCommandService {
         videoRepository.save(video);
     }
 
+    public void delete(Video video) {
+        videoRepository.delete(video);
+    }
+
+    public void changeWhenUploaded(Video video, String thumbnailImagePath) {
+        video.changeWhenUploaded(true);
+        video.changeThumbnailImagePath(thumbnailImagePath);
+    }
+
     public void deleteAllByVideoSpace(VideoSpace videoSpace) {
         videoRepository.deleteAllByVideoSpace(videoSpace);
     }

@@ -21,9 +21,7 @@ public class VideoSpaceQueryService {
     public VideoSpace findById(Long id) {
 
         return videoSpaceRepository.findById(id)
-                .orElseThrow(() -> {
-                    throw new NotFoundException(ErrorCode.VIDEO_SPACE_NOT_FOUND);
-                });
+                .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_SPACE_NOT_FOUND));
     }
 
     public List<VideoSpace> findListByHostedEmail(String email) {

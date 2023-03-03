@@ -20,17 +20,13 @@ public class VideoSpaceParticipantQueryService {
     public VideoSpaceParticipant findById(Long videoSpaceParticipantId) {
 
         return videoSpaceParticipantRepository.findById(videoSpaceParticipantId)
-                .orElseThrow(() -> {
-                    throw new NotFoundException(ErrorCode.VIDEO_SPACE_PARTICIPANT_NOT_FOUND);
-                });
+                .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_SPACE_PARTICIPANT_NOT_FOUND));
     }
 
     public VideoSpaceParticipant findByUserAndVideoSpace(User user, VideoSpace videoSpace) {
 
         return videoSpaceParticipantRepository.findByVideoSpaceAndUser(videoSpace, user)
-                .orElseThrow(() -> {
-                    throw new NotFoundException(ErrorCode.VIDEO_SPACE_PARTICIPANT_NOT_FOUND);
-                });
+                .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_SPACE_PARTICIPANT_NOT_FOUND));
     }
 
 }
