@@ -115,47 +115,65 @@ public class AwsS3Service {
         return snapshotImageFilePath;
     }
 
-    // video의 m3u8 파일 path get
-    public String getVideoFilePath(Long videoId) throws IOException {
+    /**
+     * video file path를 get하는 메소드
+     */
+    public String getVideoFilePath(Long videoId) {
 
-        // video key
-        String s3VideoKey = videoId + "/Default/HLS/" + videoId.toString() + ".m3u8";
-        URL videoFileUrl = amazonS3Client.getUrl(serviceVideoBucket, s3VideoKey);
-
-        return videoFileUrl.toString();
+        String s3VideoKey = createVideoKey(videoId);
+        return amazonS3Client.getUrl(serviceVideoBucket, s3VideoKey).toString();
     }
 
+    /**
+     * video의 visual index 이미지 파일 path list get하는 메소드
+     */
+    public List<String> getVisualIndexImages(Long videoId) {
 
-    // video의 visualIndex 이미지 파일 path list get
-    public List<String> getVisualIndexImages(Long videoId) throws IOException {
-
-        List<String> keys = new ArrayList<>();
-        ListObjectsRequest listObjectsRequest = new ListObjectsRequest().withBucketName(serviceVideoBucket);
-        listObjectsRequest.setPrefix(videoId + "/Default/Thumbnails/");
-        listObjectsRequest.setDelimiter("/");
-
+        List<String> imagePaths = new ArrayList<>();
+        ListObjectsRequest listObjectsRequest = createVideoIndexImageGetRequest(videoId);
         ObjectListing objects = amazonS3Client.listObjects(listObjectsRequest);
 
         while (true) {
+
             List<S3ObjectSummary> objectSummaries = objects.getObjectSummaries();
 
-            // size 0일 경우
             if (objectSummaries.size() < 1) {
                 break;
             }
 
-            for (S3ObjectSummary item : objectSummaries) {
-
-                // 디렉터리가 아니라면
-                if (!item.getKey().endsWith("/")) {
-                    keys.add(amazonS3Client.getUrl(serviceVideoBucket, item.getKey()).toString());
-                }
-            }
+            addImagePath(imagePaths, objectSummaries);
 
             objects = amazonS3Client.listNextBatchOfObjects(objects);
         }
 
-        return keys;
+        return imagePaths;
+    }
+
+    private void addImagePath(List<String> imagePaths, List<S3ObjectSummary> objectSummaries) {
+        for (S3ObjectSummary item : objectSummaries) {
+
+            if (isDirectory(item)) {
+                continue;
+            }
+
+            imagePaths.add(amazonS3Client.getUrl(serviceVideoBucket, item.getKey()).toString());
+        }
+    }
+
+    private boolean isDirectory(S3ObjectSummary item) {
+        return item.getKey().endsWith("/");
+    }
+
+    private String createVideoKey(Long videoId) {
+        return videoId + "/Default/HLS/" + videoId.toString() + ".m3u8";
+    }
+
+    private ListObjectsRequest createVideoIndexImageGetRequest(Long videoId) {
+
+        ListObjectsRequest listObjectsRequest = new ListObjectsRequest().withBucketName(serviceVideoBucket);
+        listObjectsRequest.setPrefix(videoId + "/Default/Thumbnails/");
+        listObjectsRequest.setDelimiter("/");
+        return listObjectsRequest;
     }
 
 }

@@ -7,31 +7,48 @@ import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class IndividualVideoCommandService {
 
     private final IndividualVideoRepository individualVideoRepository;
 
-    public List<IndividualVideo> saveAll(List<Video> videos, VideoSpaceParticipant videoSpaceParticipant) {
+    public void saveAllByParticipants(List<VideoSpaceParticipant> videoSpaceParticipants, Video video) {
+
+        List<IndividualVideo> individualVideos = videoSpaceParticipants.stream()
+                .map(videoSpaceParticipant -> IndividualVideo.of(video, videoSpaceParticipant))
+                .collect(Collectors.toList());
+
+        individualVideoRepository.saveAll(individualVideos);
+    }
+
+    public void saveAllByVideos(List<Video> videos, VideoSpaceParticipant videoSpaceParticipant) {
 
         List<IndividualVideo> individualVideos = videos.stream()
                 .map(video -> IndividualVideo.of(video, videoSpaceParticipant))
                 .collect(Collectors.toList());
 
         individualVideoRepository.saveAll(individualVideos);
+    }
 
-        return individualVideos;
+    public void changeLastAccessTime(IndividualVideo individualVideo) {
+        individualVideo.changeLastAccessTime();
+    }
+
+    public void changeProgressRate(IndividualVideo individualVideo, Long progressRate) {
+        individualVideo.changeProgressRate(progressRate);
     }
 
     public void deleteByVideoSpaceParticipant(VideoSpaceParticipant videoSpaceParticipant) {
         individualVideoRepository.deleteAllByVideoSpaceParticipant(videoSpaceParticipant);
+    }
+
+    public void delete(IndividualVideo individualVideo) {
+        individualVideoRepository.delete(individualVideo);
     }
 
     public void deleteAll(List<IndividualVideo> individualVideos) {

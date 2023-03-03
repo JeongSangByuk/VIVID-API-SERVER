@@ -18,4 +18,11 @@ public class SnapshotImageUploadResponse {
     @Schema(description = "스냅샷 캡처 시간(초)", example = "120")
     private Long time;
 
+    public static SnapshotImageUploadResponse of(String snapshotImageFilePath, Long time) {
+        return SnapshotImageUploadResponse.builder()
+                .filePath(snapshotImageFilePath)
+                .time(time)
+                .build();
+    }
+
 }

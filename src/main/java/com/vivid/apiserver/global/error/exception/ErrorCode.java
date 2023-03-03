@@ -41,7 +41,7 @@ public enum ErrorCode {
     INDIVIDUAL_VIDEO_ACCESS_DENIED("IV01", "Individual Video Access is Denied.", HttpStatus.UNAUTHORIZED.value()),
     INDIVIDUAL_VIDEO_NOT_FOUND("IV02", "Individual Video is not Found.", HttpStatus.BAD_REQUEST.value()),
     IMAGE_UPLOAD_FAILED("IV03", "Image Upload is failed.", HttpStatus.INTERNAL_SERVER_ERROR.value()),
-    TEXT_MEMO_STATE_NOT_EXIST("IV04", "TextMemoState is not Exist", HttpStatus.BAD_REQUEST.value()),
+    TEXT_MEMO_NOT_EXIST("IV04", "TextMemo is not Exist", HttpStatus.BAD_REQUEST.value()),
 
     // Video Space
     VIDEO_SPACE_ACCESS_DENIED("VS01", "Video Space Access is Denied.", HttpStatus.UNAUTHORIZED.value()),

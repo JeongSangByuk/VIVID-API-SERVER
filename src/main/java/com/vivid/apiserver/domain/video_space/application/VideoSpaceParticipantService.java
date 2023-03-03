@@ -43,7 +43,7 @@ public class VideoSpaceParticipantService {
         videoSpaceValidateService.checkDuplicatedParticipant(email, videoSpace.getVideoSpaceParticipants());
 
         VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantCommandService.save(videoSpace, user);
-        individualVideoCommandService.saveAll(videoSpace.getVideos(), videoSpaceParticipant);
+        individualVideoCommandService.saveAllByVideos(videoSpace.getVideos(), videoSpaceParticipant);
 
         return VideoSpaceParticipantSaveResponse.of(videoSpaceParticipant);
     }

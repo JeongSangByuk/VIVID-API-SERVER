@@ -1,20 +1,15 @@
 package com.vivid.apiserver.domain.individual_video.api;
 
 import com.vivid.apiserver.domain.individual_video.application.IndividualVideoService;
-import com.vivid.apiserver.domain.individual_video.dto.request.IndividualVideosGetRequest;
 import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoDetailsGetResponse;
-import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoGetResponse;
 import com.vivid.apiserver.domain.individual_video.dto.response.SnapshotImageUploadResponse;
 import com.vivid.apiserver.global.infra.storage.AwsS3Service;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.io.IOException;
-import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -59,7 +54,7 @@ public class IndividualVideoApi {
     @Operation(summary = "individual video get api", description = "individual video uuid를 통해 individual video detail info, file url, visual index file path를 get하는 api 입니다.")
     @GetMapping("/api/individual-videos/{individual-video-id}")
     public ResponseEntity<SuccessResponse<IndividualVideoDetailsGetResponse>> getDetails(
-            @PathVariable("individual-video-id") String individualVideoId) throws IOException {
+            @PathVariable("individual-video-id") String individualVideoId) {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS,
                 individualVideoService.getDetailsById(individualVideoId));
@@ -68,9 +63,8 @@ public class IndividualVideoApi {
     @Operation(summary = "individual video last accessed update api", description = "individual video의 최종 접근 시각을 최신화하는 api입니다.")
     @PutMapping("/api/individual-videos/{individual-video-id}/accessed")
     public ResponseEntity<SuccessResponse<String>> updateLastAccessTime(
-            @PathVariable("individual-video-id") String individualVideoId) throws IOException {
+            @PathVariable("individual-video-id") String individualVideoId) {
 
-        // 최종 접근 시간 변경
         individualVideoService.updateLastAccessTime(individualVideoId);
 
         return SuccessResponse.OK;
@@ -83,7 +77,6 @@ public class IndividualVideoApi {
             @PathVariable("individual-video-id") String individualVideoId,
             @PathVariable("percent") Long progressRate) throws IOException {
 
-        // progress rate 수정
         individualVideoService.updateProgressRate(individualVideoId, progressRate);
 
         return SuccessResponse.OK;
@@ -99,17 +92,4 @@ public class IndividualVideoApi {
 
         return SuccessResponse.OK;
     }
-
-    // Deprecated
-
-    @Operation(summary = "[Deprecated]individual videos list get api", description = "[Deprecated]video space participant id를 이용하여 individual video id list를 get 하는 api입니다")
-    @GetMapping("/api/individual-videos")
-    public ResponseEntity<SuccessResponse<List<IndividualVideoGetResponse>>> getList(
-            @RequestBody @Valid IndividualVideosGetRequest individualVideosGetRequest) {
-
-        return SuccessResponse.success(SuccessCode.OK_SUCCESS,
-                individualVideoService.findAllByVideoParticipantId(individualVideosGetRequest));
-    }
-
-
 }

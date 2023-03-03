@@ -1,8 +1,8 @@
 package com.vivid.apiserver.domain.individual_video.api;
 
-import com.vivid.apiserver.domain.individual_video.application.TextMemoStateService;
-import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoStateRedisSaveRequest;
-import com.vivid.apiserver.domain.individual_video.dto.response.TextMemoStateResponse;
+import com.vivid.apiserver.domain.individual_video.application.TextMemoService;
+import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoCacheSaveRequest;
+import com.vivid.apiserver.domain.individual_video.dto.response.TextMemoResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/individual-videos")
 public class TextMemoStateApi {
 
-    private final TextMemoStateService textMemoStateService;
+    private final TextMemoService textMemoService;
 
     // redis cache에 state save 메소드
     // save할 때는 latest, history의 구분 없이 input을 받고, dao 파트에서 나눠서 저장한다.
@@ -33,10 +33,10 @@ public class TextMemoStateApi {
     @ApiResponse(responseCode = "200", description = "반환값은 없습니다.")
     @PostMapping("/{individual-video-id}/cache/text-memo-state")
     public ResponseEntity<SuccessResponse<String>> saveToCache(
-            @RequestBody @Valid final TextMemoStateRedisSaveRequest dto,
+            @RequestBody @Valid final TextMemoCacheSaveRequest dto,
             @PathVariable("individual-video-id") String individualVideoId) {
 
-        textMemoStateService.saveToRedis(dto, individualVideoId);
+        textMemoService.saveToCache(dto, individualVideoId);
 
         return SuccessResponse.OK;
     }
@@ -48,7 +48,7 @@ public class TextMemoStateApi {
     public ResponseEntity<SuccessResponse<String>> saveListToDynamoDb(
             @PathVariable("individual-video-id") String individualVideoId) {
 
-        textMemoStateService.saveAllToDynamoDb(individualVideoId);
+        textMemoService.saveAll(individualVideoId);
 
         return SuccessResponse.OK;
     }
@@ -58,11 +58,11 @@ public class TextMemoStateApi {
     @Operation(summary = "text state latest get api", description = "레디스 캐시에 있는 text state latest를 get합니다. 캐시에 없을시 다이나모DB에서 get합니다.")
     @ApiResponse(responseCode = "200", description = "text state latest을 json 형식으로 반환합니다.")
     @GetMapping("/{individual-video-id}/cache/text-memo-state-latest")
-    public ResponseEntity<SuccessResponse<TextMemoStateResponse>> getFromCache(
+    public ResponseEntity<SuccessResponse<TextMemoResponse>> getFromCache(
             @PathVariable("individual-video-id") String individualVideoId) {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS,
-                textMemoStateService.getLatestFromRedis(individualVideoId));
+                textMemoService.getLatest(individualVideoId));
     }
 
     // redis 캐시로 부터 text memo state latest get
@@ -70,10 +70,10 @@ public class TextMemoStateApi {
     @Operation(summary = "text state history list get api", description = "다이나모DB 에 있는 text state history list를 get합니다.")
     @ApiResponse(responseCode = "200", description = "text state history를 json list 형식으로 반환합니다.")
     @GetMapping("/{individual-video-id}/text-memo-state-history")
-    public ResponseEntity<SuccessResponse<List<TextMemoStateResponse>>> getHistoryListFromDynamoDb(
+    public ResponseEntity<SuccessResponse<List<TextMemoResponse>>> getHistoryListFromDynamoDb(
             @PathVariable("individual-video-id") String individualVideoId) {
 
-        return SuccessResponse.success(SuccessCode.OK_SUCCESS, textMemoStateService.getHistoryFromDynamoDb(
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS, textMemoService.getHistories(
                 individualVideoId));
     }
 

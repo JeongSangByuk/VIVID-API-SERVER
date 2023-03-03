@@ -1,14 +1,13 @@
 package com.vivid.apiserver.domain.individual_video.dao.repository;
 
-import com.vivid.apiserver.domain.individual_video.domain.TextMemoState;
+import com.vivid.apiserver.domain.individual_video.domain.TextMemo;
+import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Optional;
+public interface TextMemoStateRepository extends CrudRepository<TextMemo, String> {
 
-public interface TextMemoStateRepository extends CrudRepository<TextMemoState, String> {
+    Optional<TextMemo> findById(String id);
 
-    Optional<TextMemoState> findById(String id);
-
-    Optional<TextMemoState> findTextMemoStateById(String id);
+    Optional<TextMemo> findTextMemoStateById(String id);
 
 }
