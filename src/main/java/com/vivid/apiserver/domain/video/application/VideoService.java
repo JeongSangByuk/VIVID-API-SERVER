@@ -1,19 +1,17 @@
 package com.vivid.apiserver.domain.video.application;
 
 import com.vivid.apiserver.domain.individual_video.application.command.IndividualVideoCommandService;
-import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoDetailsGetResponse;
 import com.vivid.apiserver.domain.user.application.CurrentUserService;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.video.application.command.VideoCommandService;
+import com.vivid.apiserver.domain.video.application.query.VideoQueryService;
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
 import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
-import com.vivid.apiserver.domain.video.exception.VideoNotFoundException;
 import com.vivid.apiserver.domain.video_space.application.VideoSpaceValidateService;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceQueryService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.global.infra.storage.AwsS3Service;
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class VideoService {
 
 
+    private final VideoQueryService videoQueryService;
     private final VideoSpaceQueryService videoSpaceQueryService;
 
     private final VideoCommandService videoCommandService;
@@ -38,7 +37,9 @@ public class VideoService {
     private final CurrentUserService currentUserService;
     private final AwsS3Service awsS3Service;
 
-    // multipart 파일을 통한 비디오 직접 업로드 메소드
+    /**
+     * multipart 파일을 통한 비디오 직접 업로드 메소드
+     */
     public VideoSaveResponse uploadByDirectUpload(MultipartFile multipartFile, Long videoSpaceId,
             VideoSaveRequest videoSaveRequest) {
 
@@ -49,82 +50,51 @@ public class VideoService {
 
         Video video = videoSaveRequest.toEntity(videoSpace, currentUser.getEmail());
 
-        awsS3Service.uploadVideoToS3ByMultipartFile(multipartFile, video.getId());
         videoCommandService.save(video);
         individualVideoCommandService.saveAllByParticipants(videoSpace.getVideoSpaceParticipants(), video);
+        awsS3Service.uploadVideoToS3ByMultipartFile(multipartFile, video.getId());
 
         return new VideoSaveResponse(video.getId());
     }
 
-    // download url을 통한 비디오 업로드 메소드
-    public VideoSaveResponse uploadByDownloadUrl(String recordingDownloadUrl, Long videoSpaceId,
- 드          VideoSaveRequest videoSaveRequest) throws IOException {
+    /**
+     * download url을 통한 비디오 업로드 메소드
+     */
+    public VideoSaveResponse uploadByDownloadUrl(String url, Long videoSpaceId, VideoSaveRequest videoSaveRequest) {
 
         User currentUser = currentUserService.getCurrentUser();
-
-        // 해당 video의 video space find
         VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
         videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());
 
-        // 객체 저장
-        Video savedVideo = videoRepository.save(videoSaveRequest.toEntity(videoSpace, email));
+        Video video = videoSaveRequest.toEntity(videoSpace, currentUser.getEmail());
 
-        // aws upload by download url
-        VideoSaveResponse videoSaveResponse = awsS3Service.uploadVideoToS3ByDownloadUrl(recordingDownloadUrl,
-                savedVideo.getId());
+        individualVideoCommandService.saveAllByParticipants(videoSpace.getVideoSpaceParticipants(), video);
+        awsS3Service.uploadVideoToS3ByDownloadUrl(url, video.getId());
 
-        individualVideoCommandService.saveAllByParticipants(videoSpace.getVideoSpaceParticipants(), savedVideo);
-
-        return videoSaveResponse;
+        return new VideoSaveResponse(video.getId());
     }
 
-    // delete
+    /**
+     * video 삭제 메소드
+     */
     public void delete(Long videoId) {
 
-        // 해당 video의 find
-        Video video = videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
+        Video video = videoQueryService.findById(videoId);
 
-        // 삭제 연관 관계 편의 메소드
-        video.delete();
-
-        // delete by id
-        videoRepository.deleteById(videoId);
+        videoCommandService.delete(video);
+        individualVideoCommandService.deleteAll(video.getIndividualVideos());
     }
 
-    // upload 된 후 video의 uploaded 상태 변경
-    public void changeUploadState(Long videoId, boolean isUploaded) throws IOException {
+    /**
+     * TODO consume 로직으로 변경
+     * upload 된 후 video의 uploaded 상태 변경하는 메소드
+     */
+    public void changeUploadState(Long videoId) {
 
-        // 해당 video의 find
-//        Video video = videoDao.findById(videoId);
-        Video video = videoRepository.findById(videoId).orElseThrow(VideoNotFoundException::new);
-
-        // uploaded true
-        video.changeIsUploaded(isUploaded);
-
-        // get thumbnail imgae
+        Video video = videoQueryService.findById(videoId);
         List<String> visualIndexImages = awsS3Service.getVisualIndexImages(videoId);
 
-        // video thumbnail change
-        video.changeThumbnailImagePath(visualIndexImages.get(0));
-
+        videoCommandService.changeWhenUploaded(video, visualIndexImages.get(0));
     }
-
-    public IndividualVideoDetailsGetResponse getFilePath(Long videoId) throws IOException {
-
-        // video file path get
-        String videoFilePath = awsS3Service.getVideoFilePath(videoId);
-
-        // visual index file path list get
-        List<String> visualIndexImageFilePathList = awsS3Service.getVisualIndexImages(videoId);
-
-        IndividualVideoDetailsGetResponse individualVideoDetailsGetResponse = IndividualVideoDetailsGetResponse.builder()
-                .videoFilePath(videoFilePath)
-                .visualIndexImageFilePathList(visualIndexImageFilePathList)
-                .build();
-
-        return individualVideoDetailsGetResponse;
-    }
-
-
 }

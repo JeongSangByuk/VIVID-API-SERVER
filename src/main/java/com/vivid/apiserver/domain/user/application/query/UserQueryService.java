@@ -22,17 +22,13 @@ public class UserQueryService {
     public User findById(UUID id) {
 
         return userRepository.findById(id)
-                .orElseThrow(() -> {
-                    throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
-                });
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 
     public User findByEmail(String email) {
 
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
-                });
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 
     public void checkDuplicatedUserByEmail(String email) {
