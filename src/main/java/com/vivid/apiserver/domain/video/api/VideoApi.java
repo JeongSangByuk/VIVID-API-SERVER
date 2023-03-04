@@ -1,6 +1,7 @@
 package com.vivid.apiserver.domain.video.api;
 
 import com.vivid.apiserver.domain.video.application.VideoService;
+import com.vivid.apiserver.domain.video.application.VideoUploadService;
 import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
 import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
@@ -31,6 +32,8 @@ public class VideoApi {
 
     private final VideoService videoService;
 
+    private final VideoUploadService videoUploadService;
+
     /**
      * 1. 직접 업로드
      * 2. VOD(유튜브) 링크를 통한 업로드
@@ -57,7 +60,7 @@ public class VideoApi {
             @PathVariable("video-space-id") Long videoSpaceId
     ) {
 
-        VideoSaveResponse videoSaveResponse = videoService.uploadByDirectUpload(multipartFile, videoSpaceId,
+        VideoSaveResponse videoSaveResponse = videoUploadService.uploadByDirectUpload(multipartFile, videoSpaceId,
                 videoSaveRequest);
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS, videoSaveResponse);
@@ -77,7 +80,6 @@ public class VideoApi {
     public ResponseEntity<SuccessResponse<String>> changeUploadStateAfterUploaded(
             @PathVariable("video-id") Long videoId) throws IOException {
 
-        // upload가 완료된후 uploaded 상태 변경
         videoService.changeUploadState(videoId);
 
         return SuccessResponse.OK;
