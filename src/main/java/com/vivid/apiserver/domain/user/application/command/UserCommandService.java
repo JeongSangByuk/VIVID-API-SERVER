@@ -1,6 +1,7 @@
 package com.vivid.apiserver.domain.user.application.command;
 
 import com.vivid.apiserver.domain.user.dao.UserRepository;
+import com.vivid.apiserver.domain.user.domain.Institution;
 import com.vivid.apiserver.domain.user.domain.User;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,11 @@ public class UserCommandService {
 
     public void changeLastAccessIndividualVideoId(User user, UUID lastAccessIndividualVideoId) {
         user.changeLastAccessIndividualVideoId(lastAccessIndividualVideoId);
+    }
+
+    public void changeWebexAccessToken(User user, String accessToken) {
+        Institution institution = user.getInstitution();
+        institution.changeWebexAccessToken(accessToken);
+        user.changeInstitution(institution);
     }
 }
