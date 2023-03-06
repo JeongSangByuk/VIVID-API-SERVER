@@ -1,16 +1,20 @@
 package com.vivid.apiserver.domain.individual_video.dto.dto;
 
-import com.vivid.apiserver.domain.video.dto.response.VideoGetResponse;
-import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
+import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
+import com.vivid.apiserver.domain.video.domain.Video;
+import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PRIVATE)
 public class DashboardIndividualVideoDto {
-
 
     private Long videoSpaceId;
 
@@ -26,19 +30,25 @@ public class DashboardIndividualVideoDto {
 
     private String videoDescription;
 
+    private Integer progressRate;
+
     private LocalDateTime lastAccessTime;
 
-    @Builder
-    public DashboardIndividualVideoDto(VideoSpaceGetResponse videoSpace, VideoGetResponse video) {
+    public static DashboardIndividualVideoDto of(IndividualVideo individualVideo) {
 
-        this.videoSpaceId = videoSpace.getId();
-        this.videoSpaceName = videoSpace.getName();
-        this.videoSpaceDescription = videoSpace.getDescription();
+        Video video = individualVideo.getVideo();
+        VideoSpace videoSpace = individualVideo.getVideoSpaceParticipant().getVideoSpace();
 
-        this.individualVideoId = video.getIndividualVideoId();
-        this.updatedDate = video.getLastAccessTime();
-        this.videoTitle = video.getTitle();
-        this.videoDescription = video.getDescription();
-        this.lastAccessTime = video.getLastAccessTime();
+        return DashboardIndividualVideoDto.builder()
+                .videoSpaceId(videoSpace.getId())
+                .videoSpaceName(videoSpace.getName())
+                .videoSpaceDescription(videoSpace.getDescription())
+                .individualVideoId(individualVideo.getId().toString())
+                .updatedDate(individualVideo.getLastAccessTime())
+                .videoTitle(video.getTitle())
+                .videoDescription(video.getDescription())
+                .progressRate(individualVideo.getProgressRate())
+                .lastAccessTime(individualVideo.getLastAccessTime())
+                .build();
     }
 }

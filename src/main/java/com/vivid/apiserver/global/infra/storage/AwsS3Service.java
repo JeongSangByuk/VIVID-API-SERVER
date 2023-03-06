@@ -78,7 +78,6 @@ public class AwsS3Service {
         amazonS3Client.putObject(request);
     }
 
-
     /**
      * 스냅샷 이미지를 s3에 업로드하는 메소드
      */

@@ -1,4 +1,4 @@
-package com.vivid.apiserver.domain.user.dto;
+package com.vivid.apiserver.domain.user.dto.response;
 
 import com.vivid.apiserver.domain.user.domain.User;
 import lombok.AccessLevel;
@@ -8,18 +8,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-public class UserSignUpResponse {
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class UserGetResponse {
 
     private String email;
+
     private String name;
 
-    public static UserSignUpResponse from(User user) {
-        return UserSignUpResponse.builder()
+    private String picture;
+
+    public static UserGetResponse from(User user) {
+        return UserGetResponse.builder()
                 .email(user.getEmail())
                 .name(user.getName())
+                .picture(user.getPicture())
                 .build();
     }
 }

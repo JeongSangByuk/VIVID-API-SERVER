@@ -1,4 +1,4 @@
-package com.vivid.apiserver.domain.user.dto;
+package com.vivid.apiserver.domain.user.dto.response;
 
 import com.vivid.apiserver.domain.individual_video.dto.dto.DashboardIndividualVideoDto;
 import com.vivid.apiserver.domain.user.domain.User;
@@ -22,22 +22,22 @@ public class UserMyPageDashboardDataGetResponse {
 
     private DashboardIndividualVideoDto lastStudiedIndividualVideo;
 
-    private Long videoSpaceCount;
+    private Integer videoSpaceCount;
 
-    private Long totalIndividualVideoCount;
+    private Integer totalIndividualVideoCount;
 
-    private Long completedIndividualVideoCount;
+    private Integer completedIndividualVideoCount;
 
     private List<DashboardIndividualVideoDto> dashboardIndividualVideos = new ArrayList<>();
 
     @Builder
     public UserMyPageDashboardDataGetResponse(User user, DashboardIndividualVideoDto lastStudiedIndividualVideo,
             List<DashboardIndividualVideoDto> dashboardIndividualVideos,
-            Long videoSpaceCount, Long totalIndividualVideoCount, Long completedIndividualVideoCount) {
+            Integer videoSpaceCount, Integer totalIndividualVideoCount, Integer completedIndividualVideoCount) {
         this.email = user.getEmail();
         this.name = user.getName();
         this.picture = user.getPicture();
-        this.isConnectedWebex = user.getInstitution().getWebexAccessToken() == null ? false : true;
+        this.isConnectedWebex = user.getInstitution().getWebexAccessToken() != null;
         this.lastStudiedIndividualVideo = lastStudiedIndividualVideo;
         this.dashboardIndividualVideos = dashboardIndividualVideos;
 

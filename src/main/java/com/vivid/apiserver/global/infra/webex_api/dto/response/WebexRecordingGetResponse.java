@@ -1,4 +1,4 @@
-package com.vivid.apiserver.global.infra.webex_api;
+package com.vivid.apiserver.global.infra.webex_api.dto.response;
 
 import com.vivid.apiserver.global.infra.webex_api.dto.response.WebexRecordingsGetResponse.WebexRecording;
 import lombok.AccessLevel;

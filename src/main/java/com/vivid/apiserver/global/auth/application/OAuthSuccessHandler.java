@@ -4,7 +4,7 @@ import com.vivid.apiserver.domain.auth.application.command.RefreshTokenCommandSe
 import com.vivid.apiserver.domain.user.application.UserSignUpService;
 import com.vivid.apiserver.domain.user.application.query.UserQueryService;
 import com.vivid.apiserver.domain.user.domain.Role;
-import com.vivid.apiserver.domain.user.dto.UserLoginRequest;
+import com.vivid.apiserver.domain.user.dto.request.UserLoginRequest;
 import com.vivid.apiserver.global.auth.token.AuthToken;
 import com.vivid.apiserver.global.auth.util.CookieUtil;
 import java.io.IOException;

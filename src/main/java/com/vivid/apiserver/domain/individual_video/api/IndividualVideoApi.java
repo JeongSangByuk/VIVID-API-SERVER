@@ -75,7 +75,7 @@ public class IndividualVideoApi {
     @PutMapping("/api/individual-videos/{individual-video-id}/progress-rate/{percent}")
     public ResponseEntity<SuccessResponse<String>> updateProgressRate(
             @PathVariable("individual-video-id") String individualVideoId,
-            @PathVariable("percent") Long progressRate) throws IOException {
+            @PathVariable("percent") Integer progressRate) {
 
         individualVideoService.updateProgressRate(individualVideoId, progressRate);
 

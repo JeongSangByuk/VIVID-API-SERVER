@@ -48,7 +48,7 @@ public class IndividualVideo extends BaseEntity {
     private VideoSpaceParticipant videoSpaceParticipant;
 
     @Column(name = "progress_rate")
-    private Long progressRate;
+    private Integer progressRate;
 
     @Column(name = "last_access_time")
     private LocalDateTime lastAccessTime;
@@ -57,7 +57,7 @@ public class IndividualVideo extends BaseEntity {
         return IndividualVideo.builder()
                 .video(video)
                 .videoSpaceParticipant(videoSpaceParticipant)
-                .progressRate(0L)
+                .progressRate(0)
                 .lastAccessTime(LocalDateTime.now())
                 .build();
     }
@@ -66,7 +66,7 @@ public class IndividualVideo extends BaseEntity {
         this.lastAccessTime = LocalDateTime.now();
     }
 
-    public void changeProgressRate(Long progressRate) {
+    public void changeProgressRate(Integer progressRate) {
         this.progressRate = progressRate;
     }
 }
