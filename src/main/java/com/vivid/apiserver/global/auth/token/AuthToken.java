@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.oauth2.jwt.JwtException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -42,6 +41,7 @@ public class AuthToken {
     }
 
     public boolean validateToken() {
+
         return this.getTokenClaims() != null;
     }
 
@@ -56,7 +56,7 @@ public class AuthToken {
 
         } catch (ExpiredJwtException expiredJwtException) {
             throw expiredJwtException;
-        } catch (JwtException jwtException) {
+        } catch (Exception exception) {
             throw new AccessDeniedException(ErrorCode.ACCESS_TOKEN_INVALID);
         }
     }

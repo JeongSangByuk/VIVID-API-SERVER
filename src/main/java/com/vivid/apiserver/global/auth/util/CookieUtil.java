@@ -4,12 +4,8 @@ import java.util.Optional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 
 public class CookieUtil {
-
-    @Value("${cookie-domain}")
-    private static String cookieDomain;
 
     private static final String ACCESS_TOKEN_COOKIE_NAME = "vivid-at";
 
@@ -17,7 +13,7 @@ public class CookieUtil {
      * access token을 쿠키에서 get하는 메소드
      */
     public static Optional<Cookie> getAccessTokenCookie(HttpServletRequest request) {
-        
+
         Cookie[] cookies = request.getCookies();
 
         if (cookies == null || cookies.length <= 0) {
@@ -41,8 +37,7 @@ public class CookieUtil {
         // create a cookie
         Cookie cookie = new Cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken);
 
-        cookie.setMaxAge(24 * 60 * 60);
-        cookie.setDomain(cookieDomain);
+        cookie.setMaxAge(14 * 24 * 60 * 60);
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
         cookie.setPath("/");

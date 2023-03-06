@@ -2,12 +2,10 @@ package com.vivid.apiserver.domain.user.application;
 
 import com.vivid.apiserver.domain.user.application.query.UserQueryService;
 import com.vivid.apiserver.domain.user.domain.User;
-import com.vivid.apiserver.domain.user.exception.UserAccessDeniedException;
 import com.vivid.apiserver.global.auth.util.TokenUtil;
 import com.vivid.apiserver.global.error.exception.AccessDeniedException;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,8 +24,8 @@ public class CurrentUserService {
      */
     public User getCurrentUser() {
 
-        UUID memberId = UUID.fromString(TokenUtil.getCurrentUserEmail());
-        return userQueryService.findById(memberId);
+        String email = TokenUtil.getCurrentUserEmail();
+        return userQueryService.findByEmail(email);
     }
 
     /*
@@ -38,7 +36,7 @@ public class CurrentUserService {
         User user = getCurrentUser();
 
         if (!accessedEmail.equals(user.getEmail())) {
-            throw new UserAccessDeniedException();
+            throw new AccessDeniedException(ErrorCode.USER_ACCESS_DENIED);
         }
     }
 

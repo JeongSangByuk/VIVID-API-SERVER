@@ -23,7 +23,8 @@ public class TokenProvider {
 
     private final Key key;
 
-    private final Long ACCESS_TOKEN_PERIOD = 1000L * 60L * 120L;    // 2시간
+    //private final Long ACCESS_TOKEN_PERIOD = 1000L * 60L * 120L;    // 2시간
+    private final Long ACCESS_TOKEN_PERIOD = 1L;    // 2시간
 
     private final Long REFRESH_TOKEN_ERIOD = 1000L * 60L * 60L * 24L * 14L; // 14일
 
@@ -66,7 +67,7 @@ public class TokenProvider {
 
     private Collection<? extends GrantedAuthority> getGrantedAuthorities(Claims claims) {
         return Arrays.stream(new String[]{claims.get(AUTHORITIES_KEY).toString()})
-                .map(SimpleGrantedAuthority::new)
+                .map(c -> new SimpleGrantedAuthority("ROLE_USER"))
                 .collect(Collectors.toList());
     }
 }
