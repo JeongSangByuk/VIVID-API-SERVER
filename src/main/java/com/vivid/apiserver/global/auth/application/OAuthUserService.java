@@ -1,7 +1,10 @@
 package com.vivid.apiserver.global.auth.application;
 
-import com.vivid.apiserver.domain.user.dto.OAuthAttributes;
 import com.vivid.apiserver.domain.user.domain.Role;
+import com.vivid.apiserver.domain.user.dto.dto.OAuthAttributes;
+import java.util.Collections;
+import java.util.Map;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,10 +15,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.Collections;
-import java.util.Map;
 
 @Slf4j
 @Service

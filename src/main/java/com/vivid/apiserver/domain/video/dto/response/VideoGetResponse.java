@@ -28,7 +28,7 @@ public class VideoGetResponse {
 
     private LocalDateTime lastAccessTime;
 
-    private Long progressRate;
+    private Integer progressRate;
 
     private boolean isUploaded;
 

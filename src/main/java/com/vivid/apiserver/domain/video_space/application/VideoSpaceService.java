@@ -2,7 +2,7 @@ package com.vivid.apiserver.domain.video_space.application;
 
 import com.vivid.apiserver.domain.user.application.CurrentUserService;
 import com.vivid.apiserver.domain.user.domain.User;
-import com.vivid.apiserver.domain.user.dto.UserGetResponse;
+import com.vivid.apiserver.domain.user.dto.response.UserGetResponse;
 import com.vivid.apiserver.domain.video.dto.response.HostedVideoGetResponse;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceParticipantQueryService;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceQueryService;

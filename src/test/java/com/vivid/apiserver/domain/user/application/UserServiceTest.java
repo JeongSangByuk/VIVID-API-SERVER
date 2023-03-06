@@ -1,9 +1,14 @@
 package com.vivid.apiserver.domain.user.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+
 import com.vivid.apiserver.domain.user.dao.UserRepository;
-import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.domain.AccountBuilder;
-import com.vivid.apiserver.domain.user.dto.UserLoginRequest;
+import com.vivid.apiserver.domain.user.domain.User;
+import com.vivid.apiserver.domain.user.dto.request.UserLoginRequest;
 import com.vivid.apiserver.domain.user.exception.EmailDuplicateException;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import com.vivid.apiserver.test.ServiceTest;
@@ -12,15 +17,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
 public class UserServiceTest extends ServiceTest {
@@ -59,11 +55,11 @@ public class UserServiceTest extends ServiceTest {
         given(userRepository.existsByEmail(any())).willReturn(true);
 
         //when
-        EmailDuplicateException exception = Assertions.assertThrows(EmailDuplicateException.class, () ->{
+        EmailDuplicateException exception = Assertions.assertThrows(EmailDuplicateException.class, () -> {
             userService.signUp(userLoginRequest);
         });
 
         //then
-        assertEquals(ErrorCode.EMAIL_DUPLICATION,exception.getErrorCode());
+        assertEquals(ErrorCode.EMAIL_DUPLICATION, exception.getErrorCode());
     }
 }

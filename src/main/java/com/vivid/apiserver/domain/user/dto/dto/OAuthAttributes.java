@@ -1,10 +1,9 @@
-package com.vivid.apiserver.domain.user.dto;
-
-import lombok.Builder;
-import lombok.Getter;
+package com.vivid.apiserver.domain.user.dto.dto;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder

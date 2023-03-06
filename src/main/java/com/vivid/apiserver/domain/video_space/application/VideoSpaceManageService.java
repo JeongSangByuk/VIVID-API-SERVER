@@ -48,7 +48,7 @@ public class VideoSpaceManageService {
     /**
      * video space와 연관된 모든 individual videos를 get하는 메소드
      */
-    private List<IndividualVideo> findAllIndividualVideosByVideoSpace(VideoSpace videoSpace) {
+    public List<IndividualVideo> findAllIndividualVideosByVideoSpace(VideoSpace videoSpace) {
         return videoSpace.getVideoSpaceParticipants().stream()
                 .map(VideoSpaceParticipant::getIndividualVideos)
                 .flatMap(List::stream)

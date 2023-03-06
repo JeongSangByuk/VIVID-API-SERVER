@@ -2,12 +2,12 @@ package com.vivid.apiserver.domain.user.application;
 
 import com.vivid.apiserver.domain.individual_video.dto.dto.DashboardIndividualVideoDto;
 import com.vivid.apiserver.domain.user.domain.User;
-import com.vivid.apiserver.domain.user.dto.UserMyPageDashboardDataGetResponse;
-import com.vivid.apiserver.domain.video.dto.response.VideoGetResponse;
-import com.vivid.apiserver.domain.video_space.application.VideoSpaceService;
-import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
-import java.util.ArrayList;
+import com.vivid.apiserver.domain.user.dto.response.UserMyPageDashboardDataGetResponse;
+import com.vivid.apiserver.domain.video_space.application.VideoSpaceManageService;
+import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
+import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,72 +19,63 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserMyPageService {
 
-
-    private final VideoSpaceService videoSpaceService;
-
+    private final VideoSpaceManageService videoSpaceManageService;
     private final CurrentUserService currentUserService;
 
-    // dashboard의 user data를 get합니다.
     public UserMyPageDashboardDataGetResponse getMyPageDashboardData() {
 
         User user = currentUserService.getCurrentUser();
 
-        // user video space get, inner video data get
-        List<VideoSpaceGetResponse> videoSpaces = videoSpaceService.getList();
+        // TODO video-part 부터 video space, individual video까지 전부... N+1 발생함
+        List<VideoSpace> videoSpaces = user.getVideoSpaceParticipants().stream()
+                .map(VideoSpaceParticipant::getVideoSpace)
+                .collect(Collectors.toList());
 
-        DashboardIndividualVideoDto lastStudiedIndividualVideo = null;
-        Long videoSpaceCount = 0L;
-        Long totalIndividualVideoCount = 0L;
-        Long completedIndividualVideoCount = 0L;
+        List<DashboardIndividualVideoDto> dashboardIndividualVideos = getDashboardIndividualVideoDto(videoSpaces);
 
-        List<DashboardIndividualVideoDto> dashboardIndividualVideos = new ArrayList<>();
+        Integer completedIndividualVideoCount = countCompletedIndividualVideos(dashboardIndividualVideos);
 
-        // 각각의 individual video를 create
-        for (VideoSpaceGetResponse videoSpace : videoSpaces) {
+        DashboardIndividualVideoDto lastAccessIndividualVideo = getLastAccessIndividualVideo(user,
+                dashboardIndividualVideos);
 
-            // video space cnt ++
-            videoSpaceCount += 1;
-
-            for (VideoGetResponse video : videoSpace.getVideos()) {
-
-                // totla video cnt ++
-                totalIndividualVideoCount += 1;
-
-                // completed video ++
-                if (video.getProgressRate() == 100L) {
-                    completedIndividualVideoCount += 1;
-                }
-
-                DashboardIndividualVideoDto individualVideo = DashboardIndividualVideoDto.builder()
-                        .video(video)
-                        .videoSpace(videoSpace)
-                        .build();
-
-                // lasted studied individual video
-                if (user.getLastAccessIndividualVideoId() != null
-                        && user.getLastAccessIndividualVideoId().toString()
-                        .equals(individualVideo.getIndividualVideoId())) {
-                    lastStudiedIndividualVideo = individualVideo;
-                }
-
-                // 각각의 individual video dto로 add
-                dashboardIndividualVideos.add(individualVideo);
-            }
-        }
-
-        // 접근 시간 순으로 정렬
-        dashboardIndividualVideos.sort((o1, o2) -> o2.getLastAccessTime().compareTo(o1.getLastAccessTime()));
-
-        // response dto 생성
-        UserMyPageDashboardDataGetResponse userMyPageDashboardDataGetResponse = UserMyPageDashboardDataGetResponse.builder()
+        return UserMyPageDashboardDataGetResponse.builder()
                 .user(user)
-                .lastStudiedIndividualVideo(lastStudiedIndividualVideo)
-                .videoSpaceCount(videoSpaceCount)
+                .lastStudiedIndividualVideo(lastAccessIndividualVideo)
                 .dashboardIndividualVideos(dashboardIndividualVideos)
-                .totalIndividualVideoCount(totalIndividualVideoCount)
+                .videoSpaceCount(videoSpaces.size())
+                .totalIndividualVideoCount(dashboardIndividualVideos.size())
                 .completedIndividualVideoCount(completedIndividualVideoCount)
                 .build();
+    }
 
-        return userMyPageDashboardDataGetResponse;
+    private List<DashboardIndividualVideoDto> getDashboardIndividualVideoDto(List<VideoSpace> videoSpaces) {
+        return videoSpaces.stream()
+                .map(videoSpaceManageService::findAllIndividualVideosByVideoSpace)
+                .flatMap(List::stream)
+                .distinct()
+                .map(DashboardIndividualVideoDto::of)
+                .sorted((video1, video2) -> video2.getLastAccessTime().compareTo(video1.getLastAccessTime()))
+                .collect(Collectors.toList());
+    }
+
+    private Integer countCompletedIndividualVideos(List<DashboardIndividualVideoDto> dashboardIndividualVideos) {
+        return Math.toIntExact(dashboardIndividualVideos.stream()
+                .filter(dashboardIndividualVideoDto -> dashboardIndividualVideoDto.getProgressRate().equals(200))
+                .count());
+    }
+
+    private DashboardIndividualVideoDto getLastAccessIndividualVideo(User user,
+            List<DashboardIndividualVideoDto> dashboardIndividualVideos) {
+
+        if (user.getLastAccessIndividualVideoId() == null) {
+            return null;
+        }
+
+        String lastAccessIndividualId = user.getLastAccessIndividualVideoId().toString();
+
+        return dashboardIndividualVideos.stream()
+                .filter(individualVideo -> lastAccessIndividualId.equals(individualVideo.getIndividualVideoId()))
+                .findFirst()
+                .get();
     }
 }

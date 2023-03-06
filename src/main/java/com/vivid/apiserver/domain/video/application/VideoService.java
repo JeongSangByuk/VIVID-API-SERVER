@@ -15,14 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VideoService {
 
-
     private final VideoQueryService videoQueryService;
 
     private final VideoCommandService videoCommandService;
     private final IndividualVideoCommandService individualVideoCommandService;
-
     private final AwsS3Service awsS3Service;
-
 
     /**
      * 비디오 삭제 메소드

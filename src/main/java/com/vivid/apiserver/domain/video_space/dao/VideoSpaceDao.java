@@ -5,6 +5,8 @@ import com.vivid.apiserver.domain.video.domain.QVideo;
 import com.vivid.apiserver.domain.video_space.domain.QVideoSpace;
 import com.vivid.apiserver.domain.video_space.domain.QVideoSpaceParticipant;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
+import com.vivid.apiserver.global.error.exception.ErrorCode;
+import com.vivid.apiserver.global.error.exception.NotFoundException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,7 @@ public class VideoSpaceDao {
                 .distinct().fetchOne());
 
         // not found exception
-        videoSpace.orElseThrow(() -> new VideoSpaceNotFoundException());
+        videoSpace.orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_NOT_FOUND));
 
         return videoSpace.get();
     }

@@ -1,4 +1,4 @@
-package com.vivid.apiserver.domain.user.dto;
+package com.vivid.apiserver.domain.user.dto.request;
 
 import com.vivid.apiserver.domain.user.domain.Role;
 import com.vivid.apiserver.domain.user.domain.User;

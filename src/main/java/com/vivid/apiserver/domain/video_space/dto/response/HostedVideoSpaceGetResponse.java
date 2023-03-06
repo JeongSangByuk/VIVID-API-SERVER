@@ -1,6 +1,6 @@
 package com.vivid.apiserver.domain.video_space.dto.response;
 
-import com.vivid.apiserver.domain.user.dto.UserGetResponse;
+import com.vivid.apiserver.domain.user.dto.response.UserGetResponse;
 import com.vivid.apiserver.domain.video.dto.response.HostedVideoGetResponse;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import java.util.ArrayList;

@@ -39,7 +39,7 @@ public class IndividualVideoCommandService {
         individualVideo.changeLastAccessTime();
     }
 
-    public void changeProgressRate(IndividualVideo individualVideo, Long progressRate) {
+    public void changeProgressRate(IndividualVideo individualVideo, Integer progressRate) {
         individualVideo.changeProgressRate(progressRate);
     }
 

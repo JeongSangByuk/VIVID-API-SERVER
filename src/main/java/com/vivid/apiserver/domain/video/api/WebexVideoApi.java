@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vivid.apiserver.domain.video.application.WebexVideoService;
 import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
 import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
-import com.vivid.apiserver.global.infra.webex_api.WebexRecordingGetResponse;
+import com.vivid.apiserver.global.infra.webex_api.dto.response.WebexRecordingGetResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +37,7 @@ public class WebexVideoApi {
     public ResponseEntity<SuccessResponse<VideoSaveResponse>> uploadVideosFromWebex(
             @PathVariable("video-space-id") Long videoSpaceId,
             @PathVariable("recording-id") String recordingId,
-            @RequestBody VideoSaveRequest videoSaveRequest) throws IOException {
+            @RequestBody VideoSaveRequest videoSaveRequest) {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS,
                 webexVideoService.uploadRecording(recordingId, videoSpaceId, videoSaveRequest));

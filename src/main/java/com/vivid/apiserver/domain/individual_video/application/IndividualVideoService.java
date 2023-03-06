@@ -74,7 +74,7 @@ public class IndividualVideoService {
     /**
      * individual video의 진행도를 업데이트하는 메소드
      */
-    public void updateProgressRate(String individualVideoId, Long progressRate) {
+    public void updateProgressRate(String individualVideoId, Integer progressRate) {
 
         IndividualVideo individualVideo = individualVideoQueryService.findById(individualVideoId);
 

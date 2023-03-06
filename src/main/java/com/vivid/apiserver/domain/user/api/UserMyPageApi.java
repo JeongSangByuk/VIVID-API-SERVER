@@ -1,7 +1,7 @@
 package com.vivid.apiserver.domain.user.api;
 
 import com.vivid.apiserver.domain.user.application.UserMyPageService;
-import com.vivid.apiserver.domain.user.dto.UserMyPageDashboardDataGetResponse;
+import com.vivid.apiserver.domain.user.dto.response.UserMyPageDashboardDataGetResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserMyPageApi {
 
-
     private final UserMyPageService userMyPageService;
-
 
     @Operation(summary = "my page user dashboard data get api", description = "my page의 user dashboard data를 get하는 api입니다.")
     @GetMapping("/api/my-page/dashboard")
@@ -33,8 +31,7 @@ public class UserMyPageApi {
     @DeleteMapping("/api/user")
     public ResponseEntity<SuccessResponse<String>> delete() {
 
-        // delete user
-        userMyPageService.deleteUser();
+//        userMyPageService.deleteUser();
 
         return SuccessResponse.OK;
     }
