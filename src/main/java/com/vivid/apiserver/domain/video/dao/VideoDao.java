@@ -1,15 +1,15 @@
 package com.vivid.apiserver.domain.video.dao;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo;
 import com.vivid.apiserver.domain.video.domain.QVideo;
 import com.vivid.apiserver.domain.video.domain.Video;
-import com.vivid.apiserver.domain.video.exception.VideoNotFoundException;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.vivid.apiserver.global.error.exception.ErrorCode;
+import com.vivid.apiserver.global.error.exception.NotFoundException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,7 +32,7 @@ public class VideoDao {
                 .distinct().fetchOne());
 
         // not found exception
-        video.orElseThrow(() -> new VideoNotFoundException(id.toString()));
+        video.orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_NOT_FOUND));
 
         return video.get();
     }

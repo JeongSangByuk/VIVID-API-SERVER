@@ -37,7 +37,7 @@ dependencies {
     implementation 'org.json:json:20210307'
 
     // aws
-//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.12.289'
     implementation 'com.github.derjust:spring-data-dynamodb:5.1.0'
 
@@ -45,7 +45,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     //swagger
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
     //security
     implementation 'org.springframework.boot:spring-boot-starter-security'

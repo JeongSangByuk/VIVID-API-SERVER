@@ -2,7 +2,7 @@ package com.vivid.apiserver.domain.user.application.query;
 
 import com.vivid.apiserver.domain.user.dao.UserRepository;
 import com.vivid.apiserver.domain.user.domain.User;
-import com.vivid.apiserver.domain.user.exception.EmailDuplicateException;
+import com.vivid.apiserver.global.error.exception.AccessDeniedException;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import com.vivid.apiserver.global.error.exception.NotFoundException;
 import java.util.UUID;
@@ -33,7 +33,7 @@ public class UserQueryService {
 
     public void checkDuplicatedUserByEmail(String email) {
         if (userRepository.existsByEmail(email)) {
-            throw new EmailDuplicateException();
+            throw new AccessDeniedException(ErrorCode.EMAIL_DUPLICATION);
         }
     }
 

@@ -29,14 +29,6 @@ public class TextMemoQueryService {
                 .or(() -> textMemoDao.getLatest(individualVideoId));
     }
 
-    public TextMemoLatest getLatest(String individualVideoId) {
-
-        return textMemoDao.getLatest(individualVideoId)
-                .orElseThrow(() -> {
-                    throw new NotFoundException(ErrorCode.TEXT_MEMO_NOT_EXIST);
-                });
-    }
-
     public List<TextMemoHistory> getHistories(String individualVideoId) {
 
         List<TextMemoHistory> textMemoHistories = textMemoDao.getHistories(individualVideoId);

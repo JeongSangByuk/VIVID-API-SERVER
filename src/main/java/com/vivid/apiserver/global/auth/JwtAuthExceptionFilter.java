@@ -1,11 +1,9 @@
 package com.vivid.apiserver.global.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vivid.apiserver.domain.user.exception.AccessTokenNotFoundException;
 import com.vivid.apiserver.global.error.ErrorResponse;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -22,6 +20,7 @@ public class JwtAuthExceptionFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         try {
             // move to next filter
             filterChain.doFilter(request, response);
@@ -29,14 +28,10 @@ public class JwtAuthExceptionFilter extends OncePerRequestFilter {
 
             // access token 만료 exception
             setErrorResponse(HttpStatus.UNAUTHORIZED, response, ErrorCode.ACCESS_TOKEN_EXPIRED);
-        } catch (JwtException jwtException) {
+        } catch (Exception jwtException) {
 
             // access token invalid exception
             setErrorResponse(HttpStatus.UNAUTHORIZED, response, ErrorCode.ACCESS_TOKEN_INVALID);
-        } catch (AccessTokenNotFoundException accessTokenNotFoundException) {
-
-            // access token not found exception
-            setErrorResponse(HttpStatus.UNAUTHORIZED, response, ErrorCode.ACCESS_TOKEN_NOT_FOUND_IN_HEADER);
         }
     }
 
@@ -47,8 +42,6 @@ public class JwtAuthExceptionFilter extends OncePerRequestFilter {
 
         response.setStatus(status.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write(objectMapper.writeValueAsString(
-                ErrorResponse.from(errorCode)
-        ));
+        response.getWriter().write(objectMapper.writeValueAsString(ErrorResponse.from(errorCode)));
     }
 }
