@@ -42,7 +42,7 @@ public class AuthApi {
     @GetMapping("/success-login")
     public String successLogin(@PathParam("token") String token) {
 
-        return "Bearer " + token;
+        return token;
     }
 
 }
