@@ -42,7 +42,7 @@ public class SecurityConfig {
         return (web) -> web.ignoring().mvcMatchers(
                 "/api/auth/token/**", "/swagger-ui/**", "/api/test/**"
                 , "/v3/api-docs/**", "/login/oauth2/code", "/api/login/webex",
-                "/api/videos/{video_id}/uploaded", "/swagger-resources/**"
+                "/api/videos/{video_id}/uploaded", "/swagger-resources/**", "/success-login"
         );
     }
 
@@ -83,7 +83,7 @@ public class SecurityConfig {
                 ).permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // 추가
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
-                .antMatchers("/api/login/**", "/api/auth/**").permitAll() // Security 허용 url
+                .antMatchers("/api/login/**", "/api/auth/**", "/success-login").permitAll() // Security 허용 url
                 .antMatchers("/api/**").hasRole(Role.USER.name())   // 모든 api 요청에 대해 user 권한
                 .anyRequest().authenticated()   // 나머지 요청에 대해서 권한이 있어야함
                 .and()

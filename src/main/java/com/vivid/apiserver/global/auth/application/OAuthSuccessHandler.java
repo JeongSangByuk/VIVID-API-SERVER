@@ -58,7 +58,7 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private String createTargetUrl(UserLoginRequest userLoginRequest, AuthToken authToken)
             throws UnsupportedEncodingException {
-        return UriComponentsBuilder.fromUriString(rootUrl)
+        return UriComponentsBuilder.fromUriString(rootUrl + "/success-login")
                 .queryParam("token", authToken.getToken())
                 .queryParam("name", URLEncoder.encode(userLoginRequest.getName(), "UTF-8"))
                 .queryParam("picture", userLoginRequest.getPicture())
