@@ -6,14 +6,13 @@ import com.vivid.apiserver.global.infra.webex_api.dto.response.WebexRecordingDow
 import com.vivid.apiserver.global.infra.webex_api.dto.response.WebexRecordingsGetResponse;
 import feign.Headers;
 import feign.Param;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-@FeignClient(name = "WebexApiClient", url = "https://webexapis.com/v1")
+//@FeignClient(name = "WebexApiClient", url = "https://webexapis.com/v1")
 public interface WebexApiClient {
 
     @Headers({"Content-Type: application/x-www-form-urlencoded"})

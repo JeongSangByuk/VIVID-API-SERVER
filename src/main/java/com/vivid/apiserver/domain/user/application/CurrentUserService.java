@@ -48,6 +48,6 @@ public class CurrentUserService {
         User user = getCurrentUser();
 
         return Optional.ofNullable(user.getInstitution().getWebexAccessToken())
-                .orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_TOKEN_NOT_FOUND_IN_HEADER));
+                .orElseThrow(() -> new AccessDeniedException(ErrorCode.WEBEX_ACCESS_TOKEN_NOT_FOUND_IN_HEADER));
     }
 }
