@@ -7,9 +7,11 @@ import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,4 +38,11 @@ public class AuthApi {
 
         return SuccessResponse.OK;
     }
+
+    @GetMapping("/success-login")
+    public String successLogin(@PathParam("token") String token) {
+
+        return "Bearer " + token;
+    }
+
 }

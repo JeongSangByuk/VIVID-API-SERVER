@@ -1,5 +1,6 @@
 package com.vivid.apiserver.global.auth.application;
 
+import com.vivid.apiserver.domain.user.domain.Role;
 import com.vivid.apiserver.global.auth.token.AuthToken;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import com.vivid.apiserver.global.error.exception.InvalidValueException;
@@ -12,19 +13,20 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+@Slf4j
 @RequiredArgsConstructor
 public class TokenProvider {
 
     private final Key key;
 
-    //private final Long ACCESS_TOKEN_PERIOD = 1000L * 60L * 120L;    // 2시간
-    private final Long ACCESS_TOKEN_PERIOD = 1L;    // 2시간
+    private final Long ACCESS_TOKEN_PERIOD = 1000L * 60L * 120L;    // 2시간
 
     private final Long REFRESH_TOKEN_ERIOD = 1000L * 60L * 60L * 24L * 14L; // 14일
 
@@ -66,8 +68,11 @@ public class TokenProvider {
     }
 
     private Collection<? extends GrantedAuthority> getGrantedAuthorities(Claims claims) {
+
+        Role role = Role.valueOf((String) claims.get("role"));
+
         return Arrays.stream(new String[]{claims.get(AUTHORITIES_KEY).toString()})
-                .map(c -> new SimpleGrantedAuthority("ROLE_USER"))
+                .map(c -> new SimpleGrantedAuthority(role.getKey()))
                 .collect(Collectors.toList());
     }
 }

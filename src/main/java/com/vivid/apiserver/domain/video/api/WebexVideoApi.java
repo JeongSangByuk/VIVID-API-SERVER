@@ -1,6 +1,5 @@
 package com.vivid.apiserver.domain.video.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vivid.apiserver.domain.video.application.WebexVideoService;
 import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
 import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
@@ -55,8 +54,7 @@ public class WebexVideoApi {
 
     @GetMapping("/api/webex/recordings")
     @Operation(summary = "webex recordings get api", description = "webex 녹화본 리스트를 get하는 api입니다.")
-    public ResponseEntity<SuccessResponse<List<WebexRecordingGetResponse>>> getWebexRecordings()
-            throws JsonProcessingException {
+    public ResponseEntity<SuccessResponse<List<WebexRecordingGetResponse>>> getWebexRecordings() {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS, webexVideoService.getWebexRecordings());
     }

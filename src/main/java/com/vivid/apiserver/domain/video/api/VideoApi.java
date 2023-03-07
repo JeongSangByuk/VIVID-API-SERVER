@@ -8,8 +8,6 @@ import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import java.io.IOException;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -46,22 +44,23 @@ public class VideoApi {
      * 인코딩이 완료되면 lambda 함수를 통해서 자동으로 save api 호출
      */
     @Operation(summary = "video 직접 업로드 api", description = "video를 직접 업로드하는 api")
-    @PostMapping(value = "/api/videos/{video-space-id}",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/api/videos/{video-space-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SuccessResponse<VideoSaveResponse>> upload(
             @RequestPart("video")
             @Parameter(description = "multipartFile video file")
             MultipartFile multipartFile,
 
-            @RequestPart("videoInfo")
-            @Parameter(description = "VideoSaveRequest 객체 json input")
-            @Valid final VideoSaveRequest videoSaveRequest,
+            @RequestPart(value = "title")
+            @Parameter(description = "title") final String title,
+
+            @RequestPart(value = "description")
+            @Parameter(description = "description") final String description,
 
             @PathVariable("video-space-id") Long videoSpaceId
     ) {
 
         VideoSaveResponse videoSaveResponse = videoUploadService.uploadByDirectUpload(multipartFile, videoSpaceId,
-                videoSaveRequest);
+                new VideoSaveRequest(title, description));
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS, videoSaveResponse);
     }
@@ -78,7 +77,7 @@ public class VideoApi {
     @Operation(summary = "video의 업로드 상태를 변환 api", description = "video의 업로드 상태를 true로 바꾸는 api 입니다. 해당 api는 aws 람다에서 호출됩니다.")
     @PutMapping(value = "/api/videos/{video-id}/uploaded")
     public ResponseEntity<SuccessResponse<String>> changeUploadStateAfterUploaded(
-            @PathVariable("video-id") Long videoId) throws IOException {
+            @PathVariable("video-id") Long videoId) {
 
         videoService.changeUploadState(videoId);
 
