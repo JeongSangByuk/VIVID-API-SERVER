@@ -76,18 +76,4 @@ public class TextMemoService {
         textMemoCommandService.saveAll(textMemos, individualVideoId);
         textMemoCommandService.deleteAllOnCache(individualVideoId);
     }
-
-    private void saveLatest(String individualVideoId) {
-
-        TextMemo textMemoStateLatest = textMemoQueryService.getLatestFromCache(individualVideoId);
-        textMemoCommandService.save(textMemoStateLatest, individualVideoId);
-    }
-
-    private void saveHistories(String individualVideoId) {
-
-        List<TextMemo> historyListFromRedis = textMemoQueryService.getHistoriesFromCache(individualVideoId);
-
-        textMemoCommandService.saveAll(historyListFromRedis, individualVideoId);
-        textMemoCommandService.deleteAllOnCache(individualVideoId);
-    }
 }

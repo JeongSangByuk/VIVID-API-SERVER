@@ -1,6 +1,6 @@
 package com.vivid.apiserver.domain.individual_video.dao.repository;
 
-import com.vivid.apiserver.domain.individual_video.dao.repository.TextMemoMongoRepository.TextMemoOnMongoDb;
+import com.vivid.apiserver.domain.individual_video.dao.repository.TextMemoMongodbRepository.TextMemoOnMongoDb;
 import com.vivid.apiserver.domain.individual_video.domain.TextMemo;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,12 +11,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
-public interface TextMemoMongoRepository extends MongoRepository<TextMemoOnMongoDb, String> {
-
-    @Query("{'_id': ?0}")
-    void addTextMemos(String individualVideoId, List<TextMemo> textMemos);
+public interface TextMemoMongodbRepository extends MongoRepository<TextMemoOnMongoDb, String> {
 
     @Builder
     @Getter

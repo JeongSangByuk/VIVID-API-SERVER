@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 //@Service
 @Transactional
 @AllArgsConstructor
-public class TextMemoDaoFromDynamo implements TextMemoDao {
+public class TextMemoDaoFromDynamodb implements TextMemoDao {
 
     private final DynamoDBMapper dynamoDBMapper;
 
