@@ -1,10 +1,11 @@
 package com.vivid.apiserver.domain.individual_video.dao;
 
-import com.vivid.apiserver.domain.individual_video.dao.repository.TextMemoMongoRepository;
-import com.vivid.apiserver.domain.individual_video.dao.repository.TextMemoMongoRepository.TextMemoOnMongoDb;
+import com.vivid.apiserver.domain.individual_video.dao.repository.TextMemoMongodbRepository;
+import com.vivid.apiserver.domain.individual_video.dao.repository.TextMemoMongodbRepository.TextMemoOnMongoDb;
 import com.vivid.apiserver.domain.individual_video.domain.TextMemo;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import com.vivid.apiserver.global.error.exception.NotFoundException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -18,9 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @AllArgsConstructor
-public class TextMemoDaoFromMongo implements TextMemoDao {
+public class TextMemoDaoFromMongodb implements TextMemoDao {
 
-    private final TextMemoMongoRepository textMemoMongoRepository;
+    private final TextMemoMongodbRepository textMemoMongodbRepository;
 
     private final MongoTemplate mongoTemplate;
 
@@ -46,24 +47,22 @@ public class TextMemoDaoFromMongo implements TextMemoDao {
     }
 
     private void addOrSaveTextMemo(List<TextMemo> textMemos, String individualVideoId) {
-        Optional<TextMemoOnMongoDb> textMemoOnMongoDbOptional = textMemoMongoRepository.findById(individualVideoId);
 
-        if (textMemoOnMongoDbOptional.isEmpty()) {
-            textMemoMongoRepository.save(TextMemoOnMongoDb.of(individualVideoId, textMemos));
-        } else {
+        Collections.reverse(textMemos);
 
-            Query query = new Query(Criteria.where("_id").is(individualVideoId));
-            Update update = new Update().push("textMemos").each(textMemos);
-            mongoTemplate.updateFirst(query, update, TextMemoOnMongoDb.class);
-
-//            TextMemoOnMongoDb textMemoOnMongoDb = textMemoOnMongoDbOptional.get();
-//            textMemoOnMongoDb.getTextMemos().addAll(textMemos);
-//            textMemoMongoRepository.save(textMemoOnMongoDb);
+        if (!textMemoMongodbRepository.existsById(individualVideoId)) {
+            textMemoMongodbRepository.save(TextMemoOnMongoDb.of(individualVideoId, textMemos));
+            return;
         }
+
+        Query query = new Query(Criteria.where("_id").is(individualVideoId));
+        Update update = new Update().push("textMemos").atPosition(0).each(textMemos);
+        mongoTemplate.updateFirst(query, update, TextMemoOnMongoDb.class);
     }
 
     private List<TextMemo> getTextMemos(String individualVideoId) {
-        return textMemoMongoRepository.findById(individualVideoId)
+
+        return textMemoMongodbRepository.findById(individualVideoId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.TEXT_MEMO_NOT_EXIST))
                 .getTextMemos();
     }
