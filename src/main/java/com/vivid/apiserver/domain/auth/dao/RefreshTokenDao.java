@@ -17,12 +17,12 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class RefreshTokenDao {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     private final String REFRESH_TOKEN_HASH_KEY = "refresh-token";
 
-    public RefreshTokenDao(@Qualifier("userRedisTemplate") RedisTemplate<?, ?> redisTemplate) {
-        this.redisTemplate = (RedisTemplate<String, Object>) redisTemplate;
+    public RefreshTokenDao(@Qualifier("userRedisTemplate") RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
     }
 
     // save refresh token redis
@@ -30,7 +30,7 @@ public class RefreshTokenDao {
 
         HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
 
-        Map<String, Object> userMap = new HashMap<>();
+        Map<String, String> userMap = new HashMap<>();
         userMap.put(REFRESH_TOKEN_HASH_KEY, refreshToken);
 
         hashOperations.putAll(email, userMap);

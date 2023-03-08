@@ -5,8 +5,6 @@ import com.vivid.apiserver.domain.individual_video.application.query.IndividualV
 import com.vivid.apiserver.domain.individual_video.application.query.TextMemoQueryService;
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.individual_video.domain.TextMemo;
-import com.vivid.apiserver.domain.individual_video.domain.TextMemoHistory;
-import com.vivid.apiserver.domain.individual_video.domain.TextMemoLatest;
 import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoCacheSaveRequest;
 import com.vivid.apiserver.domain.individual_video.dto.response.TextMemoResponse;
 import com.vivid.apiserver.domain.user.application.CurrentUserService;
@@ -62,8 +60,8 @@ public class TextMemoService {
      */
     public void saveToCache(final TextMemoCacheSaveRequest textMemoState, String individualVideoId) {
 
-        TextMemo textMemo = textMemoState.toEntity(individualVideoId);
-        textMemoCommandService.saveToCache(textMemo);
+        TextMemo textMemo = textMemoState.toEntity();
+        textMemoCommandService.saveToCache(textMemo, individualVideoId);
     }
 
     /**
@@ -74,23 +72,22 @@ public class TextMemoService {
         IndividualVideo individualVideo = individualVideoQueryService.findById(individualVideoId);
         currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getEmail());
 
-        saveLatest(individualVideoId);
-        saveHistories(individualVideoId);
+        List<TextMemo> textMemos = textMemoQueryService.getHistoriesFromCache(individualVideoId);
+        textMemoCommandService.saveAll(textMemos, individualVideoId);
+        textMemoCommandService.deleteAllOnCache(individualVideoId);
     }
 
     private void saveLatest(String individualVideoId) {
 
-        TextMemoLatest textMemoStateLatest = textMemoQueryService.getLatestFromCache(individualVideoId);
-
-        textMemoCommandService.saveLatest(textMemoStateLatest);
-        textMemoCommandService.deleteLatestToCache(individualVideoId);
+        TextMemo textMemoStateLatest = textMemoQueryService.getLatestFromCache(individualVideoId);
+        textMemoCommandService.save(textMemoStateLatest, individualVideoId);
     }
 
     private void saveHistories(String individualVideoId) {
 
-        List<TextMemoHistory> historyListFromRedis = textMemoQueryService.getHistoriesFromCache(individualVideoId);
+        List<TextMemo> historyListFromRedis = textMemoQueryService.getHistoriesFromCache(individualVideoId);
 
-        textMemoCommandService.saveHistories(historyListFromRedis);
-        textMemoCommandService.deleteHistories(individualVideoId);
+        textMemoCommandService.saveAll(historyListFromRedis, individualVideoId);
+        textMemoCommandService.deleteAllOnCache(individualVideoId);
     }
 }

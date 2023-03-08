@@ -84,7 +84,7 @@ class TextMemoCacheDaoTest extends ContainerBaseTest {
         TextMemo textMemo = textMemoCacheDao.save(redisSaveRequest.toEntity());
 
         // individualVideoId를 통한 검색.
-        TextMemoLatest savedTextMemoState = textMemoCacheDao.getLatest(
+        TextMemoLatest savedTextMemoState = textMemoCacheDao.findLatestByIndividualVideoId(
                 textMemo.getIndividualVideoId().toString());
 
         //then

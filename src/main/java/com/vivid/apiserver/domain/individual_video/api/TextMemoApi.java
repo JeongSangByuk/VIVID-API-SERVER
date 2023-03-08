@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/individual-videos")
-public class TextMemoStateApi {
+public class TextMemoApi {
 
     private final TextMemoService textMemoService;
 

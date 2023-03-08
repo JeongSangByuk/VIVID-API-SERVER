@@ -1,9 +1,6 @@
 package com.vivid.apiserver.global.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.vivid.apiserver.domain.individual_video.domain.TextMemo;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +11,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -43,14 +41,13 @@ public class RedisNoteConfig {
 
     @Primary
     @Bean(name = "noteRedisTemplate")
-    public RedisTemplate<?, ?> noteRedisTemplate(@Qualifier(value = "noteRedisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, TextMemo> noteRedisTemplate(
+            @Qualifier(value = "noteRedisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
 
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<String, TextMemo> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(TextMemo.class));
         return redisTemplate;
     }
 
@@ -75,13 +72,13 @@ public class RedisNoteConfig {
 //                .build();
 //    }
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        mapper.registerModules(new JavaTimeModule(), new Jdk8Module());
-        return mapper;
-    }
+//    @Bean
+//    public ObjectMapper objectMapper() {
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//        mapper.registerModules(new JavaTimeModule(), new Jdk8Module());
+//        return mapper;
+//    }
 
 
 }

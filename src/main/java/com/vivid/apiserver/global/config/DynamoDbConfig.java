@@ -9,15 +9,12 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
 import com.vivid.apiserver.global.util.BaseDateTimeFormatter;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
-@Slf4j
 @Configuration
 public class DynamoDbConfig {
 
@@ -33,7 +30,7 @@ public class DynamoDbConfig {
 
 
     @Bean
-    public DynamoDBMapper dynamoDBMapper(){
+    public DynamoDBMapper dynamoDBMapper() {
 
         DynamoDBMapperConfig mapperConfig = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.CLOBBER)
@@ -50,7 +47,8 @@ public class DynamoDbConfig {
         return AmazonDynamoDBClientBuilder.standard()
                 .withEndpointConfiguration(
                         new AwsClientBuilder.EndpointConfiguration(dynamoDbEndpoint, region))
-                .withCredentials( new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey))).build();
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                .build();
     }
 
     public static class LocalDateTimeConverter implements DynamoDBTypeConverter<String, LocalDateTime> {
