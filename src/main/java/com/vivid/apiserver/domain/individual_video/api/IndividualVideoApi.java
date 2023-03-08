@@ -3,7 +3,6 @@ package com.vivid.apiserver.domain.individual_video.api;
 import com.vivid.apiserver.domain.individual_video.application.IndividualVideoService;
 import com.vivid.apiserver.domain.individual_video.dto.response.IndividualVideoDetailsGetResponse;
 import com.vivid.apiserver.domain.individual_video.dto.response.SnapshotImageUploadResponse;
-import com.vivid.apiserver.global.infra.storage.AwsS3Service;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,8 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping
 @RequiredArgsConstructor
 public class IndividualVideoApi {
-
-    private final AwsS3Service awsS3Service;
 
     private final IndividualVideoService individualVideoService;
 

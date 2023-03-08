@@ -27,11 +27,27 @@ public class TextMemoApi {
 
     private final TextMemoService textMemoService;
 
-    // redis cache에 state save 메소드
-    // save할 때는 latest, history의 구분 없이 input을 받고, dao 파트에서 나눠서 저장한다.
-    @Operation(summary = "text state 레디스 save api", description = "text state를 레디스 캐시에 저장합니다.")
+    @Operation(summary = "text memo latest get api", description = "캐시에 있는 text memo 최신 버전을 get합니다. 캐시에 없을시 DB에서 get합니다.")
+    @ApiResponse(responseCode = "200", description = "text memo latest을 json 형식으로 반환합니다.")
+    @GetMapping("/{individual-video-id}/cache/text-memo-latest")
+    public ResponseEntity<SuccessResponse<TextMemoResponse>> getLatestFromCache(
+            @PathVariable("individual-video-id") String individualVideoId) {
+
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS, textMemoService.getLatest(individualVideoId));
+    }
+
+    @Operation(summary = "text memo list get api", description = "DB에 있는 text memo 리스트를 get합니다.")
+    @ApiResponse(responseCode = "200", description = "text memo를 json list 형식으로 반환합니다.")
+    @GetMapping("/{individual-video-id}/text-memos")
+    public ResponseEntity<SuccessResponse<List<TextMemoResponse>>> getAllFromDb(
+            @PathVariable("individual-video-id") String individualVideoId) {
+
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS, textMemoService.getAll(individualVideoId));
+    }
+
+    @Operation(summary = "text memo cache save api", description = "text memo를 캐시에 저장합니다.")
     @ApiResponse(responseCode = "200", description = "반환값은 없습니다.")
-    @PostMapping("/{individual-video-id}/cache/text-memo-state")
+    @PostMapping("/{individual-video-id}/cache/text-memo")
     public ResponseEntity<SuccessResponse<String>> saveToCache(
             @RequestBody @Valid final TextMemoCacheSaveRequest dto,
             @PathVariable("individual-video-id") String individualVideoId) {
@@ -41,69 +57,15 @@ public class TextMemoApi {
         return SuccessResponse.OK;
     }
 
-    // dynamodb에 latest,history 모두 save
-    @Operation(summary = "text state 다이나모DB save api", description = "레디스 캐시에 있는 text state 모두를 다이나모DB에 저장합니다.")
+    @Operation(summary = "text memo save api", description = "캐시에 있는 text memo 모두를 DB에 저장합니다.")
     @ApiResponse(responseCode = "200", description = "반환값은 없습니다.")
-    @PostMapping("/{individual-video-id}/text-memo-states")
-    public ResponseEntity<SuccessResponse<String>> saveListToDynamoDb(
+    @PostMapping("/{individual-video-id}/text-memos")
+    public ResponseEntity<SuccessResponse<String>> saveAll(
             @PathVariable("individual-video-id") String individualVideoId) {
 
         textMemoService.saveAll(individualVideoId);
 
         return SuccessResponse.OK;
     }
-
-    // redis 캐시로 부터 text memo state latest get
-    // redis에 데이터가 없다면(만료됐다면) dynamoDB에서 get한다.
-    @Operation(summary = "text state latest get api", description = "레디스 캐시에 있는 text state latest를 get합니다. 캐시에 없을시 다이나모DB에서 get합니다.")
-    @ApiResponse(responseCode = "200", description = "text state latest을 json 형식으로 반환합니다.")
-    @GetMapping("/{individual-video-id}/cache/text-memo-state-latest")
-    public ResponseEntity<SuccessResponse<TextMemoResponse>> getFromCache(
-            @PathVariable("individual-video-id") String individualVideoId) {
-
-        return SuccessResponse.success(SuccessCode.OK_SUCCESS,
-                textMemoService.getLatest(individualVideoId));
-    }
-
-    // redis 캐시로 부터 text memo state latest get
-    // redis에 데이터가 없다면(만료됐다면) dynamoDB에서 get한다.
-    @Operation(summary = "text state history list get api", description = "다이나모DB 에 있는 text state history list를 get합니다.")
-    @ApiResponse(responseCode = "200", description = "text state history를 json list 형식으로 반환합니다.")
-    @GetMapping("/{individual-video-id}/text-memo-state-history")
-    public ResponseEntity<SuccessResponse<List<TextMemoResponse>>> getHistoryListFromDynamoDb(
-            @PathVariable("individual-video-id") String individualVideoId) {
-
-        return SuccessResponse.success(SuccessCode.OK_SUCCESS, textMemoService.getHistories(
-                individualVideoId));
-    }
-
-    // dynamoDB에 text state latest문 저장 메소드
-//    @Operation(summary = "text state latest 다이나모DB save api", description = "레디스 캐시에 있는 text state latest를 다이나모DB에 저장합니다.")
-//    @ApiResponse(responseCode = "200", description = "반환값은 없습니다.")
-//    @PostMapping("/{individual-video-id}/text-memo-state-latest")
-//    public void saveLatestToDynamoDb(@PathVariable("individual-video-id") String individualVideoId) {
-//
-//        textMemoStateService.saveLatestToDynamoDb(individualVideoId);
-//    }
-//
-//    // dynamoDB에 text state history문 저장 메소드.
-//    @Operation(summary = "text state history 다이나모DB save api", description = "레디스 캐시에 있는 text state history 전부를 다이나모DB에 저장합니다.")
-//    @ApiResponse(responseCode = "200", description = "반환값은 없습니다.")
-//    @PostMapping("/{individual-video-id}/text-memo-state-history")
-//    public void saveHistoryToDynamoDb(@PathVariable("individual-video-id") String individualVideoId) {
-//
-//        textMemoStateService.saveHistoryToDynamoDb(individualVideoId);
-//    }
-
-    /*
-    old version
-     */
-
-    // redis 캐시에 텍스트 메모 스테이트 리스트를 저장하는 메소드
-//    @PostMapping("/cache/text-memo-states")
-//    public void saveTextMemoStatesToCache(@RequestBody @Valid final List<TextMemoStateRedisSaveRequest> textMemoStates) {
-//
-//        individualVideoService.saveTextMemoStatesToRedis(textMemoStates);
-//    }
 
 }

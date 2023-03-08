@@ -36,11 +36,6 @@ public class TextMemo {
     @DynamoDBRangeKey(attributeName = "id")
     private String id;
 
-//    @Field  // mongodb에만 인식되게끔
-//    @Transient  // redis에서는 인식안되게끔
-//    @DynamoDBHashKey(attributeName = "individual_video_id")
-//    private String individualVideoId;
-
     @DynamoDBAttribute(attributeName = "state_json")
     private String stateJson;
 

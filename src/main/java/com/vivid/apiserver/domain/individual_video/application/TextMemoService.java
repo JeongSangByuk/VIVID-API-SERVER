@@ -45,7 +45,7 @@ public class TextMemoService {
     /**
      * text memo 과거 히스토리 get 메소드
      */
-    public List<TextMemoResponse> getHistories(String individualVideoId) {
+    public List<TextMemoResponse> getAll(String individualVideoId) {
 
         IndividualVideo individualVideo = individualVideoQueryService.findById(individualVideoId);
         currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getEmail());
