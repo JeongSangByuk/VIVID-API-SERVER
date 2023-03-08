@@ -2,62 +2,57 @@ package com.vivid.apiserver.domain.individual_video.domain;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperFieldModel;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTyped;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.vivid.apiserver.global.config.DynamoDbConfig;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.UUID;
-import javax.persistence.Id;
-import lombok.AccessLevel;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 @Setter // used in com.amazonaws.services.dynamodbv2
+@Builder
 @RedisHash(value = "text_memo")
 @DynamoDBDocument
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TextMemo {
 
-    // 다이노모 디비의 id 칼럼는 상속 받은 TexMemoStateHistory, Latest 클래스에 정의,
-    // 때문에 DynamoDBIgnore
     @Id
     @Indexed
-    @DynamoDBIgnore
+    @DynamoDBRangeKey(attributeName = "id")
     private String id;
 
-    // 다이노모 디비의 individualVideoId 칼럼는 상속 받은 TexMemoStateHistory, Latest 클래스에 정의,
-    // 때문에 DynamoDBIgnore
-    @DynamoDBIgnore
-    private UUID individualVideoId;
+//    @Field  // mongodb에만 인식되게끔
+//    @Transient  // redis에서는 인식안되게끔
+//    @DynamoDBHashKey(attributeName = "individual_video_id")
+//    private String individualVideoId;
 
     @DynamoDBAttribute(attributeName = "state_json")
-    protected String stateJson;
+    private String stateJson;
 
     @DynamoDBAttribute(attributeName = "video_time")
-    @DynamoDBTypeConverted(converter = DynamoDbConfig.LocalTimeConverter.class)
-    @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-    protected LocalTime videoTime;
+    private Long videoTime;
 
     @DynamoDBAttribute(attributeName = "created_at")
     @DynamoDBTypeConverted(converter = DynamoDbConfig.LocalDateTimeConverter.class)
     @DynamoDBTyped(DynamoDBMapperFieldModel.DynamoDBAttributeType.S)
-    protected LocalDateTime createdAt;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createdAt;
 
-    public TextMemo(String id, UUID individualVideoId, String stateJson, LocalTime videoTime,
-            LocalDateTime createdAt) {
-        this.id = id;
-        this.individualVideoId = individualVideoId;
-        this.stateJson = stateJson;
-        this.videoTime = videoTime;
-        this.createdAt = createdAt;
-    }
+    private List<TextMemo> textMemos;
 }

@@ -2,8 +2,7 @@ package com.vivid.apiserver.domain.individual_video.application.query;
 
 import com.vivid.apiserver.domain.individual_video.dao.TextMemoCacheDao;
 import com.vivid.apiserver.domain.individual_video.dao.TextMemoDao;
-import com.vivid.apiserver.domain.individual_video.domain.TextMemoHistory;
-import com.vivid.apiserver.domain.individual_video.domain.TextMemoLatest;
+import com.vivid.apiserver.domain.individual_video.domain.TextMemo;
 import com.vivid.apiserver.global.error.exception.ErrorCode;
 import com.vivid.apiserver.global.error.exception.NotFoundException;
 import java.util.List;
@@ -23,15 +22,15 @@ public class TextMemoQueryService {
     /**
      * text memo latest get 메소드. 캐시를 거쳤다가, 캐시에 존재하지 않을 경우 db에 접근하여 get합니다.
      */
-    public Optional<TextMemoLatest> getLatestThroughCache(String individualVideoId) {
+    public Optional<TextMemo> getLatestThroughCache(String individualVideoId) {
 
-        return textMemoCacheDao.getLatest(individualVideoId)
-                .or(() -> textMemoDao.getLatest(individualVideoId));
+        return textMemoCacheDao.findLatestByIndividualVideoId(individualVideoId)
+                .or(() -> textMemoDao.findLatestByIndividualId(individualVideoId));
     }
 
-    public List<TextMemoHistory> getHistories(String individualVideoId) {
+    public List<TextMemo> getHistories(String individualVideoId) {
 
-        List<TextMemoHistory> textMemoHistories = textMemoDao.getHistories(individualVideoId);
+        List<TextMemo> textMemoHistories = textMemoDao.findAllByIndividualId(individualVideoId);
 
         if (textMemoHistories.isEmpty()) {
             throw new NotFoundException(ErrorCode.TEXT_MEMO_NOT_EXIST);
@@ -40,23 +39,23 @@ public class TextMemoQueryService {
         return textMemoHistories;
     }
 
-    public TextMemoLatest getLatestFromCache(String individualVideoId) {
+    public TextMemo getLatestFromCache(String individualVideoId) {
 
-        return textMemoCacheDao.getLatest(individualVideoId)
+        return textMemoCacheDao.findLatestByIndividualVideoId(individualVideoId)
                 .orElseThrow(() -> {
                     throw new NotFoundException(ErrorCode.TEXT_MEMO_NOT_EXIST);
                 });
     }
 
-    public List<TextMemoHistory> getHistoriesFromCache(String individualVideoId) {
+    public List<TextMemo> getHistoriesFromCache(String individualVideoId) {
 
-        List<TextMemoHistory> textMemoHistories = textMemoCacheDao.getTextMemoHistories(individualVideoId);
+        List<TextMemo> textMemos = textMemoCacheDao.findAllByIndividualVideoId(individualVideoId);
 
-        if (textMemoHistories.isEmpty()) {
+        if (textMemos.isEmpty()) {
             throw new NotFoundException(ErrorCode.TEXT_MEMO_NOT_EXIST);
         }
 
-        return textMemoHistories;
+        return textMemos;
     }
 
 

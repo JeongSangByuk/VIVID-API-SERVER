@@ -3,7 +3,6 @@ package com.vivid.apiserver.domain.individual_video.dto.response;
 
 import com.vivid.apiserver.domain.individual_video.domain.TextMemo;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +13,7 @@ public class TextMemoResponse {
 
     private String stateJson;
 
-    private LocalTime videoTime;
+    private Long videoTime;
 
     private LocalDateTime createdAt;
 

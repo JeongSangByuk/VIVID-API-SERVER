@@ -2,10 +2,9 @@ package com.vivid.apiserver.domain.individual_video.dto.request;
 
 import com.vivid.apiserver.domain.individual_video.domain.TextMemo;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,23 +18,22 @@ public class TextMemoCacheSaveRequest {
     @NotBlank
     private String stateJson;
 
-    @NotBlank
-    private String videoTime;
+    @NotNull
+    private Long videoTime;
 
 
     @Builder
-    public TextMemoCacheSaveRequest(String stateJson, String videoTime) {
+    public TextMemoCacheSaveRequest(String stateJson, Long videoTime) {
         this.stateJson = stateJson;
         this.videoTime = videoTime;
     }
 
-    public TextMemo toEntity(String individualVideoId) {
+    public TextMemo toEntity() {
 
         return TextMemo.builder()
                 .id(UUID.randomUUID().toString())
-                .individualVideoId(UUID.fromString(individualVideoId))
                 .stateJson(stateJson)
-                .videoTime(LocalTime.parse(videoTime, DateTimeFormatter.ofPattern("HH:mm:ss")))
+                .videoTime(videoTime)
                 .createdAt(LocalDateTime.now())
                 .build();
 

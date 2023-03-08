@@ -38,9 +38,10 @@ public class RedisUserConfig {
     }
 
     @Bean(name = "userRedisTemplate")
-    public RedisTemplate<?, ?> userRedisTemplate(@Qualifier(value = "userRedisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, String> userRedisTemplate(
+            @Qualifier(value = "userRedisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
 
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());

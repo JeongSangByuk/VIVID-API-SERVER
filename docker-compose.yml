@@ -14,13 +14,22 @@ services:
       - "mysqld"
       - "--character-set-server=utf8mb4"
       - "--collation-server=utf8mb4_unicode_ci"
-  redis_note:
-    container_name: redis_note
+  redis_note_vivid:
+    container_name: redis_note_vivid
     image: redis
     ports:
       - "6379:6379"
-  redis_user:
-    container_name: redis_user
+  redis_user_vivid:
+    container_name: redis_user_vivid
     image: redis
     ports:
       - "6380:6379"
+  mongo_vivid:
+    image: mongo:latest
+    container_name: mongo_vivid
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: byuk
+      MONGO_INITDB_ROOT_PASSWORD: byuk
