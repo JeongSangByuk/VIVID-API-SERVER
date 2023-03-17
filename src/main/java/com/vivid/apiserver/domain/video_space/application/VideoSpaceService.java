@@ -1,5 +1,7 @@
 package com.vivid.apiserver.domain.video_space.application;
 
+import com.vivid.apiserver.domain.individual_video.application.query.IndividualVideoQueryService;
+import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.user.application.CurrentUserService;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.dto.response.UserGetResponse;
@@ -13,6 +15,7 @@ import com.vivid.apiserver.domain.video_space.dto.response.HostedVideoSpaceGetRe
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceSaveResponse;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,7 @@ public class VideoSpaceService {
 
     private final VideoSpaceQueryService videoSpaceQueryService;
     private final VideoSpaceParticipantQueryService videoSpaceParticipantQueryService;
+    private final IndividualVideoQueryService individualVideoQueryService;
 
     private final CurrentUserService currentUserService;
     private final VideoSpaceManageService videoSpaceManageService;
@@ -51,13 +55,22 @@ public class VideoSpaceService {
      */
     public List<VideoSpaceGetResponse> getList() {
 
-        // todo fetch join
-        User currentUser = currentUserService.getCurrentUser();
-        List<VideoSpaceParticipant> videoSpaceParticipants = currentUser.getVideoSpaceParticipants();
+        User user = currentUserService.getCurrentUser();
+
+        List<VideoSpaceParticipant> videoSpaceParticipants = videoSpaceParticipantQueryService.findWithVideoSpaceByUserId(
+                user.getId());
+
+        List<IndividualVideo> individualVideos = individualVideoQueryService.findWithVideoByVideoSpaceParticipant(
+                videoSpaceParticipants);
+
+        Map<Long, List<IndividualVideo>> individualVideosMap = individualVideos.stream()
+                .collect(Collectors.groupingBy(
+                        individualVideo -> individualVideo.getVideoSpaceParticipant().getVideoSpace().getId())
+                );
 
         return videoSpaceParticipants.stream()
-                .map(videoSpaceParticipant -> getOne(videoSpaceParticipant.getVideoSpace().getId()))
-                .collect(Collectors.toList());
+                .map(videoSpaceParticipant -> VideoSpaceGetResponse.of2(videoSpaceParticipant, individualVideosMap)).
+                collect(Collectors.toList());
     }
 
     /**

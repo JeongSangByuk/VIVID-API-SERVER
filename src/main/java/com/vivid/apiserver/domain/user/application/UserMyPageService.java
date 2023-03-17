@@ -27,8 +27,6 @@ public class UserMyPageService {
 
     /**
      * my page dashboard 렌더링에 필요한 데이터를 get하는 메소드
-     *
-     * @return
      */
     public UserMyPageDashboardDataGetResponse getMyPageDashboardData() {
 
