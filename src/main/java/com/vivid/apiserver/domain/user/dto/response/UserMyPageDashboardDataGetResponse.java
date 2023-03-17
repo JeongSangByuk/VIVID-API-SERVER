@@ -33,7 +33,7 @@ public class UserMyPageDashboardDataGetResponse {
     @Builder
     public UserMyPageDashboardDataGetResponse(User user, DashboardIndividualVideoDto lastStudiedIndividualVideo,
             List<DashboardIndividualVideoDto> dashboardIndividualVideos,
-            Integer videoSpaceCount, Integer totalIndividualVideoCount, Integer completedIndividualVideoCount) {
+            Integer videoSpaceCount, Integer completedIndividualVideoCount) {
         this.email = user.getEmail();
         this.name = user.getName();
         this.picture = user.getPicture();
@@ -42,7 +42,7 @@ public class UserMyPageDashboardDataGetResponse {
         this.dashboardIndividualVideos = dashboardIndividualVideos;
 
         this.videoSpaceCount = videoSpaceCount;
-        this.totalIndividualVideoCount = totalIndividualVideoCount;
+        this.totalIndividualVideoCount = dashboardIndividualVideos.size();
         this.completedIndividualVideoCount = completedIndividualVideoCount;
     }
 }

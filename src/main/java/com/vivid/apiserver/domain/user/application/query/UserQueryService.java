@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserQueryService {
 
+
     private final UserRepository userRepository;
 
     public User findById(UUID id) {

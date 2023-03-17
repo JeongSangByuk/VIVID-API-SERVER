@@ -51,7 +51,7 @@ public class VideoSpaceService {
      */
     public List<VideoSpaceGetResponse> getList() {
 
-        // TODO fetch join
+        // todo fetch join
         User currentUser = currentUserService.getCurrentUser();
         List<VideoSpaceParticipant> videoSpaceParticipants = currentUser.getVideoSpaceParticipants();
 

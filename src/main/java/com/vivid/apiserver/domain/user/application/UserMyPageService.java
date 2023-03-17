@@ -1,10 +1,11 @@
 package com.vivid.apiserver.domain.user.application;
 
+import com.vivid.apiserver.domain.individual_video.application.query.IndividualVideoQueryService;
+import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.individual_video.dto.dto.DashboardIndividualVideoDto;
 import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.user.dto.response.UserMyPageDashboardDataGetResponse;
-import com.vivid.apiserver.domain.video_space.application.VideoSpaceManageService;
-import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
+import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceParticipantQueryService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,40 +20,52 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserMyPageService {
 
-    private final VideoSpaceManageService videoSpaceManageService;
+    private final IndividualVideoQueryService individualVideoQueryService;
+    private final VideoSpaceParticipantQueryService videoSpaceParticipantQueryService;
+
     private final CurrentUserService currentUserService;
 
+    /**
+     * my page dashboard 렌더링에 필요한 데이터를 get하는 메소드
+     *
+     * @return
+     */
     public UserMyPageDashboardDataGetResponse getMyPageDashboardData() {
 
         User user = currentUserService.getCurrentUser();
 
-        // TODO video-part 부터 video space, individual video까지 전부... N+1 발생함
-        List<VideoSpace> videoSpaces = user.getVideoSpaceParticipants().stream()
-                .map(VideoSpaceParticipant::getVideoSpace)
-                .collect(Collectors.toList());
+        List<VideoSpaceParticipant> videoSpaceParticipants = videoSpaceParticipantQueryService.findWithVideoSpaceByUserId(
+                user.getId());
 
-        List<DashboardIndividualVideoDto> dashboardIndividualVideos = getDashboardIndividualVideoDto(videoSpaces);
-
-        Integer completedIndividualVideoCount = countCompletedIndividualVideos(dashboardIndividualVideos);
-
-        DashboardIndividualVideoDto lastAccessIndividualVideo = getLastAccessIndividualVideo(user,
-                dashboardIndividualVideos);
+        List<DashboardIndividualVideoDto> dashboardIndividualVideos = getDashboardIndividualVideoDto(
+                videoSpaceParticipants);
 
         return UserMyPageDashboardDataGetResponse.builder()
                 .user(user)
-                .lastStudiedIndividualVideo(lastAccessIndividualVideo)
                 .dashboardIndividualVideos(dashboardIndividualVideos)
-                .videoSpaceCount(videoSpaces.size())
-                .totalIndividualVideoCount(dashboardIndividualVideos.size())
-                .completedIndividualVideoCount(completedIndividualVideoCount)
+                .lastStudiedIndividualVideo(getLastAccessIndividualVideo(user, dashboardIndividualVideos))
+                .videoSpaceCount(countVideoSpaceSize(videoSpaceParticipants))
+                .completedIndividualVideoCount(countCompletedIndividualVideos(dashboardIndividualVideos))
                 .build();
     }
 
-    private List<DashboardIndividualVideoDto> getDashboardIndividualVideoDto(List<VideoSpace> videoSpaces) {
-        return videoSpaces.stream()
-                .map(videoSpaceManageService::findAllIndividualVideosByVideoSpace)
-                .flatMap(List::stream)
+    private Integer countVideoSpaceSize(List<VideoSpaceParticipant> videoSpaceParticipants) {
+
+        long count = videoSpaceParticipants.stream()
+                .map(VideoSpaceParticipant::getVideoSpace)
                 .distinct()
+                .count();
+
+        return Math.toIntExact(count);
+    }
+
+    private List<DashboardIndividualVideoDto> getDashboardIndividualVideoDto(
+            List<VideoSpaceParticipant> videoSpaceParticipants) {
+
+        List<IndividualVideo> individualVideos = individualVideoQueryService.findWithVideoByVideoSpaceParticipant(
+                videoSpaceParticipants);
+
+        return individualVideos.stream()
                 .map(DashboardIndividualVideoDto::of)
                 .sorted((video1, video2) -> video2.getLastAccessTime().compareTo(video1.getLastAccessTime()))
                 .collect(Collectors.toList());
