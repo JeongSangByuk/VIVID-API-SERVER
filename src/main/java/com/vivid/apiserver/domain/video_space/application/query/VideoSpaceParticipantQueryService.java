@@ -37,6 +37,10 @@ public class VideoSpaceParticipantQueryService {
         return videoSpaceParticipantDao.findAllWithVideoSpaceByUserId(userId);
     }
 
+    public List<VideoSpaceParticipant> findAllWithUserByVideoSpaces(List<VideoSpace> videoSpaces) {
+        return videoSpaceParticipantDao.findAllWithUserByVideoSpaces(videoSpaces);
+    }
+
     public VideoSpaceParticipant findWithVideoSpaceByUserIdAndVideoSpaceId(UUID userId, Long videoSpaceId) {
         return videoSpaceParticipantDao.findWithVideoSpaceByUserIdAndVideoSpaceId(userId, videoSpaceId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_SPACE_PARTICIPANT_NOT_FOUND));

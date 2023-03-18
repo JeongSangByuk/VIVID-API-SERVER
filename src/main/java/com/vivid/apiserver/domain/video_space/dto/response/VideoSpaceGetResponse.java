@@ -5,7 +5,9 @@ import com.vivid.apiserver.domain.video.dto.response.VideoGetResponse;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,23 @@ public class VideoSpaceGetResponse {
             List<IndividualVideo> individualVideos) {
 
         VideoSpace videoSpace = videoSpaceParticipant.getVideoSpace();
+
+        return getVideoSpaceGetResponse(individualVideos, videoSpace);
+    }
+
+    public static VideoSpaceGetResponse of(VideoSpaceParticipant videoSpaceParticipant,
+            Map<Long, List<IndividualVideo>> individualVideosMap) {
+
+        VideoSpace videoSpace = videoSpaceParticipant.getVideoSpace();
+
+        List<IndividualVideo> individualVideos = individualVideosMap.getOrDefault(
+                videoSpaceParticipant.getVideoSpace().getId(), Collections.emptyList());
+
+        return getVideoSpaceGetResponse(individualVideos, videoSpace);
+    }
+
+    private static VideoSpaceGetResponse getVideoSpaceGetResponse(List<IndividualVideo> individualVideos,
+            VideoSpace videoSpace) {
 
         List<VideoGetResponse> videoGetResponses = individualVideos
                 .stream()

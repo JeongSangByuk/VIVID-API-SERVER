@@ -17,7 +17,7 @@ public class IndividualVideoDao {
 
     private final JPAQueryFactory query;
 
-    public List<IndividualVideo> findAllWithVideoByVideoSpaceParticipant(
+    public List<IndividualVideo> findAllWithVideoByVideoSpaceParticipants(
             List<VideoSpaceParticipant> videoSpaceParticipants) {
 
         QIndividualVideo qIndividualVideo = QIndividualVideo.individualVideo;

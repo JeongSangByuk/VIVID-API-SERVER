@@ -1,12 +1,11 @@
 package com.vivid.apiserver.domain.video.dao;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo;
-import com.vivid.apiserver.domain.video.domain.QVideo;
-import com.vivid.apiserver.domain.video.domain.Video;
-import com.vivid.apiserver.global.error.exception.ErrorCode;
-import com.vivid.apiserver.global.error.exception.NotFoundException;
-import java.util.Optional;
+import com.vivid.apiserver.domain.user.domain.QUser;
+import com.vivid.apiserver.domain.video_space.domain.QVideoSpaceParticipant;
+import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
+import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,25 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VideoDao {
 
-    private final VideoRepository videoRepository;
-
     private final JPAQueryFactory query;
 
-    // videoId를 통해 video return
-    public Video findById(final Long id) {
+    public List<VideoSpaceParticipant> findAllWithUserByVideoSpaces(List<VideoSpace> videoSpaces) {
 
-        // fetch join + queryDLS를 통한 get
-        Optional<Video> video = Optional.ofNullable(query.select(QVideo.video)
-                .from(QVideo.video)
-                .leftJoin(QVideo.video.individualVideos, QIndividualVideo.individualVideo)
-                .fetchJoin()
-                .where(QVideo.video.id.eq(id))
-                .distinct().fetchOne());
+        QVideoSpaceParticipant qVideoSpaceParticipant = QVideoSpaceParticipant.videoSpaceParticipant;
+        QUser qUser = QUser.user;
 
-        // not found exception
-        video.orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_NOT_FOUND));
-
-        return video.get();
+        return query.selectFrom(qVideoSpaceParticipant)
+                .leftJoin(qVideoSpaceParticipant.user, qUser).fetchJoin()
+                .where(qVideoSpaceParticipant.videoSpace.in(videoSpaces))
+                .distinct().fetch();
     }
 
 

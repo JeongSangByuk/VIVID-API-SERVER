@@ -4,17 +4,13 @@ import com.vivid.apiserver.domain.individual_video.application.query.IndividualV
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.user.application.CurrentUserService;
 import com.vivid.apiserver.domain.user.domain.User;
-import com.vivid.apiserver.domain.user.dto.response.UserGetResponse;
-import com.vivid.apiserver.domain.video.dto.response.HostedVideoGetResponse;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceParticipantQueryService;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceQueryService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import com.vivid.apiserver.domain.video_space.dto.request.VideoSpaceSaveRequest;
-import com.vivid.apiserver.domain.video_space.dto.response.HostedVideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceSaveResponse;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,54 +61,10 @@ public class VideoSpaceService {
                 videoSpaceParticipants);
 
         Map<Long, List<IndividualVideo>> individualVideosMap = individualVideos.stream()
-                .collect(Collectors.groupingBy(
-                        individualVideo -> individualVideo.getVideoSpaceParticipant().getVideoSpace().getId()));
+                .collect(Collectors.groupingBy(this::getVideoSpaceIdFromIndividualVideo));
 
         return videoSpaceParticipants.stream()
-                .map(videoSpaceParticipant -> {
-
-                    List<IndividualVideo> individualVideosFromMap = individualVideosMap
-                            .getOrDefault(videoSpaceParticipant.getVideoSpace().getId(), Collections.emptyList());
-
-                    return VideoSpaceGetResponse.of(videoSpaceParticipant, individualVideosFromMap);
-                }).
-                collect(Collectors.toList());
-    }
-
-    /**
-     * 특정 video video space의 host 정보 get 메소드
-     */
-    public HostedVideoSpaceGetResponse getHostedOne(Long videoSpaceId) {
-
-        User currentUser = currentUserService.getCurrentUser();
-        VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
-
-        videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());
-
-        List<HostedVideoGetResponse> hostedVideoGetResponses = videoSpace.getVideos().stream()
-                .map(HostedVideoGetResponse::from)
-                .collect(Collectors.toList());
-
-        List<UserGetResponse> userGetResponses = videoSpace.getVideoSpaceParticipants().stream()
-                .map(videoSpaceParticipant -> UserGetResponse.from(videoSpaceParticipant.getUser()))
-                .collect(Collectors.toList());
-
-        return HostedVideoSpaceGetResponse.builder()
-                .videoSpace(videoSpace)
-                .videos(hostedVideoGetResponses)
-                .users(userGetResponses).build();
-    }
-
-    /**
-     * 자신이 생생한(host인) video space list를 get합니다.
-     */
-    public List<HostedVideoSpaceGetResponse> getHostedList() {
-
-        User currentUser = currentUserService.getCurrentUser();
-        List<VideoSpace> videoSpaces = videoSpaceQueryService.findAllByHostedEmail(currentUser.getEmail());
-
-        return videoSpaces.stream()
-                .map(videoSpace -> getHostedOne(videoSpace.getId()))
+                .map(videoSpaceParticipant -> VideoSpaceGetResponse.of(videoSpaceParticipant, individualVideosMap))
                 .collect(Collectors.toList());
     }
 
@@ -140,5 +92,9 @@ public class VideoSpaceService {
         videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());
 
         videoSpaceManageService.deleteVideoSpace(videoSpace);
+    }
+
+    private Long getVideoSpaceIdFromIndividualVideo(IndividualVideo individualVideo) {
+        return individualVideo.getVideoSpaceParticipant().getVideoSpace().getId();
     }
 }

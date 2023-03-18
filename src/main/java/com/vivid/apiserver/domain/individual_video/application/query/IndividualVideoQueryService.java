@@ -30,6 +30,6 @@ public class IndividualVideoQueryService {
 
     public List<IndividualVideo> findAllWithVideoByVideoSpaceParticipant(
             List<VideoSpaceParticipant> videoSpaceParticipants) {
-        return individualVideoDao.findAllWithVideoByVideoSpaceParticipant(videoSpaceParticipants);
+        return individualVideoDao.findAllWithVideoByVideoSpaceParticipants(videoSpaceParticipants);
     }
 }
