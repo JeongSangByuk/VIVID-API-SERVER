@@ -28,8 +28,8 @@ public class IndividualVideoQueryService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.INDIVIDUAL_VIDEO_NOT_FOUND));
     }
 
-    public List<IndividualVideo> findWithVideoByVideoSpaceParticipant(
+    public List<IndividualVideo> findAllWithVideoByVideoSpaceParticipant(
             List<VideoSpaceParticipant> videoSpaceParticipants) {
-        return individualVideoDao.findWithVideoByVideoSpaceParticipant(videoSpaceParticipants);
+        return individualVideoDao.findAllWithVideoByVideoSpaceParticipant(videoSpaceParticipants);
     }
 }

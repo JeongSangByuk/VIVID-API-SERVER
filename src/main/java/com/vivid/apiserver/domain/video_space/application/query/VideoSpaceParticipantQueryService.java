@@ -33,8 +33,13 @@ public class VideoSpaceParticipantQueryService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_SPACE_PARTICIPANT_NOT_FOUND));
     }
 
-    public List<VideoSpaceParticipant> findWithVideoSpaceByUserId(UUID userId) {
-        return videoSpaceParticipantDao.findWithVideoSpaceByUserId(userId);
+    public List<VideoSpaceParticipant> findAllWithVideoSpaceByUserId(UUID userId) {
+        return videoSpaceParticipantDao.findAllWithVideoSpaceByUserId(userId);
+    }
+
+    public VideoSpaceParticipant findWithVideoSpaceByUserIdAndVideoSpaceId(UUID userId, Long videoSpaceId) {
+        return videoSpaceParticipantDao.findWithVideoSpaceByUserIdAndVideoSpaceId(userId, videoSpaceId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_SPACE_PARTICIPANT_NOT_FOUND));
     }
 
 }

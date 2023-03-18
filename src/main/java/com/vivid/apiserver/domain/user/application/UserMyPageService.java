@@ -32,7 +32,7 @@ public class UserMyPageService {
 
         User user = currentUserService.getCurrentUser();
 
-        List<VideoSpaceParticipant> videoSpaceParticipants = videoSpaceParticipantQueryService.findWithVideoSpaceByUserId(
+        List<VideoSpaceParticipant> videoSpaceParticipants = videoSpaceParticipantQueryService.findAllWithVideoSpaceByUserId(
                 user.getId());
 
         List<DashboardIndividualVideoDto> dashboardIndividualVideos = getDashboardIndividualVideoDto(
@@ -60,7 +60,7 @@ public class UserMyPageService {
     private List<DashboardIndividualVideoDto> getDashboardIndividualVideoDto(
             List<VideoSpaceParticipant> videoSpaceParticipants) {
 
-        List<IndividualVideo> individualVideos = individualVideoQueryService.findWithVideoByVideoSpaceParticipant(
+        List<IndividualVideo> individualVideos = individualVideoQueryService.findAllWithVideoByVideoSpaceParticipant(
                 videoSpaceParticipants);
 
         return individualVideos.stream()

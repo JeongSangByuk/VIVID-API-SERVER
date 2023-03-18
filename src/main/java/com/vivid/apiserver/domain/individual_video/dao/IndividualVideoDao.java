@@ -17,15 +17,15 @@ public class IndividualVideoDao {
 
     private final JPAQueryFactory query;
 
-    public List<IndividualVideo> findWithVideoByVideoSpaceParticipant(
+    public List<IndividualVideo> findAllWithVideoByVideoSpaceParticipant(
             List<VideoSpaceParticipant> videoSpaceParticipants) {
 
-        QIndividualVideo individualVideo = QIndividualVideo.individualVideo;
-        QVideo video = QVideo.video;
+        QIndividualVideo qIndividualVideo = QIndividualVideo.individualVideo;
+        QVideo qVideo = QVideo.video;
 
-        return query.selectFrom(individualVideo)
-                .leftJoin(individualVideo.video, video).fetchJoin()
-                .where(individualVideo.videoSpaceParticipant.in(videoSpaceParticipants))
+        return query.selectFrom(qIndividualVideo)
+                .leftJoin(qIndividualVideo.video, qVideo).fetchJoin()
+                .where(qIndividualVideo.videoSpaceParticipant.in(videoSpaceParticipants))
                 .distinct().fetch();
     }
 

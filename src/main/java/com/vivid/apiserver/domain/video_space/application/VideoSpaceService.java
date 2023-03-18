@@ -14,6 +14,7 @@ import com.vivid.apiserver.domain.video_space.dto.request.VideoSpaceSaveRequest;
 import com.vivid.apiserver.domain.video_space.dto.response.HostedVideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceGetResponse;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceSaveResponse;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,14 +41,14 @@ public class VideoSpaceService {
     public VideoSpaceGetResponse getOne(Long videoSpaceId) {
 
         User currentUser = currentUserService.getCurrentUser();
-        VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
 
-        videoSpaceValidateService.checkVideoSpaceParticipant(videoSpace, currentUser);
+        VideoSpaceParticipant videoSpaceParticipant = videoSpaceParticipantQueryService.findWithVideoSpaceByUserIdAndVideoSpaceId(
+                currentUser.getId(), videoSpaceId);
 
-        VideoSpaceParticipant videoSpaceParticipant =
-                videoSpaceParticipantQueryService.findByUserAndVideoSpace(currentUser, videoSpace);
+        List<IndividualVideo> individualVideos = individualVideoQueryService.findAllWithVideoByVideoSpaceParticipant(
+                List.of(videoSpaceParticipant));
 
-        return VideoSpaceGetResponse.of(videoSpace, videoSpaceParticipant.getIndividualVideos());
+        return VideoSpaceGetResponse.of(videoSpaceParticipant, individualVideos);
     }
 
     /**
@@ -57,19 +58,24 @@ public class VideoSpaceService {
 
         User user = currentUserService.getCurrentUser();
 
-        List<VideoSpaceParticipant> videoSpaceParticipants = videoSpaceParticipantQueryService.findWithVideoSpaceByUserId(
+        List<VideoSpaceParticipant> videoSpaceParticipants = videoSpaceParticipantQueryService.findAllWithVideoSpaceByUserId(
                 user.getId());
 
-        List<IndividualVideo> individualVideos = individualVideoQueryService.findWithVideoByVideoSpaceParticipant(
+        List<IndividualVideo> individualVideos = individualVideoQueryService.findAllWithVideoByVideoSpaceParticipant(
                 videoSpaceParticipants);
 
         Map<Long, List<IndividualVideo>> individualVideosMap = individualVideos.stream()
                 .collect(Collectors.groupingBy(
-                        individualVideo -> individualVideo.getVideoSpaceParticipant().getVideoSpace().getId())
-                );
+                        individualVideo -> individualVideo.getVideoSpaceParticipant().getVideoSpace().getId()));
 
         return videoSpaceParticipants.stream()
-                .map(videoSpaceParticipant -> VideoSpaceGetResponse.of2(videoSpaceParticipant, individualVideosMap)).
+                .map(videoSpaceParticipant -> {
+
+                    List<IndividualVideo> individualVideosFromMap = individualVideosMap
+                            .getOrDefault(videoSpaceParticipant.getVideoSpace().getId(), Collections.emptyList());
+
+                    return VideoSpaceGetResponse.of(videoSpaceParticipant, individualVideosFromMap);
+                }).
                 collect(Collectors.toList());
     }
 
@@ -103,7 +109,7 @@ public class VideoSpaceService {
     public List<HostedVideoSpaceGetResponse> getHostedList() {
 
         User currentUser = currentUserService.getCurrentUser();
-        List<VideoSpace> videoSpaces = videoSpaceQueryService.findListByHostedEmail(currentUser.getEmail());
+        List<VideoSpace> videoSpaces = videoSpaceQueryService.findAllByHostedEmail(currentUser.getEmail());
 
         return videoSpaces.stream()
                 .map(videoSpace -> getHostedOne(videoSpace.getId()))
