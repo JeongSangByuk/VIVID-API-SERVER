@@ -24,6 +24,10 @@ public class VideoSpaceParticipantCommandService {
         return videoSpaceParticipant;
     }
 
+    public void delete(VideoSpaceParticipant videoSpaceParticipant) {
+        videoSpaceParticipantRepository.delete(videoSpaceParticipant);
+    }
+
     public void deleteAllByVideoSpace(VideoSpace videoSpace) {
         videoSpaceParticipantRepository.deleteAllByVideoSpace(videoSpace);
     }

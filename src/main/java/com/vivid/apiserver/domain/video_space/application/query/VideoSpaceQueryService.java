@@ -1,5 +1,6 @@
 package com.vivid.apiserver.domain.video_space.application.query;
 
+import com.vivid.apiserver.domain.video_space.dao.VideoSpaceDao;
 import com.vivid.apiserver.domain.video_space.dao.VideoSpaceRepository;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
@@ -16,11 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VideoSpaceQueryService {
 
+    private final VideoSpaceDao videoSpaceDao;
     private final VideoSpaceRepository videoSpaceRepository;
 
     public VideoSpace findById(Long id) {
 
         return videoSpaceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_SPACE_NOT_FOUND));
+    }
+
+    public VideoSpace findWithVideoSpaceParticipantsById(Long id) {
+
+        return videoSpaceDao.findWithVideoSpaceParticipantsById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_SPACE_NOT_FOUND));
     }
 

@@ -36,8 +36,7 @@ public class VideoSpaceParticipantService {
 
         User user = userQueryService.findByEmail(email);
 
-        // todo 이부분 fetch join
-        VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
+        VideoSpace videoSpace = videoSpaceQueryService.findWithVideoSpaceParticipantsById(videoSpaceId);
 
         videoSpaceValidateService.checkHostUserAccess(videoSpace, videoSpace.getHostEmail());
         videoSpaceValidateService.checkDuplicatedParticipant(email, videoSpace.getVideoSpaceParticipants());
@@ -63,5 +62,6 @@ public class VideoSpaceParticipantService {
                 videoSpaceParticipantQueryService.findByUserAndVideoSpace(user, videoSpace);
 
         individualVideoCommandService.deleteByVideoSpaceParticipant(videoSpaceParticipant);
+        videoSpaceParticipantCommandService.delete(videoSpaceParticipant);
     }
 }

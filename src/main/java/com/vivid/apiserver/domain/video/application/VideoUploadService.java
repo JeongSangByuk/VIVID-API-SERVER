@@ -63,7 +63,7 @@ public class VideoUploadService {
      */
     private Video uploadVideo(Long videoSpaceId, VideoSaveRequest videoSaveRequest) {
         User currentUser = currentUserService.getCurrentUser();
-        VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
+        VideoSpace videoSpace = videoSpaceQueryService.findWithVideoSpaceParticipantsById(videoSpaceId);
 
         videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());
 
