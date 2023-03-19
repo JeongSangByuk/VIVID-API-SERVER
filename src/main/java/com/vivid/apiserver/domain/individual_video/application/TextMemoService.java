@@ -9,6 +9,7 @@ import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoCacheSave
 import com.vivid.apiserver.domain.individual_video.dto.response.TextMemoResponse;
 import com.vivid.apiserver.domain.user.application.CurrentUserService;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,8 @@ public class TextMemoService {
      */
     public TextMemoResponse getLatest(String individualVideoId) {
 
-        // TODO participants fetch join
-        IndividualVideo individualVideo = individualVideoQueryService.findById(individualVideoId);
+        IndividualVideo individualVideo = individualVideoQueryService.findWithVideoAndVideoSpaceParticipantById(
+                UUID.fromString(individualVideoId));
         currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getEmail());
 
         return textMemoQueryService.getLatestThroughCache(individualVideoId)
@@ -47,7 +48,8 @@ public class TextMemoService {
      */
     public List<TextMemoResponse> getAll(String individualVideoId) {
 
-        IndividualVideo individualVideo = individualVideoQueryService.findById(individualVideoId);
+        IndividualVideo individualVideo = individualVideoQueryService.findWithVideoAndVideoSpaceParticipantById(
+                UUID.fromString(individualVideoId));
         currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getEmail());
 
         return textMemoQueryService.getHistories(individualVideoId).stream()
