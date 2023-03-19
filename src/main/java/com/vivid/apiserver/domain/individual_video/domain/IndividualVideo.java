@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -26,6 +27,7 @@ import org.hibernate.annotations.Where;
 @Entity
 @Table(name = "individual_video")
 @Getter
+@DynamicUpdate
 @SQLDelete(sql = "UPDATE individual_video SET deleted = true WHERE individual_video_id = ?")
 @Where(clause = "deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -40,6 +40,13 @@ public class CurrentUserService {
         }
     }
 
+    public void checkValidUserAccess(String currentUserEmail, String accessedEmail) {
+
+        if (!accessedEmail.equals(currentUserEmail)) {
+            throw new AccessDeniedException(ErrorCode.USER_ACCESS_DENIED);
+        }
+    }
+
     /**
      * 현재 로그인 돼 있는 유저의 webex access token get 메소드
      */

@@ -4,8 +4,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo;
 import com.vivid.apiserver.domain.video.domain.QVideo;
+import com.vivid.apiserver.domain.video_space.domain.QVideoSpaceParticipant;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,21 @@ public class IndividualVideoDao {
                 .leftJoin(qIndividualVideo.video, qVideo).fetchJoin()
                 .where(qIndividualVideo.videoSpaceParticipant.in(videoSpaceParticipants))
                 .distinct().fetch();
+    }
+
+    public Optional<IndividualVideo> findWithVideoAndVideoSpaceParticipantById(UUID individualVideoId) {
+
+        QIndividualVideo qIndividualVideo = QIndividualVideo.individualVideo;
+        QVideoSpaceParticipant qVideoSpaceParticipant = QVideoSpaceParticipant.videoSpaceParticipant;
+        QVideo qVideo = QVideo.video;
+
+        IndividualVideo individualVideo = query.selectFrom(qIndividualVideo)
+                .leftJoin(qIndividualVideo.videoSpaceParticipant, qVideoSpaceParticipant).fetchJoin()
+                .leftJoin(qIndividualVideo.video, qVideo).fetchJoin()
+                .where(qIndividualVideo.id.eq(individualVideoId))
+                .distinct().fetchOne();
+
+        return Optional.ofNullable(individualVideo);
     }
 
 

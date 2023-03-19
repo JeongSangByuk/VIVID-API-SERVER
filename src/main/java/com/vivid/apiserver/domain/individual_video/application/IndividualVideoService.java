@@ -12,10 +12,12 @@ import com.vivid.apiserver.global.infra.storage.AwsS3Service;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -35,9 +37,11 @@ public class IndividualVideoService {
     public IndividualVideoDetailsGetResponse getDetailsById(String individualVideoId) {
 
         User user = currentUserService.getCurrentUser();
-        IndividualVideo individualVideo = individualVideoQueryService.findById(individualVideoId);
 
-        currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getEmail());
+        IndividualVideo individualVideo = individualVideoQueryService.findWithVideoAndVideoSpaceParticipantById(
+                UUID.fromString(individualVideoId));
+
+        currentUserService.checkValidUserAccess(user.getEmail(), individualVideo.getVideoSpaceParticipant().getEmail());
 
         updateIndividualVideoLastAccess(individualVideoId, user, individualVideo);
 

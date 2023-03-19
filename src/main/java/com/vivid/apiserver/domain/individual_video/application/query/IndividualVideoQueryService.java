@@ -30,6 +30,15 @@ public class IndividualVideoQueryService {
 
     public List<IndividualVideo> findAllWithVideoByVideoSpaceParticipant(
             List<VideoSpaceParticipant> videoSpaceParticipants) {
+
         return individualVideoDao.findAllWithVideoByVideoSpaceParticipants(videoSpaceParticipants);
     }
+
+    public IndividualVideo findWithVideoAndVideoSpaceParticipantById(UUID individualVideoId) {
+
+        return individualVideoDao.findWithVideoAndVideoSpaceParticipantById(individualVideoId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.INDIVIDUAL_VIDEO_NOT_FOUND));
+    }
+
+
 }
