@@ -46,21 +46,24 @@ public class IndividualVideoCommandService {
         individualVideo.changeProgressRate(progressRate);
     }
 
-    public void deleteByVideoSpaceParticipant(VideoSpaceParticipant videoSpaceParticipant) {
-        individualVideoRepository.deleteAllByVideoSpaceParticipant(videoSpaceParticipant);
-    }
-
     public void delete(IndividualVideo individualVideo) {
+
         individualVideoRepository.delete(individualVideo);
     }
 
-    public void deleteAllByVideo(Video video) {
+    public void deleteAll(Video video) {
 
-        individualVideoDao.deleteAllByVideo(video);
+        individualVideoDao.deleteAll(video);
     }
 
-    public void deleteAllByVideoSpaceParticipant(VideoSpaceParticipant videoSpaceParticipant) {
+    public void deleteAll(VideoSpaceParticipant videoSpaceParticipant) {
 
-        individualVideoDao.deleteAllByVideoSpaceParticipant(videoSpaceParticipant);
+        individualVideoDao.deleteAll(videoSpaceParticipant);
+    }
+
+    public void deleteAll(List<Video> videos, List<VideoSpaceParticipant> videoSpaceParticipants) {
+        individualVideoDao.deleteAll(videos, videoSpaceParticipants);
+
+
     }
 }

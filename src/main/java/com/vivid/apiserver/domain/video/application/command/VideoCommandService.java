@@ -1,5 +1,6 @@
 package com.vivid.apiserver.domain.video.application.command;
 
+import com.vivid.apiserver.domain.video.dao.VideoDao;
 import com.vivid.apiserver.domain.video.dao.VideoRepository;
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VideoCommandService {
 
+    private final VideoDao videoDao;
     private final VideoRepository videoRepository;
 
     public void save(Video video) {
@@ -28,7 +30,7 @@ public class VideoCommandService {
     }
 
     public void deleteAllByVideoSpace(VideoSpace videoSpace) {
-        videoRepository.deleteAllByVideoSpace(videoSpace);
+        videoDao.deleteAllByVideoSpace(videoSpace);
     }
 
 

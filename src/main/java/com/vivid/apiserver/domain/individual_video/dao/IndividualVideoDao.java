@@ -48,7 +48,7 @@ public class IndividualVideoDao {
         return Optional.ofNullable(individualVideo);
     }
 
-    public void deleteAllByVideo(Video video) {
+    public void deleteAll(Video video) {
 
         QIndividualVideo qIndividualVideo = QIndividualVideo.individualVideo;
 
@@ -58,12 +58,24 @@ public class IndividualVideoDao {
                 .execute();
     }
 
-    public void deleteAllByVideoSpaceParticipant(VideoSpaceParticipant videoSpaceParticipant) {
+    public void deleteAll(VideoSpaceParticipant videoSpaceParticipant) {
 
         QIndividualVideo qIndividualVideo = QIndividualVideo.individualVideo;
 
         query.update(qIndividualVideo)
                 .where(qIndividualVideo.videoSpaceParticipant.eq(videoSpaceParticipant))
+                .set(qIndividualVideo.deleted, Boolean.TRUE)
+                .execute();
+    }
+
+    public void deleteAll(List<Video> videos,
+            List<VideoSpaceParticipant> videoSpaceParticipants) {
+
+        QIndividualVideo qIndividualVideo = QIndividualVideo.individualVideo;
+
+        query.update(qIndividualVideo)
+                .where(qIndividualVideo.videoSpaceParticipant.in(videoSpaceParticipants)
+                        .or(qIndividualVideo.video.in(videos)))
                 .set(qIndividualVideo.deleted, Boolean.TRUE)
                 .execute();
     }

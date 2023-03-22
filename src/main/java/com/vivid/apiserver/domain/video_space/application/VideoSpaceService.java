@@ -4,6 +4,8 @@ import com.vivid.apiserver.domain.individual_video.application.query.IndividualV
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.user.application.CurrentUserService;
 import com.vivid.apiserver.domain.user.domain.User;
+import com.vivid.apiserver.domain.video.application.query.VideoQueryService;
+import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceParticipantQueryService;
 import com.vivid.apiserver.domain.video_space.application.query.VideoSpaceQueryService;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VideoSpaceService {
 
+    private final VideoQueryService videoQueryService;
     private final VideoSpaceQueryService videoSpaceQueryService;
     private final VideoSpaceParticipantQueryService videoSpaceParticipantQueryService;
     private final IndividualVideoQueryService individualVideoQueryService;
@@ -87,11 +90,14 @@ public class VideoSpaceService {
     public void delete(Long videoSpaceId) {
 
         User currentUser = currentUserService.getCurrentUser();
-        VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
+
+        VideoSpace videoSpace = videoSpaceQueryService.findWithVideoSpaceParticipantsById(videoSpaceId);
+        List<VideoSpaceParticipant> videoSpaceParticipants = videoSpace.getVideoSpaceParticipants();
+        List<Video> videos = videoQueryService.findAllByVideoSpaces(List.of(videoSpace));
 
         videoSpaceValidateService.checkHostUserAccess(videoSpace, currentUser.getEmail());
 
-        videoSpaceManageService.deleteVideoSpace(videoSpace);
+        videoSpaceManageService.deleteVideoSpace(videoSpace, videoSpaceParticipants, videos);
     }
 
     private Long getVideoSpaceIdFromIndividualVideo(IndividualVideo individualVideo) {

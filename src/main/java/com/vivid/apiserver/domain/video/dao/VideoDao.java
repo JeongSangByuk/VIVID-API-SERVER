@@ -1,10 +1,10 @@
 package com.vivid.apiserver.domain.video.dao;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo;
 import com.vivid.apiserver.domain.video.domain.QVideo;
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video_space.domain.QVideoSpace;
+import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,6 @@ public class VideoDao {
 
         QVideo qVideo = QVideo.video;
         QVideoSpace qVideoSpace = QVideoSpace.videoSpace;
-        QIndividualVideo qIndividualVideo = QIndividualVideo.individualVideo;
 
         Video video = query.selectFrom(qVideo)
                 .leftJoin(qVideo.videoSpace, qVideoSpace).fetchJoin()
@@ -29,6 +28,16 @@ public class VideoDao {
                 .distinct().fetchOne();
 
         return Optional.ofNullable(video);
+    }
+
+    public void deleteAllByVideoSpace(VideoSpace videoSpace) {
+
+        QVideo qVideo = QVideo.video;
+
+        query.update(qVideo)
+                .where(qVideo.videoSpace.eq(videoSpace))
+                .set(qVideo.deleted, Boolean.TRUE)
+                .execute();
     }
 
 }

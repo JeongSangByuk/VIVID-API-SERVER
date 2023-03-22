@@ -60,7 +60,7 @@ public class VideoSpaceParticipantService {
         videoSpaceValidateService.checkHostUserAccess(videoSpace, videoSpace.getHostEmail());
         videoSpaceValidateService.checkVideoSpaceHostDelete(videoSpace, email);
 
-        individualVideoCommandService.deleteAllByVideoSpaceParticipant(videoSpaceParticipant);
+        individualVideoCommandService.deleteAll(videoSpaceParticipant);
         videoSpaceParticipantCommandService.delete(videoSpaceParticipant);
     }
 }

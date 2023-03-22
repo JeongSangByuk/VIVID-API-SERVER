@@ -37,7 +37,7 @@ public class VideoService {
 
         videoSpaceValidateService.checkHostUserAccess(video.getVideoSpace(), currentUser.getEmail());
 
-        individualVideoCommandService.deleteAllByVideo(video);
+        individualVideoCommandService.deleteAll(video);
         videoCommandService.delete(video);
 
     }

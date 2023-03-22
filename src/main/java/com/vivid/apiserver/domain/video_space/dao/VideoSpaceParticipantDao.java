@@ -55,4 +55,24 @@ public class VideoSpaceParticipantDao {
                 .where(qVideoSpaceParticipant.videoSpace.in(videoSpaces))
                 .distinct().fetch();
     }
+
+    public void deleteAll(List<VideoSpaceParticipant> videoSpaceParticipants) {
+
+        QVideoSpaceParticipant qVideoSpaceParticipant = QVideoSpaceParticipant.videoSpaceParticipant;
+
+        query.update(qVideoSpaceParticipant)
+                .where(qVideoSpaceParticipant.in(videoSpaceParticipants))
+                .set(qVideoSpaceParticipant.deleted, Boolean.TRUE)
+                .execute();
+    }
+
+    public void deleteAllByVideoSpace(VideoSpace videoSpace) {
+
+        QVideoSpaceParticipant qVideoSpaceParticipant = QVideoSpaceParticipant.videoSpaceParticipant;
+
+        query.update(qVideoSpaceParticipant)
+                .where(qVideoSpaceParticipant.videoSpace.eq(videoSpace))
+                .set(qVideoSpaceParticipant.deleted, Boolean.TRUE)
+                .execute();
+    }
 }
