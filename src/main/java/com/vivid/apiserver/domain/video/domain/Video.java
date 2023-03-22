@@ -67,11 +67,7 @@ public class Video extends BaseEntity {
     public void changeThumbnailImagePath(String thumbnailImagePath) {
         this.thumbnailImagePath = thumbnailImagePath;
     }
-
-    public void deleteIndividualVideos() {
-        this.individualVideos = null;
-    }
-
+    
     @Builder
     public Video(VideoSpace videoSpace, String title, String description, String uploaderId) {
         this.videoSpace = videoSpace;

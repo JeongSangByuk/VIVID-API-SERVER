@@ -1,7 +1,7 @@
 package com.vivid.apiserver.global.auth.application;
 
 import com.vivid.apiserver.domain.auth.application.command.RefreshTokenCommandService;
-import com.vivid.apiserver.domain.user.application.UserSignUpService;
+import com.vivid.apiserver.domain.user.application.UserManageService;
 import com.vivid.apiserver.domain.user.application.query.UserQueryService;
 import com.vivid.apiserver.domain.user.domain.Role;
 import com.vivid.apiserver.domain.user.dto.request.UserLoginRequest;
@@ -33,7 +33,7 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final RefreshTokenCommandService refreshTokenCommandService;
 
     private final UserQueryService userQueryService;
-    private final UserSignUpService userSignUpService;
+    private final UserManageService userManageService;
 
     @Value("${root-url}")
     private String rootUrl;
@@ -70,7 +70,7 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
      */
     private void signUpIfNotUser(UserLoginRequest userLoginRequest) {
         if (!userQueryService.isDuplicatedUserByEmail(userLoginRequest.getEmail())) {
-            userSignUpService.signUp(userLoginRequest);
+            userManageService.signUp(userLoginRequest);
         }
     }
 }

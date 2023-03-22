@@ -28,4 +28,8 @@ public class UserCommandService {
         institution.changeWebexAccessToken(accessToken);
         user.changeInstitution(institution);
     }
+
+    public void delete(User user) {
+        userRepository.delete(user);
+    }
 }

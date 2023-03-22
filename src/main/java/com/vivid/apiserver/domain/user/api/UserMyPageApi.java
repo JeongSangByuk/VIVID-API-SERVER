@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,15 +25,4 @@ public class UserMyPageApi {
         return SuccessResponse.success(SuccessCode.OK_SUCCESS, userMyPageService.getMyPageDashboardData());
 
     }
-
-    @Operation(summary = "user delete api", description = "user가 회원 탈퇴할 때 사용되는 api입니다.")
-    @DeleteMapping("/api/user")
-    public ResponseEntity<SuccessResponse<String>> delete() {
-
-//        userMyPageService.deleteUser();
-
-        return SuccessResponse.OK;
-    }
-
-
 }
