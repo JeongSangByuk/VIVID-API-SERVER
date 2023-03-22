@@ -34,7 +34,6 @@ public class VideoSpaceParticipantDao {
         return Optional.ofNullable(videoSpaceParticipant);
     }
 
-
     public List<VideoSpaceParticipant> findAllWithVideoSpaceByUserId(UUID userId) {
 
         QVideoSpaceParticipant qVideoSpaceParticipant = QVideoSpaceParticipant.videoSpaceParticipant;

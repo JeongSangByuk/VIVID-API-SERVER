@@ -52,16 +52,15 @@ public class VideoSpaceParticipantService {
      */
     public void deleteVideoSpaceParticipantFromVideoSpace(Long videoSpaceId, String email) {
 
-        VideoSpace videoSpace = videoSpaceQueryService.findById(videoSpaceId);
         User user = userQueryService.findByEmail(email);
+        VideoSpaceParticipant videoSpaceParticipant =
+                videoSpaceParticipantQueryService.findWithVideoSpaceByUserIdAndVideoSpaceId(user.getId(), videoSpaceId);
+        VideoSpace videoSpace = videoSpaceParticipant.getVideoSpace();
 
         videoSpaceValidateService.checkHostUserAccess(videoSpace, videoSpace.getHostEmail());
         videoSpaceValidateService.checkVideoSpaceHostDelete(videoSpace, email);
 
-        VideoSpaceParticipant videoSpaceParticipant =
-                videoSpaceParticipantQueryService.findByUserAndVideoSpace(user, videoSpace);
-
-        individualVideoCommandService.deleteByVideoSpaceParticipant(videoSpaceParticipant);
+        individualVideoCommandService.deleteAllByVideoSpaceParticipant(videoSpaceParticipant);
         videoSpaceParticipantCommandService.delete(videoSpaceParticipant);
     }
 }

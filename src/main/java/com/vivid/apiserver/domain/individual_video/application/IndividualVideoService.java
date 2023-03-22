@@ -92,7 +92,8 @@ public class IndividualVideoService {
      */
     public void deleteById(String individualVideoId) {
 
-        IndividualVideo individualVideo = individualVideoQueryService.findById(individualVideoId);
+        IndividualVideo individualVideo = individualVideoQueryService.findWithVideoAndVideoSpaceParticipantById(
+                UUID.fromString(individualVideoId));
 
         currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getEmail());
 

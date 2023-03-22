@@ -33,11 +33,11 @@ public class VideoService {
     public void delete(Long videoId) {
 
         User currentUser = currentUserService.getCurrentUser();
-        Video video = videoQueryService.findWithVideoSpaceAndIndividualVideosById(videoId);
+        Video video = videoQueryService.findWithVideoSpaceById(videoId);
 
         videoSpaceValidateService.checkHostUserAccess(video.getVideoSpace(), currentUser.getEmail());
 
-        individualVideoCommandService.deleteAll(video.getIndividualVideos());
+        individualVideoCommandService.deleteAllByVideo(video);
         videoCommandService.delete(video);
 
     }

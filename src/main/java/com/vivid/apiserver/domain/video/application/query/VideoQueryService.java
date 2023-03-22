@@ -25,8 +25,8 @@ public class VideoQueryService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_NOT_FOUND));
     }
 
-    public Video findWithVideoSpaceAndIndividualVideosById(Long videoId) {
-        return videoDao.findWithVideoSpaceAndIndividualVideosById(videoId)
+    public Video findWithVideoSpaceById(Long videoId) {
+        return videoDao.findWithVideoSpaceById(videoId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_NOT_FOUND));
     }
 

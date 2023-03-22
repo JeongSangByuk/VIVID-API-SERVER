@@ -39,7 +39,7 @@ public class VideoSpaceManageService {
 
         List<IndividualVideo> individualVideos = findAllIndividualVideosByVideoSpace(videoSpace);
 
-        individualVideoCommandService.deleteAll(individualVideos);
+//        individualVideoCommandService.deleteAll(individualVideos);
         videoSpaceParticipantCommandService.deleteAllByVideoSpace(videoSpace);
         videoCommandService.deleteAllByVideoSpace(videoSpace);
         videoSpaceCommandService.delete(videoSpace);

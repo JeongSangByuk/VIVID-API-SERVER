@@ -54,9 +54,13 @@ public class IndividualVideoCommandService {
         individualVideoRepository.delete(individualVideo);
     }
 
-    public void deleteAll(List<IndividualVideo> individualVideos) {
+    public void deleteAllByVideo(Video video) {
 
-        individualVideoDao.deleteAll(individualVideos);
+        individualVideoDao.deleteAllByVideo(video);
+    }
 
+    public void deleteAllByVideoSpaceParticipant(VideoSpaceParticipant videoSpaceParticipant) {
+
+        individualVideoDao.deleteAllByVideoSpaceParticipant(videoSpaceParticipant);
     }
 }

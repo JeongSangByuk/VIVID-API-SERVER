@@ -17,7 +17,7 @@ public class VideoDao {
 
     private final JPAQueryFactory query;
 
-    public Optional<Video> findWithVideoSpaceAndIndividualVideosById(Long videoId) {
+    public Optional<Video> findWithVideoSpaceById(Long videoId) {
 
         QVideo qVideo = QVideo.video;
         QVideoSpace qVideoSpace = QVideoSpace.videoSpace;
@@ -25,7 +25,6 @@ public class VideoDao {
 
         Video video = query.selectFrom(qVideo)
                 .leftJoin(qVideo.videoSpace, qVideoSpace).fetchJoin()
-                .leftJoin(qVideo.individualVideos, qIndividualVideo).fetchJoin()
                 .where(qVideo.id.eq(videoId))
                 .distinct().fetchOne();
 

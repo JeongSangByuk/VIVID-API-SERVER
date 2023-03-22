@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.individual_video.domain.QIndividualVideo;
 import com.vivid.apiserver.domain.video.domain.QVideo;
+import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video_space.domain.QVideoSpaceParticipant;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpaceParticipant;
 import java.util.List;
@@ -47,12 +48,22 @@ public class IndividualVideoDao {
         return Optional.ofNullable(individualVideo);
     }
 
-    public void deleteAll(List<IndividualVideo> individualVideos) {
+    public void deleteAllByVideo(Video video) {
 
         QIndividualVideo qIndividualVideo = QIndividualVideo.individualVideo;
 
         query.update(qIndividualVideo)
-                .where(qIndividualVideo.in(individualVideos))
+                .where(qIndividualVideo.video.eq(video))
+                .set(qIndividualVideo.deleted, Boolean.TRUE)
+                .execute();
+    }
+
+    public void deleteAllByVideoSpaceParticipant(VideoSpaceParticipant videoSpaceParticipant) {
+
+        QIndividualVideo qIndividualVideo = QIndividualVideo.individualVideo;
+
+        query.update(qIndividualVideo)
+                .where(qIndividualVideo.videoSpaceParticipant.eq(videoSpaceParticipant))
                 .set(qIndividualVideo.deleted, Boolean.TRUE)
                 .execute();
     }
