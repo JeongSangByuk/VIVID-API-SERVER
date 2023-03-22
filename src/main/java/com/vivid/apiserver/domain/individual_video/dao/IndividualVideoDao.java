@@ -47,5 +47,15 @@ public class IndividualVideoDao {
         return Optional.ofNullable(individualVideo);
     }
 
+    public void deleteAll(List<IndividualVideo> individualVideos) {
+
+        QIndividualVideo qIndividualVideo = QIndividualVideo.individualVideo;
+
+        query.update(qIndividualVideo)
+                .where(qIndividualVideo.in(individualVideos))
+                .set(qIndividualVideo.deleted, Boolean.TRUE)
+                .execute();
+    }
+
 
 }

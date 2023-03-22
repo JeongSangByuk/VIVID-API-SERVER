@@ -5,13 +5,11 @@ import com.vivid.apiserver.global.common.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -41,7 +39,7 @@ public class User extends BaseEntity {
     @Column(name = "user_id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<VideoSpaceParticipant> videoSpaceParticipants = new ArrayList<>();
 
     @Email

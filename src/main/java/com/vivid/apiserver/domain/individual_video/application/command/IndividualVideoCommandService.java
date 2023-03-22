@@ -1,5 +1,6 @@
 package com.vivid.apiserver.domain.individual_video.application.command;
 
+import com.vivid.apiserver.domain.individual_video.dao.IndividualVideoDao;
 import com.vivid.apiserver.domain.individual_video.dao.repository.IndividualVideoRepository;
 import com.vivid.apiserver.domain.individual_video.domain.IndividualVideo;
 import com.vivid.apiserver.domain.video.domain.Video;
@@ -14,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class IndividualVideoCommandService {
+
+    private final IndividualVideoDao individualVideoDao;
 
     private final IndividualVideoRepository individualVideoRepository;
 
@@ -52,7 +55,8 @@ public class IndividualVideoCommandService {
     }
 
     public void deleteAll(List<IndividualVideo> individualVideos) {
-        individualVideoRepository.deleteAll(individualVideos);
+
+        individualVideoDao.deleteAll(individualVideos);
 
     }
 }

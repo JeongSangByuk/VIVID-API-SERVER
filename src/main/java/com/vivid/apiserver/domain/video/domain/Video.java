@@ -5,7 +5,6 @@ import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
 import com.vivid.apiserver.global.common.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -39,11 +38,11 @@ public class Video extends BaseEntity {
     @Column(name = "video_id", updatable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "video_space_id", nullable = false)
     private VideoSpace videoSpace;
 
-    @OneToMany(mappedBy = "video", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "video", fetch = FetchType.LAZY)
     private List<IndividualVideo> individualVideos = new ArrayList<>();
 
     @Column(name = "title", nullable = false)
@@ -67,6 +66,10 @@ public class Video extends BaseEntity {
 
     public void changeThumbnailImagePath(String thumbnailImagePath) {
         this.thumbnailImagePath = thumbnailImagePath;
+    }
+
+    public void deleteIndividualVideos() {
+        this.individualVideos = null;
     }
 
     @Builder

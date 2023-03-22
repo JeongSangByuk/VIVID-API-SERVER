@@ -5,10 +5,8 @@ import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.global.common.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,10 +37,10 @@ public class VideoSpace extends BaseEntity {
     @Column(name = "video_space_id", updatable = false)
     private Long id;
 
-    @OneToMany(mappedBy = "videoSpace", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "videoSpace")
     private List<VideoSpaceParticipant> videoSpaceParticipants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "videoSpace", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "videoSpace")
     private List<Video> videos = new ArrayList<>();
 
     @Column(name = "name")

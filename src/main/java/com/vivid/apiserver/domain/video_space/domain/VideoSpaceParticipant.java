@@ -5,7 +5,6 @@ import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.global.common.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,15 +43,15 @@ public class VideoSpaceParticipant extends BaseEntity {
     @Column(name = "email")
     private String email;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "video_space_id", nullable = false)
     private VideoSpace videoSpace;
 
-    @OneToMany(mappedBy = "videoSpaceParticipant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "videoSpaceParticipant")
     private List<IndividualVideo> individualVideos = new ArrayList<>();
 
     public static VideoSpaceParticipant of(VideoSpace videoSpace, User user) {
