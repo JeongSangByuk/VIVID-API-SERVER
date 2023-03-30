@@ -1,6 +1,8 @@
 package com.vivid.apiserver.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vivid.apiserver.global.auth.application.TokenProvider;
+import javax.transaction.Transactional;
 import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,14 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.transaction.Transactional;
-
-@SpringBootTest
 @Disabled
+@SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("test2")
 @Transactional
 public class IntegrationTest {
+
+    String NOW_USER_EMAIL = "jsb100800@gmail.com";
 
     @Autowired
     protected MockMvc mvc;
@@ -23,6 +25,11 @@ public class IntegrationTest {
     @Autowired
     protected ObjectMapper objectMapper;
 
+    @Autowired
+    protected TokenProvider tokenProvider;
 
-
+    protected String createAuthHeader() {
+        String header = tokenProvider.generateToken(NOW_USER_EMAIL, "USER", true).getToken();
+        return "Bearer " + header;
+    }
 }

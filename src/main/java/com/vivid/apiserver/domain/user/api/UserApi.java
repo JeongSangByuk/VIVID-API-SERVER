@@ -1,6 +1,6 @@
 package com.vivid.apiserver.domain.user.api;
 
-import com.vivid.apiserver.domain.user.application.UserService;
+import com.vivid.apiserver.domain.user.service.UserService;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.servlet.http.HttpServletRequest;

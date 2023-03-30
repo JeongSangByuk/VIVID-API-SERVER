@@ -1,9 +1,9 @@
 package com.vivid.apiserver.domain.video.api;
 
-import com.vivid.apiserver.domain.video.application.VideoService;
-import com.vivid.apiserver.domain.video.application.VideoUploadService;
 import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
 import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
+import com.vivid.apiserver.domain.video.service.VideoService;
+import com.vivid.apiserver.domain.video.service.VideoUploadService;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;

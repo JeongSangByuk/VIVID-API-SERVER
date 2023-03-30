@@ -1,7 +1,7 @@
 package com.vivid.apiserver.domain.video_space.api;
 
-import com.vivid.apiserver.domain.video_space.application.VideoSpaceParticipantService;
 import com.vivid.apiserver.domain.video_space.dto.response.VideoSpaceParticipantSaveResponse;
+import com.vivid.apiserver.domain.video_space.service.VideoSpaceParticipantService;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;

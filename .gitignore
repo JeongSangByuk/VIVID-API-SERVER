@@ -37,10 +37,8 @@ out/
 .vscode/
 
 # ignore properties file
-application.properties
-application-dev.properties
-application-test.properties
-application-refactor.properties
+*.properties
+
 
 # misc
 .DS_Store

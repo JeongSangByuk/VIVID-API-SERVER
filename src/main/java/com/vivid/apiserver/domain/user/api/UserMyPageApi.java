@@ -1,7 +1,7 @@
 package com.vivid.apiserver.domain.user.api;
 
-import com.vivid.apiserver.domain.user.application.UserMyPageService;
 import com.vivid.apiserver.domain.user.dto.response.UserMyPageDashboardDataGetResponse;
+import com.vivid.apiserver.domain.user.service.UserMyPageService;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;

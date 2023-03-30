@@ -1,10 +1,10 @@
 package com.vivid.apiserver.global.auth.application;
 
-import com.vivid.apiserver.domain.auth.application.command.RefreshTokenCommandService;
-import com.vivid.apiserver.domain.user.application.UserManageService;
-import com.vivid.apiserver.domain.user.application.query.UserQueryService;
+import com.vivid.apiserver.domain.auth.service.command.RefreshTokenCommandService;
 import com.vivid.apiserver.domain.user.domain.Role;
 import com.vivid.apiserver.domain.user.dto.request.UserLoginRequest;
+import com.vivid.apiserver.domain.user.service.UserManageService;
+import com.vivid.apiserver.domain.user.service.query.UserQueryService;
 import com.vivid.apiserver.global.auth.token.AuthToken;
 import com.vivid.apiserver.global.auth.util.CookieUtil;
 import java.io.IOException;

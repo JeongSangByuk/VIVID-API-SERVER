@@ -1,8 +1,8 @@
 package com.vivid.apiserver.domain.video.api;
 
-import com.vivid.apiserver.domain.video.application.WebexVideoService;
 import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
 import com.vivid.apiserver.domain.video.dto.response.VideoSaveResponse;
+import com.vivid.apiserver.domain.video.service.WebexVideoService;
 import com.vivid.apiserver.global.infra.webex_api.dto.response.WebexRecordingGetResponse;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;

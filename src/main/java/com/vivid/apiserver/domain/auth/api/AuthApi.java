@@ -1,7 +1,7 @@
 package com.vivid.apiserver.domain.auth.api;
 
-import com.vivid.apiserver.domain.auth.application.AuthService;
 import com.vivid.apiserver.domain.auth.dto.response.AccessTokenResponse;
+import com.vivid.apiserver.domain.auth.service.AuthService;
 import com.vivid.apiserver.global.success.SuccessCode;
 import com.vivid.apiserver.global.success.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
