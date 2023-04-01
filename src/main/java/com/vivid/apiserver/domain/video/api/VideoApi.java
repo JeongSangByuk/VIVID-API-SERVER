@@ -67,7 +67,7 @@ public class VideoApi {
 
     @Operation(summary = "video 삭제 api", description = "video를 직접 업로드하는 api")
     @DeleteMapping(value = "/api/videos/{video-id}")
-    public ResponseEntity<SuccessResponse<String>> delete(@PathVariable("video-id") Long videoId) {
+    public ResponseEntity<SuccessResponse<String>> deleteById(@PathVariable("video-id") Long videoId) {
 
         videoService.delete(videoId);
 

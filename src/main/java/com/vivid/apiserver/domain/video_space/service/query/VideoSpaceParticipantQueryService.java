@@ -1,6 +1,5 @@
 package com.vivid.apiserver.domain.video_space.service.query;
 
-import com.vivid.apiserver.domain.user.domain.User;
 import com.vivid.apiserver.domain.video_space.dao.VideoSpaceParticipantDao;
 import com.vivid.apiserver.domain.video_space.dao.VideoSpaceParticipantRepository;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
@@ -24,12 +23,6 @@ public class VideoSpaceParticipantQueryService {
     public VideoSpaceParticipant findById(Long videoSpaceParticipantId) {
 
         return videoSpaceParticipantRepository.findById(videoSpaceParticipantId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_SPACE_PARTICIPANT_NOT_FOUND));
-    }
-
-    public VideoSpaceParticipant findByUserAndVideoSpace(User user, VideoSpace videoSpace) {
-
-        return videoSpaceParticipantRepository.findByVideoSpaceAndUser(videoSpace, user)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.VIDEO_SPACE_PARTICIPANT_NOT_FOUND));
     }
 

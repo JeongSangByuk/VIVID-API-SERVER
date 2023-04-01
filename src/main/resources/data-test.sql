@@ -59,8 +59,8 @@ values (4, '2023-03-06 16:01:49.693145', false, '2023-03-06 16:01:49.693145', 't
         0xED3B4A4D02C44C2CB04F1A9D16846389, 6),
        (7, '2023-03-07 12:27:18.126505', false, '2023-03-07 12:27:18.126505', 'jsb100800@gmail.com',
         0x227DCB805BE44E8AA3686E5C2DF0F413, 7),
-       (8, '2023-03-07 12:28:50.929940', false, '2023-03-07 12:28:50.929940', 'jsb100800@gmail.com',
-        0x227DCB805BE44E8AA3686E5C2DF0F413, 5);
+       (8, '2023-03-07 12:28:50.929940', false, '2023-03-07 12:28:50.929940', 'test01@gmail.com',
+        0x5F8E0A8EE5AE4F708E6F549E85C93142, 7);
 
 insert into individual_video (individual_video_id, created_at, deleted, update_at,
                               last_access_time, progress_rate, video_id,

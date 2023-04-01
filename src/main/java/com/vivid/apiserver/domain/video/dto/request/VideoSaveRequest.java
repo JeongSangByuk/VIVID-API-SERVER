@@ -2,16 +2,17 @@ package com.vivid.apiserver.domain.video.dto.request;
 
 import com.vivid.apiserver.domain.video.domain.Video;
 import com.vivid.apiserver.domain.video_space.domain.VideoSpace;
-import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotBlank;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-@Schema
+@Builder
 public class VideoSaveRequest {
 
     @NotBlank

@@ -40,12 +40,11 @@ class IndividualVideoApiTest extends IntegrationTest {
     public void getDetailsApiTest() throws Exception {
 
         // given
-        String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
+        final String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
 
         // when
-        ResultActions resultActions = mvc.perform(
-                get("/api/individual-videos/" + individualVideoId)
-                        .header(HttpHeaders.AUTHORIZATION, header));
+        ResultActions resultActions = mvc.perform(get("/api/individual-videos/" + individualVideoId)
+                .header(HttpHeaders.AUTHORIZATION, header));
 
         // then
         resultActions
@@ -59,12 +58,11 @@ class IndividualVideoApiTest extends IntegrationTest {
     public void deleteApiTest() throws Exception {
 
         // given
-        String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
+        final String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
 
         // when
-        ResultActions resultActions = mvc.perform(
-                delete("/api/individual-videos/" + individualVideoId)
-                        .header(HttpHeaders.AUTHORIZATION, header));
+        ResultActions resultActions = mvc.perform(delete("/api/individual-videos/" + individualVideoId)
+                .header(HttpHeaders.AUTHORIZATION, header));
 
         // then
         resultActions.andExpect(status().isOk());
@@ -76,16 +74,15 @@ class IndividualVideoApiTest extends IntegrationTest {
     public void uploadSnapshotImageApiTest() throws Exception {
 
         // given
-        String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
-        MockMultipartFile file = new MockMultipartFile("image", "test.png", "image/png",
+        final String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
+        final MockMultipartFile file = new MockMultipartFile("image", "test.png", "image/png",
                 new FileInputStream("src/test/resources/test.png"));
 
         // when
-        ResultActions resultActions = mvc.perform(
-                multipart("/api/individual-videos/" + individualVideoId + "/snapshot")
-                        .file(file)
-                        .header(HttpHeaders.AUTHORIZATION, header)
-                        .param("video-time", String.valueOf(12)));
+        ResultActions resultActions = mvc.perform(multipart("/api/individual-videos/" + individualVideoId + "/snapshot")
+                .file(file)
+                .header(HttpHeaders.AUTHORIZATION, header)
+                .param("video-time", String.valueOf(12)));
 
         // then
         resultActions
@@ -98,7 +95,7 @@ class IndividualVideoApiTest extends IntegrationTest {
     public void updateProgressRateApiTest() throws Exception {
 
         // given
-        String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
+        final String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
 
         // when
         ResultActions resultActions = mvc.perform(
@@ -114,33 +111,13 @@ class IndividualVideoApiTest extends IntegrationTest {
     public void updateLastAccessTimeApiTest() throws Exception {
 
         // given
-        String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
+        final String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
 
         // when
-        ResultActions resultActions = mvc.perform(
-                put("/api/individual-videos/" + individualVideoId + "/accessed")
-                        .header(HttpHeaders.AUTHORIZATION, header));
+        ResultActions resultActions = mvc.perform(put("/api/individual-videos/" + individualVideoId + "/accessed")
+                .header(HttpHeaders.AUTHORIZATION, header));
 
         // then
         resultActions.andExpect(status().isOk());
     }
-
-//    @Test
-//    @DisplayName("[IndividualVideoApi] individualVideoList_get")
-//    public void individualVideoList_get() throws Exception {
-//
-//        //given
-//        String individualVideoId = TextMemoStateBuilder.getRandomIndividualVideoId();
-//        TextMemoStateRedisSaveRequest textMemoStateRedisSaveRequest = TextMemoStateBuilder.redisSaveRequestBuilder(
-//                individualVideoId);
-//
-//        // when
-//        ResultActions resultActions = mvc.perform(post("/api/videos")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(textMemoStateRedisSaveRequest)));
-//
-//        //then
-//        resultActions.andExpect(status().isOk());
-//    }
-
 }

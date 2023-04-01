@@ -28,21 +28,20 @@ public class VideoSpaceApi {
 
     @Operation(summary = "video space list get api", description = "로그인한 user의 video space list를 get api 입니다.")
     @GetMapping("/api/video-space")
-    public ResponseEntity<SuccessResponse<List<VideoSpaceGetResponse>>> getListByUser() {
+    public ResponseEntity<SuccessResponse<List<VideoSpaceGetResponse>>> getAllByUser() {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS, videoSpaceService.getList());
     }
 
     @Operation(summary = "video space get one by id api", description = "video space id를 통해 video space를 get api 입니다.")
     @GetMapping("/api/video-space/{video-space-id}")
-    public ResponseEntity<SuccessResponse<VideoSpaceGetResponse>> getOneById(
+    public ResponseEntity<SuccessResponse<VideoSpaceGetResponse>> getById(
             @PathVariable("video-space-id") Long videoSpaceId) {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS, videoSpaceService.getOne(videoSpaceId));
 
     }
 
-    // space 생성 api
     @Operation(summary = "video space create api", description = "video space를 생성하는 api 입니다. 최초 생성시, 생성자만 참가해 있습니다.")
     @PostMapping("/api/video-space")
     public ResponseEntity<SuccessResponse<VideoSpaceSaveResponse>> save(
@@ -53,7 +52,7 @@ public class VideoSpaceApi {
 
     @Operation(summary = "video space delete api", description = "video space를 삭제하는 api 입니다.")
     @DeleteMapping("/api/video-space/{video-space-id}")
-    public ResponseEntity<SuccessResponse<String>> delete(@PathVariable("video-space-id") Long videoSpaceId) {
+    public ResponseEntity<SuccessResponse<String>> deleteById(@PathVariable("video-space-id") Long videoSpaceId) {
 
         videoSpaceService.delete(videoSpaceId);
 

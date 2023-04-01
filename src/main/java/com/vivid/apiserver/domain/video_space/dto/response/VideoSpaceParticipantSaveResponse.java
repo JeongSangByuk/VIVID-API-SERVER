@@ -13,15 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class VideoSpaceParticipantSaveResponse {
 
-    private String userEmail;
-
     private Long id;
 
     public static VideoSpaceParticipantSaveResponse of(VideoSpaceParticipant videoSpaceParticipant) {
 
         return VideoSpaceParticipantSaveResponse.builder()
-                .id(videoSpaceParticipant.getVideoSpace().getId())
-                .userEmail(videoSpaceParticipant.getUser().getEmail())
+                .id(videoSpaceParticipant.getId())
                 .build();
     }
 }

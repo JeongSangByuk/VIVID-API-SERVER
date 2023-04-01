@@ -17,8 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 @Transactional
 public class IntegrationTest {
 
-    String NOW_USER_EMAIL = "jsb100800@gmail.com";
-
     @Autowired
     protected MockMvc mvc;
 
@@ -29,7 +27,14 @@ public class IntegrationTest {
     protected TokenProvider tokenProvider;
 
     protected String createAuthHeader() {
+
+        String NOW_USER_EMAIL = "jsb100800@gmail.com";
+
         String header = tokenProvider.generateToken(NOW_USER_EMAIL, "USER", true).getToken();
         return "Bearer " + header;
+    }
+
+    static {
+        System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
     }
 }
