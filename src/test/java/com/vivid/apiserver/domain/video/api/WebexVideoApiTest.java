@@ -5,14 +5,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.vivid.apiserver.domain.individual_video.dao.repository.IndividualVideoRepository;
-import com.vivid.apiserver.domain.video.dao.VideoRepository;
 import com.vivid.apiserver.domain.video.dto.request.VideoSaveRequest;
 import com.vivid.apiserver.test.IntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -20,14 +17,6 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @Sql("/data-test.sql")
 class WebexVideoApiTest extends IntegrationTest {
-
-    @Autowired
-    private VideoRepository videoRepository;
-
-    @Autowired
-    private IndividualVideoRepository individualVideoRepository;
-
-    private String header;
 
     @BeforeEach
     public void setUp() {

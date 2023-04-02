@@ -36,8 +36,6 @@ class VideoApiTest extends IntegrationTest {
     @Autowired
     private IndividualVideoRepository individualVideoRepository;
 
-    private String header;
-
     @BeforeEach
     public void setUp() {
         header = createAuthHeader();

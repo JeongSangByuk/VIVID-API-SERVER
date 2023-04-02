@@ -15,8 +15,6 @@ import org.springframework.test.web.servlet.ResultActions;
 @Sql("/data-test.sql")
 class VideoSpaceHostApiTest extends IntegrationTest {
 
-    private String header;
-
     @BeforeEach
     public void setUp() {
         header = createAuthHeader();

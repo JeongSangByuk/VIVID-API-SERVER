@@ -26,9 +26,11 @@ public class IntegrationTest {
     @Autowired
     protected TokenProvider tokenProvider;
 
-    protected String createAuthHeader() {
+    public final String NOW_USER_EMAIL = "jsb100800@gmail.com";
 
-        String NOW_USER_EMAIL = "jsb100800@gmail.com";
+    public String header;
+
+    protected String createAuthHeader() {
 
         String header = tokenProvider.generateToken(NOW_USER_EMAIL, "USER", true).getToken();
         return "Bearer " + header;

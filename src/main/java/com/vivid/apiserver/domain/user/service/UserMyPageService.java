@@ -63,7 +63,7 @@ public class UserMyPageService {
 
     private Integer countCompletedIndividualVideos(List<DashboardIndividualVideoDto> dashboardIndividualVideos) {
         return Math.toIntExact(dashboardIndividualVideos.stream()
-                .filter(dashboardIndividualVideoDto -> dashboardIndividualVideoDto.getProgressRate().equals(200))
+                .filter(dashboardIndividualVideoDto -> dashboardIndividualVideoDto.getProgressRate().equals(100))
                 .count());
     }
 

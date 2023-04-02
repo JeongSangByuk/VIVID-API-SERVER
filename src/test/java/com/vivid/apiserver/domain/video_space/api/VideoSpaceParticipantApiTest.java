@@ -41,8 +41,6 @@ class VideoSpaceParticipantApiTest extends IntegrationTest {
     @Autowired
     private VideoSpaceParticipantRepository videoSpaceParticipantRepository;
 
-    private String header;
-
     @BeforeEach
     public void setUp() {
         header = createAuthHeader();

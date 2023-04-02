@@ -42,8 +42,6 @@ class VideoSpaceApiTest extends IntegrationTest {
     @Autowired
     private IndividualVideoQueryService individualVideoQueryService;
 
-    private String header;
-
     @BeforeEach
     public void setUp() {
         header = createAuthHeader();
