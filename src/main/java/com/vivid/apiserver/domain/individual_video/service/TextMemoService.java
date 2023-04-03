@@ -38,7 +38,7 @@ public class TextMemoService {
                 UUID.fromString(individualVideoId));
         currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getEmail());
 
-        return textMemoQueryService.getLatestThroughCache(individualVideoId)
+        return textMemoQueryService.findLatestThroughCache(individualVideoId)
                 .map(TextMemoResponse::from)
                 .orElseGet(TextMemoResponse::createNullObject);
     }
@@ -52,7 +52,7 @@ public class TextMemoService {
                 UUID.fromString(individualVideoId));
         currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getEmail());
 
-        return textMemoQueryService.getHistories(individualVideoId).stream()
+        return textMemoQueryService.findHistories(individualVideoId).stream()
                 .map(TextMemoResponse::from)
                 .collect(Collectors.toList());
     }
@@ -74,7 +74,7 @@ public class TextMemoService {
         IndividualVideo individualVideo = individualVideoQueryService.findById(individualVideoId);
         currentUserService.checkValidUserAccess(individualVideo.getVideoSpaceParticipant().getEmail());
 
-        List<TextMemo> textMemos = textMemoQueryService.getHistoriesFromCache(individualVideoId);
+        List<TextMemo> textMemos = textMemoQueryService.findHistoriesFromCache(individualVideoId);
         textMemoCommandService.saveAll(textMemos, individualVideoId);
         textMemoCommandService.deleteAllOnCache(individualVideoId);
     }

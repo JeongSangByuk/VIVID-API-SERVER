@@ -5,12 +5,16 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class TextMemoCacheSaveRequest {
 
     private String id;
@@ -20,13 +24,6 @@ public class TextMemoCacheSaveRequest {
 
     @NotNull
     private Long videoTime;
-
-
-    @Builder
-    public TextMemoCacheSaveRequest(String stateJson, Long videoTime) {
-        this.stateJson = stateJson;
-        this.videoTime = videoTime;
-    }
 
     public TextMemo toEntity() {
 

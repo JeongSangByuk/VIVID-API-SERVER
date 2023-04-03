@@ -1,150 +1,133 @@
-//package com.vivid.apiserver.domain.individual_video.api;
-//
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-//
-//import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-//import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-//import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
-//import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-//import com.amazonaws.services.dynamodbv2.util.TableUtils;
-//import com.vivid.apiserver.domain.individual_video.domain.TextMemoHistory;
-//import com.vivid.apiserver.domain.individual_video.domain.TextMemoLatest;
-//import com.vivid.apiserver.domain.individual_video.domain.TextMemoStateBuilder;
-//import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoCacheSaveRequest;
-//import com.vivid.apiserver.test.ContainerBaseTest;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.web.servlet.ResultActions;
-//
-//class TextMemoApiTest extends ContainerBaseTest {
-//
-//    @Autowired
-//    private DynamoDBMapper dynamoDBMapper;
-//
-//    @Autowired
-//    private AmazonDynamoDB amazonDynamoDb;
-//
-//    @BeforeEach
-//    void setUp() {
-//
-//        // test container 기반, dynamoDB table 생성
-//
-//        CreateTableRequest createTextMemoStateLatestTableRequest = dynamoDBMapper.generateCreateTableRequest(
-//                        TextMemoLatest.class)
-//                .withProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
-//
-//        CreateTableRequest createTextMemoStateHistoryTableRequest = dynamoDBMapper.generateCreateTableRequest(
-//                        TextMemoHistory.class)
-//                .withProvisionedThroughput(new ProvisionedThroughput(1L, 1L));
-//
-//        TableUtils.createTableIfNotExists(amazonDynamoDb, createTextMemoStateLatestTableRequest);
-//        TableUtils.createTableIfNotExists(amazonDynamoDb, createTextMemoStateHistoryTableRequest);
-//
-//    }
-//
-//    @Test
-//    @DisplayName("[TextMemoStateApi] textMemoStateLatest_레디스_save")
-//    public void textMemoStateLatest_레디스_save() throws Exception {
-//
-//        //given
-//        String individualVideoId = TextMemoStateBuilder.getRandomIndividualVideoId();
-//        TextMemoCacheSaveRequest textMemoCacheSaveRequest = TextMemoStateBuilder.redisSaveRequestBuilder(
-//                individualVideoId);
-//
-//        // when
-//        ResultActions resultActions = mvc.perform(post("/api/videos/cache/" + individualVideoId + "/text-memo-state")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(textMemoCacheSaveRequest)));
-//
-//        //then
-//        resultActions.andExpect(status().isOk());
-//    }
-//
-//    @Test
-//    @DisplayName("[TextMemoStateApi] textMemoStateLatest_레디스에서_다이나모_save")
-//    public void textMemoStateLatest_레디스에서_다이나모_save() throws Exception {
-//
-//        //given
-//        String individualVideoId = TextMemoStateBuilder.getRandomIndividualVideoId();
-//
-//        //when
-//        // 우선, latest state save
-//        mvc.perform(post("/api/videos/" + individualVideoId + "/cache/text-memo-state")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(
-//                        TextMemoStateBuilder.redisSaveRequestBuilder(individualVideoId))));
-//
-//        ResultActions resultActions = mvc.perform(post("/api/" + individualVideoId + "/text-memo-state-latest")
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andDo(print());
-//
-//        //then
-//        resultActions.andExpect(status().isOk());
-//    }
-//
-//    @Test
-//    @DisplayName("[TextMemoStateApi] textMemoStateHistoryList_레디스에서_다이나모_save")
-//    public void textMemoStateHistoryList_레디스에서_다이나모_save() throws Exception {
-//
-//        //given
-//        String individualVideoId = TextMemoStateBuilder.getRandomIndividualVideoId();
-//
-//        //when
-//        // redis에 state 두번 save
-//        mvc.perform(post("/api/videos/" + individualVideoId + "/cache/text-memo-state")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(
-//                        TextMemoStateBuilder.redisSaveRequestBuilder(individualVideoId))));
-//
-//        mvc.perform(post("/api/videos/" + individualVideoId + "/cache/text-memo-state")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(
-//                        TextMemoStateBuilder.redisSaveRequestBuilder(individualVideoId))));
-//
-//        ResultActions resultActions = mvc.perform(post("/api/videos/" + individualVideoId + "/text-memo-state-history")
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andDo(print());
-//
-//        //then
-//        resultActions.andExpect(status().isOk());
-//    }
-//
-//    @Test
-//    @DisplayName("[TextMemoStateApi] textMemoStateLatest_레디스_get_return_null_and_다이노모_get()")
-//    public void textMemoStateLatest_레디스_get_return_null_and_다이노모_get() throws Exception {
-//
-//        //given
-//        String individualVideoId = TextMemoStateBuilder.getRandomIndividualVideoId();
-//
-//        //when
-//
-//        // redis에 저장
-//        mvc.perform(post("/api/videos/" + individualVideoId + "/cache/text-memo-state")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(
-//                        TextMemoStateBuilder.redisSaveRequestBuilder(individualVideoId))));
-//
-//        // 다이나모에 save
-//        // 다이나모에 save되면 redis가 null이 된다.
-//        mvc.perform(post("/api/videos/" + individualVideoId + "/text-memo-state-latest")
-//                .contentType(MediaType.APPLICATION_JSON));
-//
-//        // redis에서 get latest
-//        ResultActions resultActions = mvc.perform(
-//                get("/api/videos/" + individualVideoId + "/cache/text-memo-state-latest")
-//                        .contentType(MediaType.APPLICATION_JSON));
-//
-//        //then
-//        resultActions
-//                .andExpect(jsonPath("individualVideoId").value(individualVideoId));
-//
-//
-//    }
-//}
+package com.vivid.apiserver.domain.individual_video.api;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.vivid.apiserver.domain.individual_video.dao.TextMemoCacheDao;
+import com.vivid.apiserver.domain.individual_video.dao.TextMemoDao;
+import com.vivid.apiserver.domain.individual_video.domain.TextMemo;
+import com.vivid.apiserver.domain.individual_video.dto.request.TextMemoCacheSaveRequest;
+import com.vivid.apiserver.test.ContainerBaseTest;
+import java.time.LocalDateTime;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.ResultActions;
+
+@Sql("/data-test.sql")
+class TextMemoApiTest extends ContainerBaseTest {
+
+    @Autowired
+    private TextMemoCacheDao textMemoCacheDao;
+
+    @Autowired
+    private TextMemoDao textMemoDao;
+
+    @BeforeEach
+    public void setUp() {
+        header = createAuthHeader();
+    }
+
+    @Test
+    @DisplayName("TextMemo 캐시 저장 Api")
+    public void saveToCacheApiTest() throws Exception {
+
+        final String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
+
+        //given
+        TextMemoCacheSaveRequest request = TextMemoCacheSaveRequest.builder()
+                .stateJson("test")
+                .videoTime(123L).build();
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                post("/api/individual-videos/" + individualVideoId + "/cache/text-memo")
+                        .header(HttpHeaders.AUTHORIZATION, header)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+
+        //then
+        resultActions.andExpect(status().isOk());
+        assertThat(textMemoCacheDao.findLatestByIndividualVideoId((individualVideoId)).isPresent()).isTrue();
+    }
+
+    @Test
+    @DisplayName("TextMemo 전체 저장 Api")
+    public void saveAllApiTest() throws Exception {
+
+        //given
+        final String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
+        textMemoCacheDao.save(createMockTextMemo(), individualVideoId);
+        textMemoCacheDao.save(createMockTextMemo(), individualVideoId);
+
+        //when
+        ResultActions resultActions = mvc.perform(post("/api/individual-videos/" + individualVideoId + "/text-memos")
+                .header(HttpHeaders.AUTHORIZATION, header));
+
+        //then
+        resultActions.andExpect(status().isOk());
+        assertThat(textMemoCacheDao.findLatestByIndividualVideoId(individualVideoId).isPresent()).isFalse();
+        assertThat(textMemoDao.findAllByIndividualId(individualVideoId)).isNotEmpty();
+    }
+
+
+    @Test
+    @DisplayName("TextMemo 최신 데이터 캐시 조회 Api")
+    public void getLatestFromCache() throws Exception {
+
+        // given
+        final String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
+        textMemoCacheDao.save(createMockTextMemo(), individualVideoId);
+
+        // when
+        ResultActions resultActions = mvc.perform(
+                get("/api/individual-videos/" + individualVideoId + "/cache/text-memo-latest")
+                        .header(HttpHeaders.AUTHORIZATION, header));
+
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("data.stateJson").isNotEmpty())
+                .andExpect(jsonPath("data.videoTime").isNotEmpty())
+                .andExpect(jsonPath("data.createdAt").isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("TextMemo 전체 데이터 조회 Api")
+    public void getAllFromDb() throws Exception {
+
+        //given
+        final String individualVideoId = "25edc4c9-28a9-4733-b0d5-3ebb6425b7ad";
+        textMemoDao.save(createMockTextMemo(), individualVideoId);
+        textMemoDao.save(createMockTextMemo(), individualVideoId);
+
+        // when
+        ResultActions resultActions = mvc.perform(get("/api/individual-videos/" + individualVideoId + "/text-memos")
+                .header(HttpHeaders.AUTHORIZATION, header));
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("data").isNotEmpty())
+                .andExpect(jsonPath("data[0].stateJson").isNotEmpty())
+                .andExpect(jsonPath("data[0].videoTime").isNotEmpty())
+                .andExpect(jsonPath("data[1].stateJson").isNotEmpty())
+                .andExpect(jsonPath("data[1].videoTime").isNotEmpty());
+    }
+
+    private TextMemo createMockTextMemo() {
+        return TextMemo.builder()
+                .id(UUID.randomUUID().toString())
+                .stateJson("test01")
+                .videoTime(123L)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+}
