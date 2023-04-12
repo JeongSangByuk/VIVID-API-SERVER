@@ -41,7 +41,7 @@
 포스팅을 작성할 때 **해당 이슈가 생긴 이유**와 어떤 방법으로 어떻게 해결했는지, 그리고 이 과정에서 **내가 고민한 것은 무엇**이고, **내가 기술적으로 성장한 부분은 무엇인지를 중심으로 작성**했습니다.
 
 - [**프로젝트 리팩토링 : API 성능 최적화, Bulk Update 적용하기**](https://blog.byuk.site/b01faa4a-02a9-4d9a-a93f-3e7e4dc24c4e)
-- [**프로젝트 리팩토링 : API 성능 최적화, N+1 문제 실제로 해결하기.**]https://blog.byuk.site/ca998347-ef7c-4e88-8e24-274b1778e85d)
+- [**프로젝트 리팩토링 : API 성능 최적화, N+1 문제 실제로 해결하기.**](https://blog.byuk.site/ca998347-ef7c-4e88-8e24-274b1778e85d)
 - [**프로젝트 리팩토링 : To Stream From For-Loop.**](https://blog.byuk.site/55b659cd-e9ce-49cb-9fbd-ad0468f28996)
 - [**프로젝트 리팩토링 : 클래스와 메소드의 적절한 분리.**](https://blog.byuk.site/a33ecd35-0261-4907-a0ed-646630cd7530)
 - [**JPA Soft Delete 구현하기.**](https://blog.byuk.site/538fd0c1-a40c-4eb6-9761-fe396b64a5c4)
