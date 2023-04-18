@@ -1,11 +1,10 @@
 #  🙊 VIVID
 > VIVID 서비스는 영상 콘텐츠 통합 관리 & 학습 툴 웹 서비스입니다.<br>
-> 소프트웨어 마에스트로 13기 연수 과정에서 개발 진행 중인 프로젝트입니다.
+> 소프트웨어 마에스트로 13기 연수 과정에서 개발한 프로젝트입니다.
 <br>
 
-##  💡  Background
-1. 현재의 교육 영상은 다양한 플랫폼을 통해 공유되고 있기 때문에, **영상을 관리하는 것이 매우 어렵습니다.**
-2. 영상 스트리밍 플랫폼들은 단순 시청에 목적이 맞춰져 있기 때문에, **사용자가 학습에 활용하기 불편합니다.**
+[**해당 프로젝트는 여기에서 더 자세하게 볼 수 있어요!!**](https://blog.byuk.site/resume/projects/vivid)
+
 <br>
 
 ##  📝  Features
@@ -24,13 +23,15 @@
 <br>
 
 ## 💻 개발 내용/프로젝트 중점 사항
-- **Spring boot와 JPA를 기반으로 REST API를 구현**했습니다. 이 때 **RESTful API Spec을 준수하여 URI와 API를 설계**했습니다.
-- 전반적인 Backend 사이드의 **웹 서비스 인프라, 클라우드 아키텍처를 설계하고 구현** 했으며, 배포 및 운영을 담당했습니다.
+- [**Spring boot와 JPA를 기반으로 REST API를 구현**](https://blog.byuk.site/d7e72957-b774-4e18-9a80-7659bae9c657)했습니다. 이 때 RESTful API Spec을 준수하여 URI와 API를 설계했습니다.
+- [**DB 설계**](https://blog.byuk.site/4e4fa633-1c93-4ffa-a428-eb015af74b65), [**웹 서비스 인프라, 클라우드 아키텍처를 설계하고 구현**](https://blog.byuk.site/f1fc0115-366e-429d-8cba-7f4bf329e77d)했으며, 배포를 담당했습니다.
+- [**외부 API 연동**](https://blog.byuk.site/f4b98b6e-065d-4f21-95f7-db1e64f6b0c1), [**멀티미디어 데이터 처리**](https://blog.byuk.site/8eb1ab36-d75c-404f-ac71-167b3fc415ff), [**대용량 JSON 데이터 캐싱 및 활용**](https://blog.byuk.site/cb9fb001-81af-49c8-b517-c4f185e5a01a) 등의 복잡한 백엔드 프로세스를 설계하고 구현했습니다.
+- [**문서화**](https://blog.byuk.site/3d0fc291-1d88-462b-a58a-ddc748443239), [**트러블 슈팅 과정 기록 및 공유**](https://blog.byuk.site/resume/projects/vivid#afb334bd4c794f9c8773110986c695f6)를 통해 협업에 편리한 프로젝트를 만들었습니다.
 - API 레벨에서의 테스트 코드를 작성하여, 코드를 검증했습니다.
-- **MySQL을 기반으로 RDBMS 스키마를 설계하고 운영**했으며, **JSON 타입 데이터 저장을 위한 DynamoDB와 Cache 스토리지 용도의 Redis를 활용한 비즈니스 로직을 구현**했습니다.
-- **Spring Web 계층별 책임과 역할의 분리를 위한 프로젝트 구조를 설계**했습니다.
-- **클린 코드, 문서화, 트러블 슈팅 과정 기록** 통해 협업에 편리한 프로젝트를 만들었습니다.
-- 프로젝트 종료 후, **리팩토링을 진행**했습니다. 메소드의 역할과 책임을 분리하여 직관적이고 간결한 코드로 리팩토링 했습니다. 또한 N+1 문제를 해결하여 성능을 개선했습니다.
+- 프로젝트 종료 후, [**리팩토링**](https://blog.byuk.site/resume/projects/vivid#afb334bd4c794f9c8773110986c695f6)을 진행했습니다.
+    - [**메소드의 역할과 책임을 분리하고, 적절하게 캡슐화하여 직관적인 코드로 개선**](https://blog.byuk.site/a33ecd35-0261-4907-a0ed-646630cd7530)했습니다.
+    - [**저수준 모듈과 고수준 모듈을 분리하고 CQS 패턴을 적용**](https://blog.byuk.site/b2aeb184-a3cb-4736-bc31-8bfbe40058a3)했습니다.
+    - [**Fetch Join, Batch Size 조정**](https://blog.byuk.site/ca998347-ef7c-4e88-8e24-274b1778e85d)과 [**Bulk Update 등을 활용해 N+1 문제를 해결**](https://blog.byuk.site/b01faa4a-02a9-4d9a-a93f-3e7e4dc24c4e)했습니다.
 
 <br>
 
@@ -43,6 +44,7 @@
 - [**프로젝트 리팩토링 : API 성능 최적화, Bulk Update 적용하기.**](https://blog.byuk.site/b01faa4a-02a9-4d9a-a93f-3e7e4dc24c4e)
 - [**프로젝트 리팩토링 : API 성능 최적화, N+1 문제 실제로 해결하기.**](https://blog.byuk.site/ca998347-ef7c-4e88-8e24-274b1778e85d)
 - [**프로젝트 리팩토링 : To Stream From For-Loop.**](https://blog.byuk.site/55b659cd-e9ce-49cb-9fbd-ad0468f28996)
+- [**프로젝트 리팩토링 : 저수준 모듈 / 고수준의 모듈 분리, CQS 패턴**](https://blog.byuk.site/b2aeb184-a3cb-4736-bc31-8bfbe40058a3)
 - [**프로젝트 리팩토링 : 클래스와 메소드의 적절한 분리.**](https://blog.byuk.site/a33ecd35-0261-4907-a0ed-646630cd7530)
 - [**JPA Soft Delete 구현하기.**](https://blog.byuk.site/538fd0c1-a40c-4eb6-9761-fe396b64a5c4)
 - [**JPA Delete is not Working, 영속성와 연관 관계를 고려했는가.**](https://blog.byuk.site/927ff674-ce08-4ca0-bfef-c73c0cb78470)
