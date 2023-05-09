@@ -64,7 +64,7 @@
 
 ##  📋  API Docs
 
-[API Docs](https://cooing-delivery-882.notion.site/VIVID-API-DOCS-2a2e38bedafe407e98387a7421d25429)
+[API Docs](https://blog.byuk.site/d7e72957-b774-4e18-9a80-7659bae9c657)
 
 [API Swagger](https://api.dev.edu-vivid.com/swagger-ui/index.html#/)
 
